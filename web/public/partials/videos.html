@@ -1,0 +1,52 @@
+<!--
+// Licensed under the Apache License. See footer for details.
+-->
+<div class="container" ng-controller="VideosController as controller">
+
+  <form action="/upload/video" class="dropzone" id="uploadVideoZone">
+  </form>
+
+  <h2>{{controller.data.videos.length}} Videos</h2>
+  <div ng-repeat="video in controller.data.videos" class="video-container">
+
+    <div class="panel panel-default video-panel">
+      <div class="panel-heading">
+        <h3 class="panel-title video-title"><a ui-sref="video({ videoId: video._id })">{{video.title}}</a></h3>
+      </div>
+      <div class="panel-body">
+
+        <span ng-if="!video.metadata">
+          This video has not yet been processed.
+        </span>
+
+        <a ng-if="video.metadata" ui-sref="video({ videoId: video._id })">
+          <img class="video-thumbnail" ng-src="/images/thumbnail/{{video._id}}.jpg" />
+        </a>
+
+        <div ng-repeat="stream in video.metadata.streams">
+          <div ng-if="stream.codec_type == 'video'" class="text-muted">
+            <span class="label label-info">{{stream.width}}x{{stream.height}}</span>
+            <span class="label label-default">{{stream.duration | formatSeconds }}</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+<!--
+//------------------------------------------------------------------------------
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//------------------------------------------------------------------------------
+-->

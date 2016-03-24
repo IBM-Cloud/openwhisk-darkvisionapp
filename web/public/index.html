@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!--
+// Licensed under the Apache License. See footer for details.
+-->
+<html ng-app="app" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenWhisk Dark Vision</title>
+
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="vendor/dropzone/dist/min/dropzone.min.css">
+  <link href="css/app.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" ui-sref="videos()">OPENWHISK DARK VISION</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a ui-sref="videos()">Videos</a></li>
+          <li><a ui-sref="images()">Images</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="status" ng-controller="StatusController as controller">
+    <span class="label label-default">VIDEOS</span>
+    <span class="label label-success">total: {{controller.data.status.videos.count}}</span>
+    <span class="label label-warning" ng-if="controller.data.status.videos.to_be_analyzed>0">todo: {{controller.data.status.videos.to_be_analyzed}}</span>
+    
+    <span>&nbsp;</span>
+    
+    <span class="label label-default">IMAGES</span>
+    <span class="label label-success">total: {{controller.data.status.images.count}}</span>
+    <span class="label label-warning" ng-if="controller.data.status.images.to_be_analyzed>0">todo: {{controller.data.status.images.to_be_analyzed}}</span>
+
+  </div>
+
+  <div ui-view></div>
+
+  <footer>
+    <p class="text-center">made by <a href="https://twitter.com/l2fprod">fred</a> with <a href="http://bluemix.net">IBM Bluemix</a></p>
+  </footer>
+
+  <script src="vendor/jquery/dist/jquery.min.js"></script>
+  <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="vendor/angular/angular.min.js"></script>
+  <script src="vendor/angular-ui-router/release/angular-ui-router.min.js"></script>
+  <script src="vendor/dropzone/dist/min/dropzone.min.js"></script>
+  
+  <script src="js/app.js"></script>
+
+  <script src="js/status.service.js"></script>
+  <script src="js/status.controller.js"></script>
+
+  <script src="js/images.service.js"></script>
+  <script src="js/images.controller.js"></script>
+
+  <script src="js/videos.service.js"></script>
+  <script src="js/videos.controller.js"></script>
+  <script src="js/video.controller.js"></script>
+</body>
+
+</html>
+<!--
+//------------------------------------------------------------------------------
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//------------------------------------------------------------------------------
+-->

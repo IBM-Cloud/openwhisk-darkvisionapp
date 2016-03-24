@@ -1,0 +1,461 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		21AF2A59B24F7CED64CE9F0D /* Pods_darkvision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2955A049E2F4A418E16AE8D /* Pods_darkvision.framework */; };
+		B681E2921C5684B900E17B71 /* Videos.swift in Sources */ = {isa = PBXBuildFile; fileRef = B681E2911C5684B900E17B71 /* Videos.swift */; };
+		B681E2971C578C5500E17B71 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = B681E2961C578C5500E17B71 /* Video.swift */; };
+		B681E2991C578CB900E17B71 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = B681E2981C578CB900E17B71 /* API.swift */; };
+		B681E29B1C59095200E17B71 /* FaceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B681E29A1C59095200E17B71 /* FaceCell.swift */; };
+		B681E29D1C5909C400E17B71 /* VideoDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B681E29C1C5909C400E17B71 /* VideoDetailController.swift */; };
+		B68264381C6A247900E73010 /* RelatedVideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68264371C6A247900E73010 /* RelatedVideoCell.swift */; };
+		B682643A1C6A272B00E73010 /* Face.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68264391C6A272B00E73010 /* Face.swift */; };
+		B682643C1C6A41D300E73010 /* CropFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B682643B1C6A41D300E73010 /* CropFilter.swift */; };
+		B68D2B561C53B86900FA0CE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68D2B551C53B86900FA0CE0 /* AppDelegate.swift */; };
+		B68D2B5B1C53B86900FA0CE0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B68D2B591C53B86900FA0CE0 /* Main.storyboard */; };
+		B68D2B5D1C53B86900FA0CE0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B68D2B5C1C53B86900FA0CE0 /* Assets.xcassets */; };
+		B68D2B601C53B86900FA0CE0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B68D2B5E1C53B86900FA0CE0 /* LaunchScreen.storyboard */; };
+		B68D2B681C53B94200FA0CE0 /* FeedCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68D2B671C53B94200FA0CE0 /* FeedCollectionViewController.swift */; };
+		B68D2B6A1C53BA0300FA0CE0 /* FeedCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68D2B691C53BA0300FA0CE0 /* FeedCollectionViewCell.swift */; };
+		B68D2B6C1C53C5F800FA0CE0 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = B68D2B6B1C53C5F800FA0CE0 /* Podfile */; };
+		B69CEB4D1C6C8FB90063E231 /* VideoSectionHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69CEB4C1C6C8FB90063E231 /* VideoSectionHeaderCell.swift */; };
+		B6F04AC81C54D10600AC2BA2 /* VideoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F04AC71C54D10600AC2BA2 /* VideoController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		12B471524F9B7187B801A82B /* Pods-darkvision.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-darkvision.release.xcconfig"; path = "Pods/Target Support Files/Pods-darkvision/Pods-darkvision.release.xcconfig"; sourceTree = "<group>"; };
+		A2955A049E2F4A418E16AE8D /* Pods_darkvision.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_darkvision.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A77544B24C5EFA1F0386FE72 /* Pods-darkvision.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-darkvision.debug.xcconfig"; path = "Pods/Target Support Files/Pods-darkvision/Pods-darkvision.debug.xcconfig"; sourceTree = "<group>"; };
+		B681E2911C5684B900E17B71 /* Videos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Videos.swift; path = ../darkvision/model/Videos.swift; sourceTree = "<group>"; };
+		B681E2951C5759C300E17B71 /* DateTools-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DateTools-Bridging-Header.h"; path = "../darkvision/util/DateTools-Bridging-Header.h"; sourceTree = "<group>"; };
+		B681E2961C578C5500E17B71 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Video.swift; path = ../darkvision/model/Video.swift; sourceTree = "<group>"; };
+		B681E2981C578CB900E17B71 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = API.swift; path = ../darkvision/model/API.swift; sourceTree = "<group>"; };
+		B681E29A1C59095200E17B71 /* FaceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FaceCell.swift; path = ../darkvision/renderers/FaceCell.swift; sourceTree = "<group>"; };
+		B681E29C1C5909C400E17B71 /* VideoDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoDetailController.swift; path = ../darkvision/controllers/VideoDetailController.swift; sourceTree = "<group>"; };
+		B68264371C6A247900E73010 /* RelatedVideoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RelatedVideoCell.swift; path = ../darkvision/renderers/RelatedVideoCell.swift; sourceTree = "<group>"; };
+		B68264391C6A272B00E73010 /* Face.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Face.swift; path = ../darkvision/model/Face.swift; sourceTree = "<group>"; };
+		B682643B1C6A41D300E73010 /* CropFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CropFilter.swift; path = ../darkvision/util/CropFilter.swift; sourceTree = "<group>"; };
+		B68D2B521C53B86900FA0CE0 /* Dark Vision.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Dark Vision.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B68D2B551C53B86900FA0CE0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ../darkvision/AppDelegate.swift; sourceTree = "<group>"; };
+		B68D2B5A1C53B86900FA0CE0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B68D2B5C1C53B86900FA0CE0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../darkvision/Assets.xcassets; sourceTree = "<group>"; };
+		B68D2B5F1C53B86900FA0CE0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B68D2B611C53B86900FA0CE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../darkvision/Info.plist; sourceTree = "<group>"; };
+		B68D2B671C53B94200FA0CE0 /* FeedCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FeedCollectionViewController.swift; path = ../darkvision/controllers/FeedCollectionViewController.swift; sourceTree = "<group>"; };
+		B68D2B691C53BA0300FA0CE0 /* FeedCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FeedCollectionViewCell.swift; path = ../darkvision/renderers/FeedCollectionViewCell.swift; sourceTree = "<group>"; };
+		B68D2B6B1C53C5F800FA0CE0 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		B69CEB4C1C6C8FB90063E231 /* VideoSectionHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoSectionHeaderCell.swift; path = ../darkvision/renderers/VideoSectionHeaderCell.swift; sourceTree = "<group>"; };
+		B6F04AC71C54D10600AC2BA2 /* VideoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoController.swift; path = ../darkvision/controllers/VideoController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B68D2B4F1C53B86900FA0CE0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				21AF2A59B24F7CED64CE9F0D /* Pods_darkvision.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A5EDEF0FCEBBE4EB88F6B030 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A2955A049E2F4A418E16AE8D /* Pods_darkvision.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B681E2931C5684BF00E17B71 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				B681E2911C5684B900E17B71 /* Videos.swift */,
+				B681E2961C578C5500E17B71 /* Video.swift */,
+				B681E2981C578CB900E17B71 /* API.swift */,
+				B68264391C6A272B00E73010 /* Face.swift */,
+			);
+			name = model;
+			sourceTree = "<group>";
+		};
+		B681E2941C57598700E17B71 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				B681E2951C5759C300E17B71 /* DateTools-Bridging-Header.h */,
+				B682643B1C6A41D300E73010 /* CropFilter.swift */,
+			);
+			name = util;
+			sourceTree = "<group>";
+		};
+		B68264351C688F8000E73010 /* controllers */ = {
+			isa = PBXGroup;
+			children = (
+				B68D2B671C53B94200FA0CE0 /* FeedCollectionViewController.swift */,
+				B6F04AC71C54D10600AC2BA2 /* VideoController.swift */,
+				B681E29C1C5909C400E17B71 /* VideoDetailController.swift */,
+			);
+			name = controllers;
+			sourceTree = "<group>";
+		};
+		B68264361C688FCA00E73010 /* renderers */ = {
+			isa = PBXGroup;
+			children = (
+				B681E29A1C59095200E17B71 /* FaceCell.swift */,
+				B68D2B691C53BA0300FA0CE0 /* FeedCollectionViewCell.swift */,
+				B68264371C6A247900E73010 /* RelatedVideoCell.swift */,
+				B69CEB4C1C6C8FB90063E231 /* VideoSectionHeaderCell.swift */,
+			);
+			name = renderers;
+			sourceTree = "<group>";
+		};
+		B68D2B491C53B86900FA0CE0 = {
+			isa = PBXGroup;
+			children = (
+				B68D2B6B1C53C5F800FA0CE0 /* Podfile */,
+				B68D2B541C53B86900FA0CE0 /* darkvision */,
+				B68D2B531C53B86900FA0CE0 /* Products */,
+				D5895908E2A7A875EBEAC2CE /* Pods */,
+				A5EDEF0FCEBBE4EB88F6B030 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		B68D2B531C53B86900FA0CE0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B68D2B521C53B86900FA0CE0 /* Dark Vision.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B68D2B541C53B86900FA0CE0 /* darkvision */ = {
+			isa = PBXGroup;
+			children = (
+				B68264361C688FCA00E73010 /* renderers */,
+				B68264351C688F8000E73010 /* controllers */,
+				B681E2941C57598700E17B71 /* util */,
+				B681E2931C5684BF00E17B71 /* model */,
+				B68D2B551C53B86900FA0CE0 /* AppDelegate.swift */,
+				B68D2B591C53B86900FA0CE0 /* Main.storyboard */,
+				B68D2B5C1C53B86900FA0CE0 /* Assets.xcassets */,
+				B68D2B5E1C53B86900FA0CE0 /* LaunchScreen.storyboard */,
+				B68D2B611C53B86900FA0CE0 /* Info.plist */,
+			);
+			path = darkvision;
+			sourceTree = "<group>";
+		};
+		D5895908E2A7A875EBEAC2CE /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A77544B24C5EFA1F0386FE72 /* Pods-darkvision.debug.xcconfig */,
+				12B471524F9B7187B801A82B /* Pods-darkvision.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B68D2B511C53B86900FA0CE0 /* darkvision */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B68D2B641C53B86900FA0CE0 /* Build configuration list for PBXNativeTarget "darkvision" */;
+			buildPhases = (
+				A98B19AD9867DAD20E47F394 /* Check Pods Manifest.lock */,
+				B68D2B4E1C53B86900FA0CE0 /* Sources */,
+				B68D2B4F1C53B86900FA0CE0 /* Frameworks */,
+				B68D2B501C53B86900FA0CE0 /* Resources */,
+				2CE3B6E6F33702264B46C398 /* Embed Pods Frameworks */,
+				4F043F6870222D8FE64EF35E /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = darkvision;
+			productName = darkvision;
+			productReference = B68D2B521C53B86900FA0CE0 /* Dark Vision.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B68D2B4A1C53B86900FA0CE0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0720;
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "Frederic Lavigne";
+				TargetAttributes = {
+					B68D2B511C53B86900FA0CE0 = {
+						CreatedOnToolsVersion = 7.2;
+					};
+				};
+			};
+			buildConfigurationList = B68D2B4D1C53B86900FA0CE0 /* Build configuration list for PBXProject "darkvision" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B68D2B491C53B86900FA0CE0;
+			productRefGroup = B68D2B531C53B86900FA0CE0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B68D2B511C53B86900FA0CE0 /* darkvision */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B68D2B501C53B86900FA0CE0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B68D2B601C53B86900FA0CE0 /* LaunchScreen.storyboard in Resources */,
+				B68D2B5D1C53B86900FA0CE0 /* Assets.xcassets in Resources */,
+				B68D2B6C1C53C5F800FA0CE0 /* Podfile in Resources */,
+				B68D2B5B1C53B86900FA0CE0 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2CE3B6E6F33702264B46C398 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-darkvision/Pods-darkvision-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4F043F6870222D8FE64EF35E /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-darkvision/Pods-darkvision-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A98B19AD9867DAD20E47F394 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B68D2B4E1C53B86900FA0CE0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B681E29B1C59095200E17B71 /* FaceCell.swift in Sources */,
+				B681E29D1C5909C400E17B71 /* VideoDetailController.swift in Sources */,
+				B6F04AC81C54D10600AC2BA2 /* VideoController.swift in Sources */,
+				B681E2921C5684B900E17B71 /* Videos.swift in Sources */,
+				B68D2B561C53B86900FA0CE0 /* AppDelegate.swift in Sources */,
+				B682643A1C6A272B00E73010 /* Face.swift in Sources */,
+				B69CEB4D1C6C8FB90063E231 /* VideoSectionHeaderCell.swift in Sources */,
+				B68264381C6A247900E73010 /* RelatedVideoCell.swift in Sources */,
+				B68D2B6A1C53BA0300FA0CE0 /* FeedCollectionViewCell.swift in Sources */,
+				B682643C1C6A41D300E73010 /* CropFilter.swift in Sources */,
+				B681E2971C578C5500E17B71 /* Video.swift in Sources */,
+				B681E2991C578CB900E17B71 /* API.swift in Sources */,
+				B68D2B681C53B94200FA0CE0 /* FeedCollectionViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		B68D2B591C53B86900FA0CE0 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B68D2B5A1C53B86900FA0CE0 /* Base */,
+			);
+			name = Main.storyboard;
+			path = ../darkvision;
+			sourceTree = "<group>";
+		};
+		B68D2B5E1C53B86900FA0CE0 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B68D2B5F1C53B86900FA0CE0 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			path = ../darkvision;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B68D2B621C53B86900FA0CE0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B68D2B631C53B86900FA0CE0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B68D2B651C53B86900FA0CE0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A77544B24C5EFA1F0386FE72 /* Pods-darkvision.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = darkvision/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = net.mybluemix.DarkVision;
+				PRODUCT_NAME = "Dark Vision";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Debug;
+		};
+		B68D2B661C53B86900FA0CE0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 12B471524F9B7187B801A82B /* Pods-darkvision.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = darkvision/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = net.mybluemix.DarkVision;
+				PRODUCT_NAME = "Dark Vision";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B68D2B4D1C53B86900FA0CE0 /* Build configuration list for PBXProject "darkvision" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B68D2B621C53B86900FA0CE0 /* Debug */,
+				B68D2B631C53B86900FA0CE0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B68D2B641C53B86900FA0CE0 /* Build configuration list for PBXNativeTarget "darkvision" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B68D2B651C53B86900FA0CE0 /* Debug */,
+				B68D2B661C53B86900FA0CE0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B68D2B4A1C53B86900FA0CE0 /* Project object */;
+}

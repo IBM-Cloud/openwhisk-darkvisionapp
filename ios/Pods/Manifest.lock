@@ -1,0 +1,35 @@
+PODS:
+  - Alamofire (3.1.2)
+  - AlamofireImage (2.3.0):
+    - Alamofire (~> 3.1)
+  - Cosmos (1.1.5)
+  - DateTools (1.7.0)
+  - RDHCollectionViewGridLayout (1.2.2)
+  - SwiftMoment (0.4)
+  - SwiftyJSON (2.3.1)
+  - TagListView (0.4.2)
+  - TTTAttributedLabel (1.13.4)
+
+DEPENDENCIES:
+  - Alamofire (= 3.1.2)
+  - AlamofireImage (= 2.3.0)
+  - Cosmos (= 1.1.5)
+  - DateTools (= 1.7.0)
+  - RDHCollectionViewGridLayout (= 1.2.2)
+  - SwiftMoment (= 0.4)
+  - SwiftyJSON (= 2.3.1)
+  - TagListView (= 0.4.2)
+  - TTTAttributedLabel (= 1.13.4)
+
+SPEC CHECKSUMS:
+  Alamofire: 7c16ca65f3c7e681fd925fd7f2dec7747ff96855
+  AlamofireImage: 4013fb5b99b10117bf2554a67b9bd2231d476b45
+  Cosmos: d05465696561ccb50fa8b7574026326bb23d654b
+  DateTools: 53288ee8b905fdc75897a1e6b5cc0144b14cba60
+  RDHCollectionViewGridLayout: 9a0a574d47335101a417acee7ab9cb030373641b
+  SwiftMoment: e751c44be03a183fa6c949426d9473d26a66ef29
+  SwiftyJSON: 592b53bee5ef3dd9b3bebc6b9cb7ee35426ae8c3
+  TagListView: 38700330380d7c874f8f9c381ce651d822f11ebf
+  TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
+
+COCOAPODS: 0.39.0

@@ -1,0 +1,16 @@
+{
+  "name": "extractor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "async": "^1.5.2",
+    "fluent-ffmpeg": "^2.0.1",
+    "nano": "^6.1.5",
+    "rimraf": "^2.5.1",
+    "tmp": "0.0.28"
+  }
+}

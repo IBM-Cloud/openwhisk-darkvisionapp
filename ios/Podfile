@@ -1,0 +1,19 @@
+platform :ios, '9.0'
+use_frameworks!
+
+workspace 'darkvision.xcworkspace'
+xcodeproj 'darkvision.xcodeproj'
+
+target 'darkvision' do
+  pod 'Alamofire', '3.1.2'
+  pod 'AlamofireImage', '2.3.0'
+  pod 'SwiftyJSON', '2.3.1'
+
+  pod 'RDHCollectionViewGridLayout', '1.2.2'
+  pod 'TTTAttributedLabel', '1.13.4'
+  
+  pod 'SwiftMoment', '0.4'
+  pod 'DateTools', '1.7.0'
+  pod 'Cosmos', '1.1.5'
+  pod 'TagListView', '0.4.2'
+end

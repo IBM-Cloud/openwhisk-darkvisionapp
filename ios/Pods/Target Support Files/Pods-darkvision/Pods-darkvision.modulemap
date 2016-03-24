@@ -1,0 +1,6 @@
+framework module Pods_darkvision {
+  umbrella header "Pods-darkvision-umbrella.h"
+
+  export *
+  module * { export * }
+}

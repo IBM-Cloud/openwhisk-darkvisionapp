@@ -1,0 +1,40 @@
+{
+  "docs": [
+    {
+      "_id": "_design/images",
+      "views": {
+        "all": {
+          "map": "function (doc) {\n  if (doc.type == \"image\") {\n    emit(doc._id, 1);\n  }\n}"
+        },
+        "by_video_id": {
+          "map": "function (doc) {\n  if (doc.type == \"image\" && doc.video_id) {\n    emit(doc.video_id, 1);\n  }\n}"
+        },
+        "to_be_analyzed": {
+          "map": "function (doc) {\n  if (doc.type == \"image\" && !doc.analysis) {\n    emit(doc._id, 1);\n  }\n}"
+        },
+        "processed_by_video_id": {
+          "map": "function (doc) {\n  if (doc.type == \"image\" && doc.video_id && doc.analysis) {\n    emit(doc.video_id, 1);\n  }\n}",
+          "reduce": "_sum"
+        },
+        "total_by_video_id": {
+          "reduce": "_sum",
+          "map": "function (doc) {\n  if (doc.type == \"image\" && doc.video_id) {\n    emit(doc.video_id, 1);\n  }\n}"
+        },
+        "standalone": {
+          "map": "function (doc) {\n  if (doc.type == \"image\" && !doc.video_id) {\n    emit(doc._id, 1);\n  }\n}"
+        }
+      }
+    },
+    {
+      "_id": "_design/videos",
+      "views": {
+        "all": {
+          "map": "function (doc) {\n  if (doc.type == \"video\") {\n    emit(doc._id, { source: doc.source, title: doc.title});\n  }\n}"
+        },
+        "to_be_analyzed": {
+          "map": "function (doc) {\n  if (doc.type == \"video\" && !doc.metadata) {\n    emit(doc._id, { source: doc.source, title: doc.title});\n  }\n}"
+        }
+      }
+    }
+  ]
+}
