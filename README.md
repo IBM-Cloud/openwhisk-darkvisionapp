@@ -133,6 +133,15 @@ open **manifest.yml** and update the Cloudant service name.
   cf push
   ```
 
+#### Protecting the upload, delete and reset actions
+
+By default, anyone can upload/delete/reset videos and images. You can restrict access to these actions by defining the environment variables *ADMIN_USERNAME* and *ADMIN_PASSWORD* on your application. This can be done in the Bluemix console or with the command line:
+
+  ```
+  cf set-env openwhisk-darkvision ADMIN_USERNAME admin
+  cf set-env openwhisk-darkvision ADMIN_PASSWORD aNotTooSimplePassword
+  ```
+
 ### Build the Frame Extractor Docker image
 
 Extracting frames from a video is achieved with ffmpeg. ffmpeg is not available to an OpenWhisk

@@ -14,6 +14,7 @@
     "cf-deployment-tracker-client": "0.0.8",
     "cfenv": "^1.0.3",
     "express": "^4.13.3",
+    "http-auth": "^2.2.9",
     "multer": "^1.1.0",
     "nano": "^6.1.5",
     "node-env-file": "^0.1.8",

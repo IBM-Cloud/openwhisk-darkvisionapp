@@ -22,6 +22,28 @@ var
   fs = require("fs"),
   async = require("async");
 
+// Upload areas and reset/delete for videos and images can be protected by basic authentication
+// by configuring ADMIN_USERNAME and ADMIN_PASSWORD environment variables.
+var
+  auth = require('http-auth'),
+  basic = auth.basic({
+    realm: "Adminstrative Area"
+  }, function (username, password, callback) { // Custom authentication method.
+    // Authentication is configured through environment variables.
+    // If there are not set, upload is open to all users.
+    callback(username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD);
+  }),
+  authenticator = auth.connect(basic),
+  checkForAuthentication = function (req, res, next) {
+    if (process.env.ADMIN_USERNAME) {
+      console.log("Authenticating call...");
+      authenticator(req, res, next);
+    } else {
+      console.log("No authentication configured");
+      next();
+    }
+  };
+
 //---Deployment Tracker---------------------------------------------------------
 require("cf-deployment-tracker-client").track();
 
@@ -135,7 +157,7 @@ app.get("/api/images", function (req, res) {
 /**
  * Removes the analysis from one image
  */
-app.get("/api/images/:id/reset", function (req, res) {
+app.get("/api/images/:id/reset", checkForAuthentication, function (req, res) {
   async.waterfall([
     function (callback) {
       // get the image
@@ -168,7 +190,7 @@ app.get("/api/images/:id/reset", function (req, res) {
 /**
  * Deletes a single image
  */
-app.delete("/api/images/:id", function (req, res) {
+app.delete("/api/images/:id", checkForAuthentication, function (req, res) {
   async.waterfall([
     function (callback) {
       // get the image
@@ -465,7 +487,7 @@ app.get("/api/videos/:id/images", function (req, res) {
 /**
  * Deletes all generated data for one video so that it gets analyzed again.
  */
-app.get("/api/videos/:id/reset", function (req, res) {
+app.get("/api/videos/:id/reset", checkForAuthentication, function (req, res) {
   // remove all analysis for the give video
   async.waterfall([
     // get all images for this video
@@ -547,6 +569,9 @@ app.get("/api/videos/:id/reset", function (req, res) {
     }
   });
 });
+
+// Protects the upload zone with login and password if they are configured
+app.use("/upload", checkForAuthentication);
 
 /**
  * Uploads one video
