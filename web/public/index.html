@@ -33,6 +33,8 @@
         <ul class="nav navbar-nav navbar-right">
           <li><a ui-sref="videos()">Videos</a></li>
           <li><a ui-sref="images()">Images</a></li>
+          <li><a href="https://github.com/IBM-Bluemix/openwhisk-darkvisionapp">Source Code</a></li>
+          <li><a href="https://www.youtube.com/watch?v=1teIMpkI_Sg&feature=youtu.be">About</a></li>
         </ul>
       </div>
     </div>
@@ -41,13 +43,13 @@
   <div class="status" ng-controller="StatusController as controller">
     <span class="label label-default">VIDEOS</span>
     <span class="label label-success">total: {{controller.data.status.videos.count}}</span>
-    <span class="label label-warning" ng-if="controller.data.status.videos.to_be_analyzed>0">todo: {{controller.data.status.videos.to_be_analyzed}}</span>
+    <span class="label label-warning">todo: {{controller.data.status.videos.to_be_analyzed}}</span>
     
     <span>&nbsp;</span>
     
     <span class="label label-default">IMAGES</span>
     <span class="label label-success">total: {{controller.data.status.images.count}}</span>
-    <span class="label label-warning" ng-if="controller.data.status.images.to_be_analyzed>0">todo: {{controller.data.status.images.to_be_analyzed}}</span>
+    <span class="label label-warning">todo: {{controller.data.status.images.to_be_analyzed}}</span>
 
   </div>
 
