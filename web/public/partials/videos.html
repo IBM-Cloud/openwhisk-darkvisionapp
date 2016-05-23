@@ -23,7 +23,7 @@
           <img class="video-thumbnail" ng-src="/images/thumbnail/{{video._id}}.jpg" />
         </a>
 
-        <div ng-repeat="stream in video.metadata.streams">
+        <div class="video-tags" ng-repeat="stream in video.metadata.streams">
           <div ng-if="stream.codec_type == 'video'" class="text-muted">
             <span class="label label-info">{{stream.width}}x{{stream.height}}</span>
             <span class="label label-default">{{stream.duration | formatSeconds }}</span>

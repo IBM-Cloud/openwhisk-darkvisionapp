@@ -47,6 +47,8 @@ function mainImpl(args, mainCallback) {
   var fs = require('fs')
   var request = require('request')
 
+  var startTime = (new Date).getTime();
+
   if (args.hasOwnProperty("doc")) {
     var imageDocumentId = args.doc._id;
     console.log("[", imageDocumentId, "] Processing image.jpg from document");
@@ -98,11 +100,13 @@ function mainImpl(args, mainCallback) {
         });
       }
     ], function (err, analysis) {
+      var durationInSeconds = ((new Date).getTime() - startTime) / 1000;
+      
       if (err) {
-        console.log("[", imageDocumentId, "] KO", err);
+        console.log("[", imageDocumentId, "] KO (", durationInSeconds, "s)", err);
         mainCallback(err);
       } else {
-        console.log("[", imageDocumentId, "] OK");
+        console.log("[", imageDocumentId, "] OK (", durationInSeconds, "s)");
         mainCallback(null, analysis);
       }
     });
@@ -251,6 +255,12 @@ function analyzeImage(args, fileName, analyzeCallback) {
                 console.log("Image Keywords", err);
               } else {
                 analysis.image_keywords = body;
+                // make the imageKeywords array if Alchemy did not return any tag
+                if (analysis.image_keywords.hasOwnProperty("imageKeywords") &&
+                  analysis.image_keywords.imageKeywords.length == 1 &&
+                  analysis.image_keywords.imageKeywords[0].text == "NO_TAGS") {
+                  analysis.image_keywords.imageKeywords = [];
+                }
               }
               callback(null);
             }))
@@ -262,11 +272,22 @@ function analyzeImage(args, fileName, analyzeCallback) {
         }
 
         var watson = require('watson-developer-cloud')
-        var visual_recognition = watson.visual_recognition({
-          username: args.watsonUsername,
-          password: args.watsonPassword,
-          version: 'v1'
-        })
+        var visual_recognition;
+        try {
+          // this is the watson_developer_cloud 0.9.29 SDK
+          visual_recognition = watson.visual_recognition({
+            username: args.watsonUsername,
+            password: args.watsonPassword,
+            version: 'v1'
+          });
+        } catch (err) {
+          // this is for most recent versions
+          visual_recognition = watson.visual_recognition({
+            username: args.watsonUsername,
+            password: args.watsonPassword,
+            version: 'v1-beta'
+          });
+        }
 
         visual_recognition.recognize(params, function (err, body) {
           if (err) {

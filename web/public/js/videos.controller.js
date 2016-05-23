@@ -22,15 +22,18 @@
 
     controller.reload = function () {
       VideosService.all().then(function (videos) {
+        videos.sort(function(video1, video2) {
+          return video1.title.localeCompare(video2.title);
+        });
         controller.data.videos = videos;
       });
     };
-
+    
     $("#uploadVideoZone").dropzone({
       parallelUploads: 1,
       uploadMultiple: false,
       acceptedFiles: "video/*",
-      dictDefaultMessage: "Drop videos here to upload"
+      dictDefaultMessage: "Drop Videos here to upload"
     }).on("success", function (file, responseText) {
       controller.reload();
     });

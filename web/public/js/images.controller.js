@@ -57,7 +57,7 @@
       parallelUploads: 1,
       uploadMultiple: false,
       acceptedFiles: "image/*",
-      dictDefaultMessage: "Drop images here to upload"
+      dictDefaultMessage: "Drop Images here to upload"
     }).on("success", function (file, responseText) {
       controller.reload();
     });

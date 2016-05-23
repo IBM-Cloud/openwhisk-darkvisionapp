@@ -1,16 +1,39 @@
 body {
-  padding-top: 50px;
-  background: #f5f8f9;
-  padding-bottom: 40px;
-  font-family: "Helvetica Neue",Arial,sans-serif;
+  background: #ffffff;
+  padding-bottom: 60px;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-family: "Helvetica Neue", "Open Sans", Arial, sans-serif;
+  color: #333;
+}
+
+a {
+  color: #2ca8ff !important;
+}
+a:hover,
+a:focus {
+  color: #109cff !important;
+  text-decoration: none;
+}
+a:focus,
+a:active {
+  outline: 0;
+}
+
+a.navbar-brand {
+  color: #333 !important;
+  font-weight: bold;
 }
 
 .navbar {
-  background: #5AAAFA;
+  margin-bottom: 0px;
+}
+
+.navbar-toggle .icon-bar {
+  background: #333;
 }
 
 .navbar-default .navbar-brand, .navbar-default .navbar-nav>li>a {
-  color: white;
 }
 
 .status {
@@ -21,6 +44,7 @@ body {
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 10px;
+  padding-top: 5px;
   margin-bottom: 20px;
   border-top: 1px solid rgba(0,0,0,.075);
   border-bottom: 1px solid rgba(0,0,0,.075);
@@ -32,7 +56,7 @@ footer {
   left: 0px;
   bottom: 0px;
   right: 0px;
-  background-color: rgb(248, 248, 248);
+  background-color: rgba(248, 248, 248, 0.9);
   color: #888;
   text-align: right;
   height: 40px;
@@ -51,7 +75,7 @@ footer {
 }
 
 .dropzone {
-  border: 2px dashed #0087F7;
+  border: 2px dashed #999;
   border-radius: 5px;
   background: white;
   margin-bottom: 30px;
@@ -112,8 +136,16 @@ footer {
   white-space: nowrap;
 }
 
+.video-title a {
+  color: #333 !important;
+}
+
 .video-thumbnail {
   width: 300px;
   max-height: 170px;
   overflow: hidden;
+}
+
+.video-tags {
+  text-align: center;
 }

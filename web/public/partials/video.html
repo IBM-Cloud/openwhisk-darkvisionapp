@@ -38,7 +38,7 @@
 
         <div class="entry-faces">
           <h4>Alchemy Face Detection</h4>
-          <span ng-if="controller.data.summary.face_detection.length == 0">No face detected</span>
+          <span ng-if="controller.data.summary.face_detection.length == 0">No known face detected</span>
           <ul class="entry-taglist">
             <li ng-repeat="face in controller.data.summary.face_detection" class="entry-tag">
               <span class="face-overlay-text">{{$index+1}}</span>

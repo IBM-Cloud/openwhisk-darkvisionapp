@@ -12,7 +12,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 (function () {
-  function VideoController($location, VideosService, $stateParams, $state) {
+  function VideoController($location, VideosService, ImagesService, $stateParams, $state) {
     console.info("Initializing VideoController");
     var controller = this;
 
@@ -38,6 +38,12 @@
       controller.data.summary = summary;
     });
 
+    controller.delete = function (image) {
+      ImagesService.delete(image).then(function (result) {
+        $("#entry-" + image._id).remove();
+      });
+    };
+
     controller.reset = function () {
       VideosService.reset(controller.data.video._id).then(function (reset) {
         // reload the page, it will show empty
@@ -47,5 +53,5 @@
   }
 
   angular.module('app')
-    .controller('VideoController', ['$location', 'VideosService', '$stateParams', '$state', VideoController]);
+    .controller('VideoController', ['$location', 'VideosService', 'ImagesService', '$stateParams', '$state', VideoController]);
 }());

@@ -48,6 +48,7 @@
         <div>
           <h4>Alchemy Image Keywords</h4>
           <span ng-if="!image.analysis.image_keywords">No data yet</span>
+          <span ng-if="image.analysis.image_keywords.imageKeywords.length == 0">No tag detected</span>
           <ul class="entry-taglist">
             <li ng-repeat="keyword in image.analysis.image_keywords.imageKeywords" class="entry-tag">
               <span class="label label-info">{{keyword.text}} {{keyword.score | formatPercent}}%</span>
@@ -58,8 +59,8 @@
     </div>
   </div>
   
-  <div ng-if="!image.video_id" class="panel-footer entry-actions">
-    <button ng-if="image.analysis" class="btn btn-warning" ng-click="controller.reset(image)">Relaunch analysis</button>
+  <div class="panel-footer entry-actions">
+    <button ng-if="!image.video_id && image.analysis" class="btn btn-warning" ng-click="controller.reset(image)">Relaunch analysis</button>
     <button class="btn btn-danger" ng-click="controller.delete(image)">Delete</button>
   </div>
 </div>
