@@ -33,6 +33,8 @@ class Videos {
       onSuccess: { (data) -> Void in
         self.videos = data.map({ (text, video) -> Video in
           return Video(api: self.api, impl: video)
+        }).filter({ (video) -> Bool in
+          return video.isAnalyzed()
         })
         completionhandler(UIBackgroundFetchResult.NewData)
       },

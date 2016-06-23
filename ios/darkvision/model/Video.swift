@@ -60,6 +60,10 @@ class Video {
     })
   }
   
+  func isAnalyzed() -> Bool {
+    return impl["metadata"].isExists()
+  }
+  
   func title() -> String {
     return impl["title"].string!;
   }

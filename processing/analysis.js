@@ -268,28 +268,18 @@ function analyzeImage(args, fileName, analyzeCallback) {
     function (callback) {
         // Call Watson Visual Recognition passing the image in the request
         var params = {
-          image_file: fs.createReadStream(fileName)
+          images_file: fs.createReadStream(fileName)
         }
 
         var watson = require('watson-developer-cloud')
-        var visual_recognition;
-        try {
-          // this is the watson_developer_cloud 0.9.29 SDK
-          visual_recognition = watson.visual_recognition({
-            username: args.watsonUsername,
-            password: args.watsonPassword,
-            version: 'v1'
-          });
-        } catch (err) {
-          // this is for most recent versions
-          visual_recognition = watson.visual_recognition({
-            username: args.watsonUsername,
-            password: args.watsonPassword,
-            version: 'v1-beta'
-          });
-        }
+        var visual_recognition = watson.visual_recognition({
+          username: args.watsonUsername,
+          password: args.watsonPassword,
+          version: 'v2-beta',
+          version_date: '2015-12-02'
+        });
 
-        visual_recognition.recognize(params, function (err, body) {
+        visual_recognition.classify(params, function (err, body) {
           if (err) {
             console.log("Watson", err);
           } else {

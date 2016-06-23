@@ -28,7 +28,7 @@
           <h4>Watson Visual Recognition</h4>
           <ul class="entry-taglist">
             <li ng-repeat="label in controller.data.summary.visual_recognition" class="entry-tag">
-              <span class="label label-success">{{label.occurrences[0].label_name}} {{label.occurrences[0].label_score | formatPercent}}%</span>
+              <span class="label label-success">{{label.occurrences[0].name}} {{label.occurrences[0].score | formatPercent}}%</span>
             </li>
           </ul>
         </div>

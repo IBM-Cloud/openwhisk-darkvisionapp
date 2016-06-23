@@ -26,6 +26,9 @@
             <li ng-repeat="label in image.analysis.visual_recognition.images[0].labels" class="entry-tag">
               <span class="label label-success">{{label.label_name}} {{label.label_score | formatPercent}}%</span>
             </li>
+            <li ng-repeat="label in image.analysis.visual_recognition.images[0].scores" class="entry-tag">
+              <span class="label label-success">{{label.name}} {{label.score | formatPercent}}%</span>
+            </li>
           </ul>
         </div>
       </div>

@@ -32,9 +32,9 @@ class FeedCollectionViewController: UICollectionViewController {
     super.viewDidLoad()
 
     UIDevice.currentDevice().beginGeneratingDeviceOrientationNotifications();
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: "orientationChanged", name: UIDeviceOrientationDidChangeNotification, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(FeedCollectionViewController.orientationChanged), name: UIDeviceOrientationDidChangeNotification, object: nil)
     
-    refreshCtrl.addTarget(self, action: "startRefresh", forControlEvents: .ValueChanged);
+    refreshCtrl.addTarget(self, action: #selector(FeedCollectionViewController.startRefresh), forControlEvents: .ValueChanged);
     collectionView?.addSubview(refreshCtrl);
     
     startRefresh();

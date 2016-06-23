@@ -264,12 +264,17 @@ app.get("/api/videos/:id/summary", function (req, res) {
 
   // threshold to decide what tags/labels/faces to keep
   var options = {
-    minimumFaceOccurrence: 1,
+    minimumFaceOccurrence: 2,
     minimumFaceScore: 0.80,
+    minimumFaceScoreOccurrence: 2,
     minimumLabelOccurrence: 5,
     minimumLabelScore: 0.70,
+    minimumLabelScoreOccurrence: 1,
+    maximumLabelCount: 5,
     minimumKeywordOccurrence: 1,
-    minimumKeywordScore: 0.60
+    minimumKeywordScore: 0.60,
+    minimumKeywordScoreOccurrence: 1,
+    maximumKeywordCount: 5
   }
 
   async.waterfall([
@@ -323,14 +328,32 @@ app.get("/api/videos/:id/summary", function (req, res) {
           }
 
           if (image.hasOwnProperty("analysis") && image.analysis.visual_recognition) {
+
+            // migrate old Watson visual recognition "labels" to the new "scores" attribute
             if (image.analysis.visual_recognition.images &&
               image.analysis.visual_recognition.images.length > 0 &&
               image.analysis.visual_recognition.images[0].labels) {
+
               image.analysis.visual_recognition.images[0].labels.forEach(function (label) {
-                if (!labelToOccurrences.hasOwnProperty(label.label_name)) {
-                  labelToOccurrences[label.label_name] = [];
+                label.name = label.label_name;
+                label.score = label.label_score;
+                delete label.label_name;
+                delete label.label_score;
+              });
+
+              image.analysis.visual_recognition.images[0].scores = image.analysis.visual_recognition.images[0].labels;
+              delete image.analysis.visual_recognition.images[0].labels;
+            }
+
+            if (image.analysis.visual_recognition.images &&
+              image.analysis.visual_recognition.images.length > 0 &&
+              image.analysis.visual_recognition.images[0].scores) {
+
+              image.analysis.visual_recognition.images[0].scores.forEach(function (label) {
+                if (!labelToOccurrences.hasOwnProperty(label.name)) {
+                  labelToOccurrences[label.name] = [];
                 }
-                labelToOccurrences[label.label_name].push(label);
+                labelToOccurrences[label.name].push(label);
                 label.image_id = image._id;
                 label.image_url = req.protocol + "://" + req.hostname + "/images/image/" + image._id + ".jpg"
                 label.timecode = image.frame_timecode;
@@ -360,12 +383,19 @@ app.get("/api/videos/:id/summary", function (req, res) {
             // but with enough occurrences
             if (occurrences[property].length >= accessor.minimumOccurrence) {
               // and the minimum score for at least one occurrence
-              occurrences[property].forEach(function (face) {
-                if (accessor.score(face) >= accessor.minimumScore) {
-                  // we keep it
-                  keepIt = true;
+              var numberOfOccurrencesAboveThreshold = 0;
+              occurrences[property].forEach(function (occur) {
+                if (accessor.score(occur) >= accessor.minimumScore) {
+                  numberOfOccurrencesAboveThreshold = numberOfOccurrencesAboveThreshold + 1;
                 }
               });
+
+              // we keep it
+              if (numberOfOccurrencesAboveThreshold >= accessor.minimumScoreOccurrence) {
+                keepIt = true;
+              }
+            } else {
+              keepIt = false;
             }
 
             if (!keepIt) {
@@ -375,6 +405,9 @@ app.get("/api/videos/:id/summary", function (req, res) {
               occurrences[property].sort(function (oneOccurrence, anotherOccurrence) {
                 return accessor.score(anotherOccurrence) - accessor.score(oneOccurrence);
               });
+
+              // keep only the first one
+              occurrences[property] = occurrences[property].slice(0, 1);
             }
           });
 
@@ -384,6 +417,16 @@ app.get("/api/videos/:id/summary", function (req, res) {
               occurrences: occurrences[property]
             });
           });
+
+          result.sort(function (oneOccurrence, anotherOccurrence) {
+            return accessor.score(anotherOccurrence.occurrences[0]) -
+              accessor.score(oneOccurrence.occurrences[0]);
+          });
+
+          if (accessor.maximumOccurrenceCount && result.length > accessor.maximumOccurrenceCount) {
+            result = result.slice(0, accessor.maximumOccurrenceCount);
+          }
+
           return result;
         }
 
@@ -393,17 +436,20 @@ app.get("/api/videos/:id/summary", function (req, res) {
             return face.identity.score;
           },
           minimumOccurrence: options.minimumFaceOccurrence,
-          minimumScore: options.minimumFaceScore
+          minimumScore: options.minimumFaceScore,
+          minimumScoreOccurrence: options.minimumFaceScoreOccurrence
         });
 
         // filtering labels
         console.log("Filtering labels for video", video._id);
         labelToOccurrences = filterOccurrences(labelToOccurrences, {
           score: function (label) {
-            return label.label_score;
+            return label.score;
           },
           minimumOccurrence: options.minimumLabelOccurrence,
-          minimumScore: options.minimumLabelScore
+          minimumScore: options.minimumLabelScore,
+          minimumScoreOccurrence: options.minimumLabelScoreOccurrence,
+          maximumOccurrenceCount: options.maximumLabelCount
         });
 
         // filtering keywords
@@ -413,7 +459,9 @@ app.get("/api/videos/:id/summary", function (req, res) {
             return label.score;
           },
           minimumOccurrence: options.minimumKeywordOccurrence,
-          minimumScore: options.minimumKeywordScore
+          minimumScore: options.minimumKeywordScore,
+          minimumScoreOccurrence: options.minimumKeywordScoreOccurrence,
+          maximumOccurrenceCount: options.maximumKeywordCount
         });
 
         callback(null, {
@@ -449,7 +497,7 @@ app.get("/api/videos/:id/related", function (req, res) {
       res.send(body.rows.map(function (doc) {
         return doc.doc
       }).filter(function (video) {
-        return video._id != req.params.id;
+        return video._id != req.params.id && video.metadata;
       }));
     }
   });

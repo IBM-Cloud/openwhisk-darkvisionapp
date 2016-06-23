@@ -84,7 +84,7 @@ class VideoController: UIViewController {
       }
     }
     for tag in video!.tags() {
-      tagListView.addTag(tag["label_name"].stringValue).onTap = { [weak self] tagView in
+      tagListView.addTag(tag["name"].stringValue).onTap = { [weak self] tagView in
         self!.setCurrentImage(tag["image_url"].stringValue)
       }
     }
