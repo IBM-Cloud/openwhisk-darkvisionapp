@@ -20,9 +20,7 @@
  * It expects the following parameters as attributes of "args"
  * - cloudantUrl: "https://username:password@host"
  * - cloudantDbName: "openwhisk-darkvision"
- * - alchemyKey: "123456"
- * - watsonUsername: "username"
- * - watsonPassword: "password"
+ * - watsonApiKey: "123456"
  * - doc: "image document in cloudant"
  */
 function main(args) {
@@ -101,7 +99,7 @@ function mainImpl(args, mainCallback) {
       }
     ], function (err, analysis) {
       var durationInSeconds = ((new Date).getTime() - startTime) / 1000;
-      
+
       if (err) {
         console.log("[", imageDocumentId, "] KO (", durationInSeconds, "s)", err);
         mainCallback(err);
@@ -137,7 +135,7 @@ function processImage(args, fileName, processCallback) {
 }
 
 /**
- * Prepares the image, resizing it if it is too big for Watson or Alchemy.
+ * Prepares the image, resizing it if it is too big for Watson.
  * prepareCallback = function(err, fileName);
  */
 function prepareImage(fileName, prepareCallback) {
@@ -208,16 +206,14 @@ function analyzeImage(args, fileName, analyzeCallback) {
         });
     },
     function (callback) {
-        // Call AlchemyAPI Face Detection passing the image in the request
+        // Call Face Detection passing the image in the request
+        // http://www.ibm.com/watson/developercloud/visual-recognition/api/v3/?curl#detect_faces
         fs.createReadStream(fileName).pipe(
           request({
               method: "POST",
-              url: "https://access.alchemyapi.com/calls" +
-                "/image/ImageGetRankedImageFaceTags" +
-                "?apikey=" + args.alchemyKey +
-                "&imagePostMode=raw" +
-                "&outputMode=json" +
-                "&knowledgeGraph=1",
+              url: "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/detect_faces" +
+                "?api_key=" + args.watsonApiKey +
+                "&version=2016-05-20",
               headers: {
                 'Content-Length': fs.statSync(fileName).size
               },
@@ -227,23 +223,21 @@ function analyzeImage(args, fileName, analyzeCallback) {
             function (err, response, body) {
               if (err) {
                 console.log("Face Detection", err);
-              } else {
-                analysis.face_detection = body;
+              } else if (body.images && body.images.length > 0) {
+                analysis.face_detection = body.images[0].faces;
               }
               callback(null);
-            }))
+            }));
     },
     function (callback) {
-        // Call AlchemyAPI Image Keywords passing the image in the request
+        // Call Classify passing the image in the request
+        // http://www.ibm.com/watson/developercloud/visual-recognition/api/v3/?curl#classify_an_image
         fs.createReadStream(fileName).pipe(
           request({
               method: "POST",
-              url: "https://access.alchemyapi.com/calls" +
-                "/image/ImageGetRankedImageKeywords" +
-                "?apikey=" + args.alchemyKey +
-                "&imagePostMode=raw" +
-                "&outputMode=json" +
-                "&knowledgeGraph=1",
+              url: "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/classify" +
+                "?api_key=" + args.watsonApiKey +
+                "&version=2016-05-20",
               headers: {
                 'Content-Length': fs.statSync(fileName).size
               },
@@ -253,40 +247,11 @@ function analyzeImage(args, fileName, analyzeCallback) {
             function (err, response, body) {
               if (err) {
                 console.log("Image Keywords", err);
-              } else {
-                analysis.image_keywords = body;
-                // make the imageKeywords array if Alchemy did not return any tag
-                if (analysis.image_keywords.hasOwnProperty("imageKeywords") &&
-                  analysis.image_keywords.imageKeywords.length == 1 &&
-                  analysis.image_keywords.imageKeywords[0].text == "NO_TAGS") {
-                  analysis.image_keywords.imageKeywords = [];
-                }
+              } else if (body.images && body.images.length > 0) {
+                analysis.image_keywords = body.images[0].classifiers[0].classes;
               }
               callback(null);
-            }))
-    },
-    function (callback) {
-        // Call Watson Visual Recognition passing the image in the request
-        var params = {
-          images_file: fs.createReadStream(fileName)
-        }
-
-        var watson = require('watson-developer-cloud')
-        var visual_recognition = watson.visual_recognition({
-          username: args.watsonUsername,
-          password: args.watsonPassword,
-          version: 'v2-beta',
-          version_date: '2015-12-02'
-        });
-
-        visual_recognition.classify(params, function (err, body) {
-          if (err) {
-            console.log("Watson", err);
-          } else {
-            analysis.visual_recognition = body;
-          }
-          callback(null);
-        });
+            }));
     }
   ],
     function (err, result) {

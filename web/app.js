@@ -308,13 +308,12 @@ app.get("/api/videos/:id/summary", function (req, res) {
         // Map faces, keywords, tags to their occurrences.
         // These maps will be used to decide which tags/faces to keep for the video summary
         var peopleNameToOccurrences = {};
-        var labelToOccurrences = {};
         var keywordToOccurrences = {};
 
         console.log("Sorting analysis for video", video._id);
         images.forEach(function (image) {
           if (image.hasOwnProperty("analysis") && image.analysis.face_detection) {
-            image.analysis.face_detection.imageFaces.forEach(function (face) {
+            image.analysis.face_detection.forEach(function (face) {
               if (face.identity && face.identity.name) {
                 if (!peopleNameToOccurrences.hasOwnProperty(face.identity.name)) {
                   peopleNameToOccurrences[face.identity.name] = [];
@@ -326,47 +325,13 @@ app.get("/api/videos/:id/summary", function (req, res) {
               }
             });
           }
-
-          if (image.hasOwnProperty("analysis") && image.analysis.visual_recognition) {
-
-            // migrate old Watson visual recognition "labels" to the new "scores" attribute
-            if (image.analysis.visual_recognition.images &&
-              image.analysis.visual_recognition.images.length > 0 &&
-              image.analysis.visual_recognition.images[0].labels) {
-
-              image.analysis.visual_recognition.images[0].labels.forEach(function (label) {
-                label.name = label.label_name;
-                label.score = label.label_score;
-                delete label.label_name;
-                delete label.label_score;
-              });
-
-              image.analysis.visual_recognition.images[0].scores = image.analysis.visual_recognition.images[0].labels;
-              delete image.analysis.visual_recognition.images[0].labels;
-            }
-
-            if (image.analysis.visual_recognition.images &&
-              image.analysis.visual_recognition.images.length > 0 &&
-              image.analysis.visual_recognition.images[0].scores) {
-
-              image.analysis.visual_recognition.images[0].scores.forEach(function (label) {
-                if (!labelToOccurrences.hasOwnProperty(label.name)) {
-                  labelToOccurrences[label.name] = [];
-                }
-                labelToOccurrences[label.name].push(label);
-                label.image_id = image._id;
-                label.image_url = req.protocol + "://" + req.hostname + "/images/image/" + image._id + ".jpg"
-                label.timecode = image.frame_timecode;
-              });
-            }
-          }
-
+          
           if (image.hasOwnProperty("analysis") && image.analysis.image_keywords) {
-            image.analysis.image_keywords.imageKeywords.forEach(function (keyword) {
-              if (!keywordToOccurrences.hasOwnProperty(keyword.text)) {
-                keywordToOccurrences[keyword.text] = [];
+            image.analysis.image_keywords.forEach(function (keyword) {
+              if (!keywordToOccurrences.hasOwnProperty(keyword.class)) {
+                keywordToOccurrences[keyword.class] = [];
               }
-              keywordToOccurrences[keyword.text].push(keyword);
+              keywordToOccurrences[keyword.class].push(keyword);
               keyword.image_id = image._id;
               keyword.image_url = req.protocol + "://" + req.hostname + "/images/image/" + image._id + ".jpg"
               keyword.timecode = image.frame_timecode;
@@ -440,18 +405,6 @@ app.get("/api/videos/:id/summary", function (req, res) {
           minimumScoreOccurrence: options.minimumFaceScoreOccurrence
         });
 
-        // filtering labels
-        console.log("Filtering labels for video", video._id);
-        labelToOccurrences = filterOccurrences(labelToOccurrences, {
-          score: function (label) {
-            return label.score;
-          },
-          minimumOccurrence: options.minimumLabelOccurrence,
-          minimumScore: options.minimumLabelScore,
-          minimumScoreOccurrence: options.minimumLabelScoreOccurrence,
-          maximumOccurrenceCount: options.maximumLabelCount
-        });
-
         // filtering keywords
         console.log("Filtering keywords for video", video._id);
         keywordToOccurrences = filterOccurrences(keywordToOccurrences, {
@@ -467,7 +420,6 @@ app.get("/api/videos/:id/summary", function (req, res) {
         callback(null, {
           video: video,
           face_detection: peopleNameToOccurrences,
-          visual_recognition: labelToOccurrences,
           image_keywords: keywordToOccurrences
         });
     }],
