@@ -25,35 +25,25 @@
 
       <div class="col-md-4">
         <div class="entry-tags">
-          <h4>Watson Visual Recognition</h4>
+          <h4>Image Keywords</h4>
           <ul class="entry-taglist">
-            <li ng-repeat="label in controller.data.summary.visual_recognition" class="entry-tag">
-              <span class="label label-success">{{label.occurrences[0].name}} {{label.occurrences[0].score | formatPercent}}%</span>
+            <li ng-repeat="keyword in controller.data.summary.image_keywords" class="entry-tag">
+              <span class="label label-info">{{keyword.occurrences[0].class}} {{keyword.occurrences[0].score | formatPercent}}%</span>
             </li>
           </ul>
         </div>
       </div>
 
       <div class="col-md-4">
-
         <div class="entry-faces">
-          <h4>Alchemy Face Detection</h4>
+          <h4>Face Detection</h4>
           <span ng-if="controller.data.summary.face_detection.length == 0">No known face detected</span>
           <ul class="entry-taglist">
             <li ng-repeat="face in controller.data.summary.face_detection" class="entry-tag">
               <span class="face-overlay-text">{{$index+1}}</span>
               <span ng-if="face.occurrences[0].identity" class="label label-info">{{face.occurrences[0].identity.name}} {{face.occurrences[0].identity.score | formatPercent}}%</span>
               <span ng-if="face.occurrences[0].identity">&nbsp;</span>
-              <span class="label label-info">{{face.occurrences[0].gender.gender}} {{face.occurrences[0].age.ageRange}} {{face.occurrences[0].age.score | formatPercent}}%</span>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h4>Alchemy Image Keywords</h4>
-          <ul class="entry-taglist">
-            <li ng-repeat="keyword in controller.data.summary.image_keywords" class="entry-tag">
-              <span class="label label-info">{{keyword.occurrences[0].text}} {{keyword.occurrences[0].score | formatPercent}}%</span>
+              <span class="label label-info">{{face.occurrences[0].gender.gender}} {{face.occurrences[0].age.min}}-{{face.occurrences[0].age.max}} {{face.occurrences[0].age.score | formatPercent}}%</span>
             </li>
           </ul>
         </div>
@@ -84,4 +74,3 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 -->
-

@@ -1,7 +1,7 @@
 # Dark Vision App - discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
 
 Dark Vision processes videos to discover dark data. By analyzing video frames with
-IBM Watson Visual Recognition and Alchemy Vision, Dark Vision builds a summary
+IBM Watson Visual Recognition, Dark Vision builds a summary
 with a set of tags and famous people or building detected in the video. Use this
 summary to enhance video search and categorization.
 
@@ -19,7 +19,6 @@ Additionally if you are not into processing videos, Dark Vision can also process
 
  Built using IBM Bluemix, the application uses:
   * Watson Visual Recognition
-  * Alchemy Vision
   * OpenWhisk
   * Cloudant
 
@@ -65,21 +64,17 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
     /* openwhisk triggers the analysis */
     openwhisk -> analysis
     /* extractor produces image frames */
-    {rank=same; frame -> cloudant -> openwhisk -> analysis [style=invis] }
-    /* analysis calls Watson and Alchemy */
+    {rank=same; frame -> cloudant -> openwhisk -> analysis -> watson [style=invis] }
+    /* analysis calls Watson */
     analysis -> watson
-    analysis -> alchemy
     /* results are stored */
     analysis -> cloudant
-    /* services on top */
-    {rank=source; watson, alchemy }
     /* styling */
     frame [label="Image Frame"]
     analysis [label="Image Analysis"]
     cloudant [shape=circle style=filled color="%234E96DB" fontcolor=white label="Cloudant"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
     watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\nVisual\\nRecognition"]
-    alchemy [shape=circle style=filled color="%234E96DB" fontcolor=white label="Alchemy\\nVision"]
   }
 )
 
@@ -111,8 +106,6 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
 1. Open the Cloudant service dashboard and create a new database named **openwhisk-darkvision**
 
 1. Create a Watson Visual Recognition service instance named **visualrecognition-for-darkvision**
-
-1. Create an Alchemy API service instance named **alchemyapi-for-darkvision**
 
 ***Note***: *if you have existing instances of these services, you don't need to create new instances.
 You can simply reuse the existing ones.*
@@ -253,7 +246,7 @@ application to retrieve statistics.
   <img src="xdocs/dv-simulator-one-video.png" width="200">
   
   Results are made of the faces detected in the picture
-  and of tags returned by Watson and AlchemyAPI.
+  and of tags returned by Watson.
   The tags with the highest confidence score are shown.
   Tap a tag or a face to change the main image to the
   frame where this tag or face was detected.  
@@ -291,8 +284,8 @@ The **frame extractor** runs as a Docker action created with the [OpenWhisk Dock
 1. It retrieves the image data from the Cloudant document.
 The data has been attached by the *frame extractor* as an attachment named "image.jpg".
 1. It saves the image file locally.
-1. If needed, it resizes the image so that it matches the requirements of the Watson and Alchemy API
-1. It calls Watson and AlchemyAPI in parallel
+1. If needed, it resizes the image so that it matches the requirements of the Watson service
+1. It calls Watson
 1. It attachs the results of the analysis to the image and persist it.
 
 The action runs asynchronously.

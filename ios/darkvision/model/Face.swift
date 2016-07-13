@@ -32,7 +32,7 @@ class Face {
   }
   
   func age() -> String {
-    return impl["age"]["ageRange"].stringValue
+    return impl["age"]["min"].stringValue + "-" + impl["age"]["max"].stringValue
   }
   
   func sourceImageUrl() -> String {
@@ -40,18 +40,18 @@ class Face {
   }
   
   func positionX() -> Int {
-    return impl["positionX"].intValue
+    return impl["face_location"]["left"].intValue
   }
 
   func positionY() -> Int {
-    return impl["positionY"].intValue
+    return impl["face_location"]["top"].intValue
   }
 
   func width() -> Int {
-    return impl["width"].intValue
+    return impl["face_location"]["width"].intValue
   }
 
   func height() -> Int {
-    return impl["height"].intValue
+    return impl["face_location"]["height"].intValue
   }
 }

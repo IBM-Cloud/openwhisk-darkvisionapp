@@ -10,24 +10,22 @@
       <div class="col-md-4">
         <div class="entry-thumbnail-container" style="position: relative;">
           <img src="/images/image/{{image._id}}.jpg" class="entry-thumbnail" />
-          <div ng-if="face.positionX>0" ng-repeat="face in image.analysis.face_detection.imageFaces" class="face-overlay-box" style="position: absolute;
-                      top: {{face.positionY*controller.resizeFactor(image)}}px;
-                      left: {{face.positionX*controller.resizeFactor(image)}}px;
-                      width: {{face.width*controller.resizeFactor(image)}}px;
-                      height: {{face.height*controller.resizeFactor(image)}}px;"><span class="face-overlay-text">{{$index+1}}</span></div>
+          <div ng-if="face.face_location.left>0" ng-repeat="face in image.analysis.face_detection" class="face-overlay-box" style="position: absolute;
+                      top: {{face.face_location.top*controller.resizeFactor(image)}}px;
+                      left: {{face.face_location.left*controller.resizeFactor(image)}}px;
+                      width: {{face.face_location.width*controller.resizeFactor(image)}}px;
+                      height: {{face.face_location.height*controller.resizeFactor(image)}}px;"><span class="face-overlay-text">{{$index+1}}</span></div>
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="entry-tags">
-          <h4>Watson Visual Recognition</h4>
-          <span ng-if="!image.analysis.visual_recognition">No data yet</span>
+          <h4>Image Keywords</h4>
+          <span ng-if="!image.analysis.image_keywords">No data yet</span>
+          <span ng-if="image.analysis.image_keywords.length == 0">No tag detected</span>
           <ul class="entry-taglist">
-            <li ng-repeat="label in image.analysis.visual_recognition.images[0].labels" class="entry-tag">
-              <span class="label label-success">{{label.label_name}} {{label.label_score | formatPercent}}%</span>
-            </li>
-            <li ng-repeat="label in image.analysis.visual_recognition.images[0].scores" class="entry-tag">
-              <span class="label label-success">{{label.name}} {{label.score | formatPercent}}%</span>
+            <li ng-repeat="keyword in image.analysis.image_keywords" class="entry-tag">
+              <span class="label label-info">{{keyword.class}} {{keyword.score | formatPercent}}%</span>
             </li>
           </ul>
         </div>
@@ -35,33 +33,22 @@
 
       <div class="col-md-4">
         <div class="entry-faces">
-          <h4>Alchemy Face Detection</h4>
+          <h4>Face Detection</h4>
           <span ng-if="!image.analysis.face_detection">No data yet</span>
-          <span ng-if="image.analysis.face_detection.imageFaces.length == 0">No face detected</span>
+          <span ng-if="image.analysis.face_detection.length == 0">No face detected</span>
           <ul class="entry-taglist">
-            <li ng-if="face.positionX>0" ng-repeat="face in image.analysis.face_detection.imageFaces" class="entry-tag">
+            <li ng-if="face.face_location.left>0" ng-repeat="face in image.analysis.face_detection" class="entry-tag">
               <span class="face-overlay-text">{{$index+1}}</span>
               <span ng-if="face.identity" class="label label-info">{{face.identity.name}} {{face.identity.score | formatPercent}}%</span>
               <span ng-if="face.identity">&nbsp;</span>
-              <span class="label label-info">{{face.gender.gender}} {{face.age.ageRange}} {{face.age.score | formatPercent}}%</span>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h4>Alchemy Image Keywords</h4>
-          <span ng-if="!image.analysis.image_keywords">No data yet</span>
-          <span ng-if="image.analysis.image_keywords.imageKeywords.length == 0">No tag detected</span>
-          <ul class="entry-taglist">
-            <li ng-repeat="keyword in image.analysis.image_keywords.imageKeywords" class="entry-tag">
-              <span class="label label-info">{{keyword.text}} {{keyword.score | formatPercent}}%</span>
+              <span class="label label-info">{{face.gender.gender}} {{face.age.min}}-{{face.age.max}} {{face.age.score | formatPercent}}%</span>
             </li>
           </ul>
         </div>
       </div>
     </div>
   </div>
-  
+
   <div class="panel-footer entry-actions">
     <button ng-if="!image.video_id && image.analysis" class="btn btn-warning" ng-click="controller.reset(image)">Relaunch analysis</button>
     <button class="btn btn-danger" ng-click="controller.delete(image)">Delete</button>

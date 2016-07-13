@@ -33,9 +33,7 @@ function install() {
   echo "Adding service credentials as parameter"
   wsk package update vision\
     -p cloudantUrl https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host\
-    -p alchemyKey $ALCHEMY_key\
-    -p watsonUsername $WATSON_username\
-    -p watsonPassword $WATSON_password\
+    -p watsonApiKey $WATSON_API_KEY\
     -p cloudantDbName $CLOUDANT_db
     
   # we will need to listen to cloudant event
@@ -107,9 +105,7 @@ function showenv() {
   echo CLOUDANT_username=$CLOUDANT_username
   echo CLOUDANT_password=$CLOUDANT_password
   echo CLOUDANT_host=$CLOUDANT_host
-  echo ALCHEMY_key=$ALCHEMY_key
-  echo WATSON_username=$WATSON_username
-  echo WATSON_password=$WATSON_password
+  echo WATSON_API_KEY=$WATSON_API_KEY
   echo DOCKER_EXTRACTOR_NAME=$DOCKER_EXTRACTOR_NAME
 }
 

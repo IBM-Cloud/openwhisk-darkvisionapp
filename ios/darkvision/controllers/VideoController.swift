@@ -79,13 +79,8 @@ class VideoController: UIViewController {
     
     tagListView.removeAllTags()
     for keyword in video!.keywords() {
-      tagListView.addTag(keyword["text"].stringValue).onTap = { [weak self] tagView in
+      tagListView.addTag(keyword["class"].stringValue).onTap = { [weak self] tagView in
         self!.setCurrentImage(keyword["image_url"].stringValue)
-      }
-    }
-    for tag in video!.tags() {
-      tagListView.addTag(tag["name"].stringValue).onTap = { [weak self] tagView in
-        self!.setCurrentImage(tag["image_url"].stringValue)
       }
     }
     
