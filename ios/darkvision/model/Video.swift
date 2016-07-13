@@ -92,16 +92,6 @@ class Video {
     return createdAt!.timeAgoSinceNow();
   }
   
-  func tags() -> [JSON] {
-    var result : [JSON] = []
-    if (summaryImpl != nil) {
-      for occurrence in summaryImpl!["visual_recognition"].array! {
-        result.append(occurrence["occurrences"].array![0])
-      }
-    }
-    return result
-  }
-  
   func keywords() -> [JSON] {
     var result : [JSON] = []
     if (summaryImpl != nil) {
