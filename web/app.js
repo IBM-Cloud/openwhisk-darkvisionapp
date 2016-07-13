@@ -264,8 +264,8 @@ app.get("/api/videos/:id/summary", function (req, res) {
 
   // threshold to decide what tags/labels/faces to keep
   var options = {
-    minimumFaceOccurrence: 2,
-    minimumFaceScore: 0.80,
+    minimumFaceOccurrence: 3,
+    minimumFaceScore: 0.85,
     minimumFaceScoreOccurrence: 2,
     minimumLabelOccurrence: 5,
     minimumLabelScore: 0.70,
