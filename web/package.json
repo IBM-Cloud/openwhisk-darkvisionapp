@@ -11,7 +11,7 @@
   "dependencies": {
     "async": "^1.5.2",
     "bower": "^1.7.2",
-    "cf-deployment-tracker-client": "0.0.8",
+    "cf-deployment-tracker-client": "^0.x",
     "cfenv": "^1.0.3",
     "express": "^4.13.3",
     "http-auth": "^2.2.9",
@@ -19,5 +19,9 @@
     "nano": "^6.1.5",
     "node-env-file": "^0.1.8",
     "request": "^2.69.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/"
   }
 }
