@@ -28,7 +28,7 @@ class Videos {
     
   }
   
-  func load(completionhandler: ((UIBackgroundFetchResult) -> Void)!) {
+  func load(_ completionhandler: ((UIBackgroundFetchResult) -> Void)!) {
     api.get("/api/videos",
       onSuccess: { (data) -> Void in
         self.videos = data.map({ (text, video) -> Video in
@@ -36,10 +36,10 @@ class Videos {
         }).filter({ (video) -> Bool in
           return video.isAnalyzed()
         })
-        completionhandler(UIBackgroundFetchResult.NewData)
+        completionhandler(UIBackgroundFetchResult.newData)
       },
       onFailure:{ () -> Void in
-        completionhandler(UIBackgroundFetchResult.Failed)
+        completionhandler(UIBackgroundFetchResult.failed)
       }
     )
   }
@@ -48,7 +48,7 @@ class Videos {
     return videos.count;
   }
   
-  func videoAt(position: Int) -> Video {
+  func videoAt(_ position: Int) -> Video {
     return videos[position];
   }
 

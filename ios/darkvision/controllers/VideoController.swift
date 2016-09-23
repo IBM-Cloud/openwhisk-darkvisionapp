@@ -34,26 +34,26 @@ class VideoController: UIViewController {
   var videoDetailController: VideoDetailController?;
   
   override func viewDidLoad() {
-    if (UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Pad) {
-      tagListView.textFont = UIFont.systemFontOfSize(20)
+    if (UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad) {
+      tagListView.textFont = UIFont.systemFont(ofSize: 20)
     } else {
-      tagListView.textFont = UIFont.systemFontOfSize(15)
+      tagListView.textFont = UIFont.systemFont(ofSize: 15)
       tagListView.paddingX = 5
       tagListView.paddingY = 5
       tagListView.marginX = 5
       tagListView.marginY = 5
     }
     
-    createdAtLabel.verticalAlignment = .Top
+    createdAtLabel.verticalAlignment = .top
     
     updateFields()
   }
 
-  @IBAction func onThumbnailTapped(sender: AnyObject) {
+  @IBAction func onThumbnailTapped(_ sender: AnyObject) {
     setCurrentImage(video!.thumbnailUrl())
   }
   
-  func setVideo(video: Video) {
+  func setVideo(_ video: Video) {
     print("Setting video to", video);
     self.video = video;
     video.load { (UIBackgroundFetchResult) -> Void in
@@ -69,7 +69,7 @@ class VideoController: UIViewController {
     self.title = video!.title()
     setCurrentImage(video!.thumbnailUrl())
         
-    imageLabel.verticalAlignment = .Top
+    imageLabel.verticalAlignment = .top
     imageLabel.text = video?.title();
     
     createdAtLabel.text = video?.createdAgo()
@@ -88,19 +88,19 @@ class VideoController: UIViewController {
     videoDetailController?.collectionView?.reloadData();    
   }
   
-  func setCurrentImage(imageUrl : String) {
+  func setCurrentImage(_ imageUrl : String) {
     print("Changing image to", imageUrl)
-    imageView.af_setImageWithURL(NSURL(string:imageUrl)!, placeholderImage: imageView.image, filter: nil, imageTransition: .CrossDissolve(0.5), completion: { response in
+    imageView.af_setImage(withURL: URL(string:imageUrl)!, placeholderImage: imageView.image, filter: nil, imageTransition: .crossDissolve(0.5), completion: { response in
       if (response.result.isSuccess) {
         self.backgroundImageView.image = BlurFilter().filter(response.result.value!)
       }
     })
   }
   
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if (segue.identifier == "VideoDetailControllerSegue") {
       videoDetailController =
-        segue.destinationViewController as? VideoDetailController
+        segue.destination as? VideoDetailController
       videoDetailController?.videoController = self
     }
   }

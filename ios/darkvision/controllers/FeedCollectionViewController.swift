@@ -31,10 +31,10 @@ class FeedCollectionViewController: UICollectionViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    UIDevice.currentDevice().beginGeneratingDeviceOrientationNotifications();
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(FeedCollectionViewController.orientationChanged), name: UIDeviceOrientationDidChangeNotification, object: nil)
+    UIDevice.current.beginGeneratingDeviceOrientationNotifications();
+    NotificationCenter.default.addObserver(self, selector: #selector(FeedCollectionViewController.orientationChanged), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     
-    refreshCtrl.addTarget(self, action: #selector(FeedCollectionViewController.startRefresh), forControlEvents: .ValueChanged);
+    refreshCtrl.addTarget(self, action: #selector(FeedCollectionViewController.startRefresh), for: .valueChanged);
     collectionView?.addSubview(refreshCtrl);
     
     startRefresh();
@@ -44,7 +44,7 @@ class FeedCollectionViewController: UICollectionViewController {
     print("Refreshing...");
     videos.load { (UIBackgroundFetchResult) -> Void in
       self.refreshCtrl.endRefreshing()
-      if (UIBackgroundFetchResult == .NewData) {
+      if (UIBackgroundFetchResult == .newData) {
         self.collectionView?.reloadData();
       }
     }
@@ -54,14 +54,14 @@ class FeedCollectionViewController: UICollectionViewController {
     updateLayout();
   }
   
-  override func viewWillAppear(animated: Bool) {
+  override func viewWillAppear(_ animated: Bool) {
     updateLayout();
   }
   
   func updateLayout() {
     
-    let IPHONE = UIDevice.currentDevice().userInterfaceIdiom == .Phone;
-    let PORTRAIT = UIApplication.sharedApplication().statusBarOrientation == .Portrait;
+    let IPHONE = UIDevice.current.userInterfaceIdiom == .phone;
+    let PORTRAIT = UIApplication.shared.statusBarOrientation == .portrait;
     
     let rdhLayout = self.collectionViewLayout as? RDHCollectionViewGridLayout
     rdhLayout?.lineSpacing = 5;
@@ -89,36 +89,36 @@ class FeedCollectionViewController: UICollectionViewController {
     }
   }
 
-  override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+  override func numberOfSections(in collectionView: UICollectionView) -> Int {
     return 1
   }
   
   
-  override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+  override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return videos.count()
   }
   
-  override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+  override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     // Configure the cell
     
-    let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier,
-      forIndexPath: indexPath) as! FeedCollectionViewCell
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier,
+      for: indexPath) as! FeedCollectionViewCell
     
-    let video = videos.videoAt(indexPath.row);
+    let video = videos.videoAt((indexPath as NSIndexPath).row);
     cell.imageLabel.text = video.title()
-    cell.imageLabel.verticalAlignment = .Top
-    cell.imageView.af_setImageWithURL(NSURL(string:video.thumbnailUrl())!, placeholderImage: UIImage(named: "NoThumbnail"))
+    cell.imageLabel.verticalAlignment = .top
+    cell.imageView.af_setImage(withURL: URL(string:video.thumbnailUrl())!, placeholderImage: UIImage(named: "NoThumbnail"))
     cell.durationLabel.text = " " + video.duration() + " "
     return cell
   }
   
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if (segue.identifier == "ShowVideo") {
       let cell = sender as! FeedCollectionViewCell;
-      let indexPath = collectionView?.indexPathForCell(cell);
-      let video = videos.videoAt(indexPath!.row)
+      let indexPath = collectionView?.indexPath(for: cell);
+      let video = videos.videoAt((indexPath! as NSIndexPath).row)
       
-      let videoController = segue.destinationViewController as! VideoController;
+      let videoController = segue.destination as! VideoController;
       videoController.setVideo(video)
     }
   }

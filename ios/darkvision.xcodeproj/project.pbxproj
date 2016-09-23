@@ -412,9 +412,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = darkvision/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = net.mybluemix.DarkVision;
+				PRODUCT_BUNDLE_IDENTIFIER = net.mybluemix.DarkVisionApp;
 				PRODUCT_NAME = "Dark Vision";
 				PROVISIONING_PROFILE = "";
 				SWIFT_VERSION = 3.0;
@@ -428,9 +429,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = darkvision/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = net.mybluemix.DarkVision;
+				PRODUCT_BUNDLE_IDENTIFIER = net.mybluemix.DarkVisionApp;
 				PRODUCT_NAME = "Dark Vision";
 				PROVISIONING_PROFILE = "";
 				SWIFT_VERSION = 3.0;
