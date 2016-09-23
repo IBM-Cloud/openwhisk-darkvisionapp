@@ -24,7 +24,7 @@ class Face {
   }
   
   func name() -> String {
-    if (impl["identity"].isExists()) {
+    if (impl["identity"].exists()) {
       return impl["identity"]["name"].stringValue
     } else {
       return ""

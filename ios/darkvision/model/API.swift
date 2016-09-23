@@ -21,16 +21,16 @@ class API {
 
   let apiUrl = "https://CHANGEME.mybluemix.net";
   
-  func get(endPoint: String,
-    onSuccess: (JSON) -> Void, onFailure: () -> Void) -> Void {
-    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-    Alamofire.request(.GET, apiUrl + endPoint)
+  func get(_ endPoint: String,
+    onSuccess: @escaping (JSON) -> Void, onFailure: () -> Void) -> Void {
+    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+    Alamofire.request(apiUrl + endPoint)
       .responseJSON { response in
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
         switch response.result {
-        case .Success(let data):
+        case .success(let data):
           onSuccess(JSON(data));
-        case .Failure(let error):
+        case .failure(let error):
           print("error", error);
         }
     }

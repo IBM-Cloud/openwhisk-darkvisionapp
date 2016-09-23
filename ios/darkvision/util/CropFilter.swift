@@ -30,11 +30,11 @@ public struct CropFilter: ImageFilter {
     self.height = height
   }
   
-  public var filter : Image -> Image {
+  public var filter : (Image) -> Image {
     return { image in
       let fromRect = CGRect(x: self.x, y: self.y, width: self.width, height: self.height)
-      let imageRef = CGImageCreateWithImageInRect(image.CGImage, fromRect)
-      return UIImage(CGImage: imageRef!, scale: UIScreen.mainScreen().scale, orientation: image.imageOrientation)
+      let imageRef = image.cgImage?.cropping(to: fromRect)
+      return UIImage(cgImage: imageRef!, scale: UIScreen.main.scale, orientation: image.imageOrientation)
     }
   }
   

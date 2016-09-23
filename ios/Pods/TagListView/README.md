@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/cocoapods/l/TagListView.svg?style=flat)](https://github.com/xhacker/TagListView/blob/master/LICENSE)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-Simple but highly customizable iOS tag list view, in Swift. The APIs are *not* stable before 1.0.
+Simple and highly customizable iOS tag list view, in Swift.
 
 Supports Storyboard, Auto Layout, and @IBDesignable.
 
@@ -13,7 +13,7 @@ Supports Storyboard, Auto Layout, and @IBDesignable.
 
 ## Usage
 
-The most convinient way is to use Storyboard, where you can set the attributes right in the Interface Builder. With [@IBDesignable](http://nshipster.com/ibinspectable-ibdesignable/), you can see the preview in real time.
+The most convinient way is to use Storyboard. Drag a view to Storyboard and set Class to `TagListView` (if you use CocoaPods, also set Module to `TagListView`). Then you can play with the attributes in the right pane, and see the preview in real time thanks to [@IBDesignable](http://nshipster.com/ibinspectable-ibdesignable/).
 
 <img alt="Interface Builder" src="Screenshots/InterfaceBuilder.png" width="566">
 
@@ -61,20 +61,22 @@ Be aware that if you update a property (e.g. `tagBackgroundColor`) for a `TagLis
 Use [CocoaPods](https://github.com/CocoaPods/CocoaPods):
 
 ```ruby
-pod 'TagListView'
+pod 'TagListView', '~> 1.0'
 ```
 
 Or [Carthage](https://github.com/Carthage/Carthage):
 
 ```ruby
-github "xhacker/TagListView"
+github "xhacker/TagListView" ~> 1.0
 ```
 
 Or drag **TagListView** folder into your project.
 
-### Swift 1.2?
+### Older Swift Versions?
 
-Use [0.2](https://github.com/xhacker/TagListView/releases/tag/0.2), which is compatible with Swift 1.2.
+Currently, the `master` branch is using Swift 3.0.
+
+For Swift 2, use version [1.0.1](https://github.com/xhacker/TagListView/releases/tag/1.0.1) or [swift-2.3](https://github.com/xhacker/TagListView/tree/swift-2.3) branch. For Swift 1.2, use version [0.2](https://github.com/xhacker/TagListView/releases/tag/0.2).
 
 ## Contribution
 

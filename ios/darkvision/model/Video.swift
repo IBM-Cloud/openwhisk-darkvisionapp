@@ -35,15 +35,15 @@ class Video {
     viewCount = (titleCount % 7) * 1000 + titleCount
   }
   
-  func load(completionhandler: ((UIBackgroundFetchResult) -> Void)!) {
+  func load(_ completionhandler: ((UIBackgroundFetchResult) -> Void)!) {
     // its summary
     api.get("/api/videos/" + impl["_id"].string! + "/summary",
       onSuccess: { (data) -> Void in
         self.summaryImpl = data;
-        completionhandler(UIBackgroundFetchResult.NewData);
+        completionhandler(UIBackgroundFetchResult.newData);
       },
       onFailure: { () -> Void in
-        completionhandler(UIBackgroundFetchResult.Failed)
+        completionhandler(UIBackgroundFetchResult.failed)
     })
     
     // its related videos
@@ -53,15 +53,15 @@ class Video {
         for item in data.array! {
           self.relatedVideos?.append(Video(api: self.api, impl: item))
         }
-        completionhandler(UIBackgroundFetchResult.NewData);
+        completionhandler(UIBackgroundFetchResult.newData);
       },
       onFailure: { () -> Void in
-        completionhandler(UIBackgroundFetchResult.Failed)
+        completionhandler(UIBackgroundFetchResult.failed)
     })
   }
   
   func isAnalyzed() -> Bool {
-    return impl["metadata"].isExists()
+    return impl["metadata"].exists()
   }
   
   func title() -> String {
@@ -73,7 +73,7 @@ class Video {
   }
   
   func duration() -> String {
-    if (impl["metadata"].isExists()) {
+    if (impl["metadata"].exists()) {
       let durationInSeconds = impl["metadata"]["streams"].array![0]["duration"].doubleValue
       let hours = floor(durationInSeconds/(60*60))
       let minutes = floor((durationInSeconds/60) - hours * 60)
@@ -86,10 +86,10 @@ class Video {
   
   func createdAgo() -> String {
     // "createdAt": "2016-01-21T13:38:16.132Z",
-    let dateFormatter: NSDateFormatter = NSDateFormatter()
+    let dateFormatter: DateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-    let createdAt: NSDate? = dateFormatter.dateFromString(impl["createdAt"].string!)
-    return createdAt!.timeAgoSinceNow();
+    let createdAt = dateFormatter.date(from: impl["createdAt"].string!)?.timeAgoSinceNow
+    return createdAt!
   }
   
   func keywords() -> [JSON] {
@@ -106,7 +106,7 @@ class Video {
     return summaryImpl == nil ? 0 : summaryImpl!["face_detection"].count;
   }
   
-  func faceAt(position: Int) -> Face {
+  func faceAt(_ position: Int) -> Face {
     return Face(impl: summaryImpl!["face_detection"][position]["occurrences"][0])
   }
   
@@ -114,7 +114,7 @@ class Video {
     return relatedVideos == nil ? 0 : relatedVideos!.count
   }
   
-  func relatedVideoAt(position: Int) -> Video {
+  func relatedVideoAt(_ position: Int) -> Video {
     return relatedVideos![position]
   }
   

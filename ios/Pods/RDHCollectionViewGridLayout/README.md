@@ -1,27 +1,29 @@
 RDHCollectionViewGridLayout 
 ===========================
 [![Build Status](https://travis-ci.org/rhodgkins/RDHCollectionViewGridLayout.svg?branch=master)](https://travis-ci.org/rhodgkins/RDHCollectionViewGridLayout)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Pod Version](http://img.shields.io/cocoapods/v/RDHCollectionViewGridLayout.svg)](http://cocoadocs.org/docsets/RDHCollectionViewGridLayout/)
 [![Pod Platform](http://img.shields.io/cocoapods/p/RDHCollectionViewGridLayout.svg)](http://cocoadocs.org/docsets/RDHCollectionViewGridLayout/)
 [![Pod License](http://img.shields.io/cocoapods/l/RDHCollectionViewGridLayout.svg)](http://opensource.org/licenses/MIT)
-[![Dependency Status](https://www.versioneye.com/objective-c/rdhcollectionviewgridlayout/1.2.0/badge.svg)](https://www.versioneye.com/objective-c/rdhcollectionviewgridlayout/1.2.0)
-[![Reference Status](https://www.versioneye.com/objective-c/rdhcollectionviewgridlayout/reference_badge.svg)](https://www.versioneye.com/objective-c/rdhcollectionviewgridlayout/references)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-Works and tested on iOS 6.0 to 8.4 (under Xcode 6.4), but if you find any issues please [report](https://github.com/rhodgkins/RDHCollectionViewGridLayout/issues) them!
-
-Cocoapods
----------
-
-Grid layout for UICollectionView.
-``` ruby 
-pod 'RDHCollectionViewGridLayout', '~> 1.2'
-```
+Works and tested on iOS 6.0 to 10.0 (under Xcode 8.0), but if you find any issues please [report](https://github.com/rhodgkins/RDHCollectionViewGridLayout/issues) them!
 
 Carthage
 ---------
 
 As of 1.2.2 Carthage support has been added.
+
+```ogdl
+github "rhodgkins/RDHCollectionViewGridLayout" ~> 1.2
+```
+
+CocoaPods
+---------
+
+Grid layout for UICollectionView.
+```ruby 
+pod 'RDHCollectionViewGridLayout', '~> 1.2'
+```
 
 Summary
 -------

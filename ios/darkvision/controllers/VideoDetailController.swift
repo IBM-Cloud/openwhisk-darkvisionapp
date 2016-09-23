@@ -37,28 +37,28 @@ class VideoDetailController: UICollectionViewController {
     super.viewDidLayoutSubviews()
   }
   
-  func setVideo(video: Video) {
+  func setVideo(_ video: Video) {
     self.video = video
     collectionView?.reloadData()
   }
   
   
-  enum Sections { case Faces, RelatedVideos }
+  enum Sections { case faces, relatedVideos }
   
-  func section(section: Int) -> Sections {
+  func section(_ section: Int) -> Sections {
     if (video == nil || (video != nil && video!.faceCount() > 0)) {
       switch (section) {
       case 0:
-        return .Faces
+        return .faces
       default:
-        return .RelatedVideos
+        return .relatedVideos
       }
     } else {
-      return .RelatedVideos
+      return .relatedVideos
     }
   }
   
-  override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+  override func numberOfSections(in collectionView: UICollectionView) -> Int {
     if (video == nil || (video != nil && video!.faceCount() > 0)) {
       return 2;
     } else {
@@ -66,51 +66,51 @@ class VideoDetailController: UICollectionViewController {
     }
   }
   
-  override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+  override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     switch (self.section(section)) {
-    case .Faces:
+    case .faces:
       return video == nil ? 0 : video!.faceCount()
-    case .RelatedVideos:
+    case .relatedVideos:
       return video == nil ? 0 : video!.relatedVideoCount()
     }
   }
   
-  func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: IndexPath) -> CGSize {
     return CGSize(width: view.bounds.width - 16, height: 112)
   }
   
-  override func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
-    let cell = collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: "SectionHeader", forIndexPath: indexPath) as! VideoSectionHeaderCell
-    switch (section(indexPath.section)) {
-    case .Faces:
+  override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SectionHeader", for: indexPath) as! VideoSectionHeaderCell
+    switch (section((indexPath as NSIndexPath).section)) {
+    case .faces:
       cell.sectionTitle.text = "People in the video"
-    case .RelatedVideos:
+    case .relatedVideos:
       cell.sectionTitle.text = "Related videos"
     }
     return cell
   }
   
-  override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+  override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     // Configure the cell
-    switch (section(indexPath.section)) {
-    case .Faces:
+    switch (section((indexPath as NSIndexPath).section)) {
+    case .faces:
       // face
-      let cell = collectionView.dequeueReusableCellWithReuseIdentifier("FaceCell",
-        forIndexPath: indexPath) as! FaceCell
+      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FaceCell",
+        for: indexPath) as! FaceCell
       
-      let face = video!.faceAt(indexPath.row)
+      let face = video!.faceAt((indexPath as NSIndexPath).row)
       cell.faceName.text = face.name()
       cell.faceAge.text = face.age()
-      cell.faceView.af_setImageWithURL(NSURL(string: face.sourceImageUrl())!, placeholderImage: UIImage(named: "NoThumbnail"), filter: CropFilter(x: face.positionX(), y: face.positionY(), width: face.width(), height: face.height()) , imageTransition: .CrossDissolve(0.5))
+      cell.faceView.af_setImage(withURL: URL(string: face.sourceImageUrl())!, placeholderImage: UIImage(named: "NoThumbnail"), filter: CropFilter(x: face.positionX(), y: face.positionY(), width: face.width(), height: face.height()) , imageTransition: .crossDissolve(0.5))
       return cell;
-    case .RelatedVideos:
+    case .relatedVideos:
       //    case 1:
       // related video
-      let cell = collectionView.dequeueReusableCellWithReuseIdentifier("RelatedVideoCell",
-        forIndexPath: indexPath) as! RelatedVideoCell
+      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "RelatedVideoCell",
+        for: indexPath) as! RelatedVideoCell
       
-      let related = video!.relatedVideoAt(indexPath.row)
-      cell.thumbnail.af_setImageWithURL(NSURL(string: related.thumbnailUrl())!, placeholderImage: UIImage(named: "NoThumbnail"))
+      let related = video!.relatedVideoAt((indexPath as NSIndexPath).row)
+      cell.thumbnail.af_setImage(withURL: URL(string: related.thumbnailUrl())!, placeholderImage: UIImage(named: "NoThumbnail"))
       cell.videoTitle.text = related.title()
       
       cell.viewCount.text = String(related.viewCount) + " views"
@@ -120,9 +120,9 @@ class VideoDetailController: UICollectionViewController {
     }
   }
   
-  override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-    if (section(indexPath.section) == .Faces) {
-      let face = video!.faceAt(indexPath.row)
+  override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    if (section((indexPath as NSIndexPath).section) == .faces) {
+      let face = video!.faceAt((indexPath as NSIndexPath).row)
       videoController?.setCurrentImage(face.sourceImageUrl())
     }
   }

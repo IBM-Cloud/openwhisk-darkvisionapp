@@ -82,8 +82,8 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
 
 * IBM Bluemix account. [Sign up][bluemix_signup_url] for Bluemix, or use an existing account.
 * IBM Bluemix OpenWhisk early access. [Sign up for Bluemix OpenWhisk](https://new-console.ng.bluemix.net/openwhisk).
-* Docker Hub account. [Sign up](https://hub.docker.com/) for Docker Hub, or use an existing account. 
-* XCode 7.2
+* Docker Hub account. [Sign up](https://hub.docker.com/) for Docker Hub, or use an existing account.
+* XCode 8.0, iOS 10, Swift 3
 
 ## Preparing the environment
 
@@ -153,7 +153,7 @@ To build the extractor image, follow these steps:
   ./buildAndPush.sh youruserid/yourimagename
   ```
   Note: On some systems this command needs to be run with `sudo`.
-  
+
 1. After a while, your image will be available in Docker Hub, ready for OpenWhisk.
 
 ### Deploy OpenWhisk Actions
@@ -178,7 +178,7 @@ image you created in the previous section.
   ```
   wsk list
   ```
-  
+
   This shows the packages, actions, triggers and rules currently deployed in your OpenWhisk namespace.
 
 1. Create the action, trigger and rule using the script from the **processing** directory:
@@ -190,7 +190,7 @@ image you created in the previous section.
   Note: the script can also be used to *--uninstall* the OpenWhisk artifacts to
   *--update* the artifacts if you change the action code, or simply with *--env*
   to show the environment variables set in* **local.env**.
-  
+
 ### Configure XCode (Optional)
 
 The iOS application is a client to the API exposed by the web application
@@ -204,13 +204,13 @@ The web app exposes an API to list all videos and retrieve the results.
 1. Open the file **darkvision/darkvision/model/API.swift**
 
 1. Set the value of the constant **apiUrl** to the application host previously deployed.
-  
+
 1. Save the file
 
 ## Running the web application locally
 
 1. Change to the **web** directory
-  
+
 1. Get dependencies
 
   ```
@@ -225,7 +225,7 @@ The web app exposes an API to list all videos and retrieve the results.
 
   Note: To find the Cloudant database to connect to when running locally,
   the application uses the environment variables defined in **processing/local.env** in previous steps.
-  
+
 1. Upload videos through the web user interface. Wait for OpenWhisk to process the videos.
 Look at the results. While OpenWhisk processes videos, the counter at the top of the
 application will evolve. These counters call the **/api/status** endpoint of the web
@@ -244,7 +244,7 @@ application to retrieve statistics.
 1. Select a video
 
   <img src="xdocs/dv-simulator-one-video.png" width="200">
-  
+
   Results are made of the faces detected in the picture
   and of tags returned by Watson.
   The tags with the highest confidence score are shown.
