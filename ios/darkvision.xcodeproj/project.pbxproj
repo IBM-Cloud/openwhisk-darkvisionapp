@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		21AF2A59B24F7CED64CE9F0D /* Pods_darkvision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2955A049E2F4A418E16AE8D /* Pods_darkvision.framework */; };
+		5F8813395086ED406A3FAF86 /* Pods_darkvision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB2395E151589E3B5980A95F /* Pods_darkvision.framework */; };
 		B681E2921C5684B900E17B71 /* Videos.swift in Sources */ = {isa = PBXBuildFile; fileRef = B681E2911C5684B900E17B71 /* Videos.swift */; };
 		B681E2971C578C5500E17B71 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = B681E2961C578C5500E17B71 /* Video.swift */; };
 		B681E2991C578CB900E17B71 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = B681E2981C578CB900E17B71 /* API.swift */; };
@@ -28,9 +28,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		12B471524F9B7187B801A82B /* Pods-darkvision.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-darkvision.release.xcconfig"; path = "Pods/Target Support Files/Pods-darkvision/Pods-darkvision.release.xcconfig"; sourceTree = "<group>"; };
-		A2955A049E2F4A418E16AE8D /* Pods_darkvision.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_darkvision.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A77544B24C5EFA1F0386FE72 /* Pods-darkvision.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-darkvision.debug.xcconfig"; path = "Pods/Target Support Files/Pods-darkvision/Pods-darkvision.debug.xcconfig"; sourceTree = "<group>"; };
 		B681E2911C5684B900E17B71 /* Videos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Videos.swift; path = ../darkvision/model/Videos.swift; sourceTree = "<group>"; };
 		B681E2951C5759C300E17B71 /* DateTools-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DateTools-Bridging-Header.h"; path = "../darkvision/util/DateTools-Bridging-Header.h"; sourceTree = "<group>"; };
 		B681E2961C578C5500E17B71 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Video.swift; path = ../darkvision/model/Video.swift; sourceTree = "<group>"; };
@@ -51,6 +48,9 @@
 		B68D2B6B1C53C5F800FA0CE0 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		B69CEB4C1C6C8FB90063E231 /* VideoSectionHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoSectionHeaderCell.swift; path = ../darkvision/renderers/VideoSectionHeaderCell.swift; sourceTree = "<group>"; };
 		B6F04AC71C54D10600AC2BA2 /* VideoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoController.swift; path = ../darkvision/controllers/VideoController.swift; sourceTree = "<group>"; };
+		C5D52148113885F84FE763B6 /* Pods-darkvision.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-darkvision.debug.xcconfig"; path = "Pods/Target Support Files/Pods-darkvision/Pods-darkvision.debug.xcconfig"; sourceTree = "<group>"; };
+		EA3D018C0DCB75F83DC3CC35 /* Pods-darkvision.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-darkvision.release.xcconfig"; path = "Pods/Target Support Files/Pods-darkvision/Pods-darkvision.release.xcconfig"; sourceTree = "<group>"; };
+		EB2395E151589E3B5980A95F /* Pods_darkvision.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_darkvision.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,19 +58,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				21AF2A59B24F7CED64CE9F0D /* Pods_darkvision.framework in Frameworks */,
+				5F8813395086ED406A3FAF86 /* Pods_darkvision.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A5EDEF0FCEBBE4EB88F6B030 /* Frameworks */ = {
+		925738892FACAD9E0B8680ED /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				A2955A049E2F4A418E16AE8D /* Pods_darkvision.framework */,
+				C5D52148113885F84FE763B6 /* Pods-darkvision.debug.xcconfig */,
+				EA3D018C0DCB75F83DC3CC35 /* Pods-darkvision.release.xcconfig */,
 			);
-			name = Frameworks;
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		B681E2931C5684BF00E17B71 /* model */ = {
@@ -120,8 +121,8 @@
 				B68D2B6B1C53C5F800FA0CE0 /* Podfile */,
 				B68D2B541C53B86900FA0CE0 /* darkvision */,
 				B68D2B531C53B86900FA0CE0 /* Products */,
-				D5895908E2A7A875EBEAC2CE /* Pods */,
-				A5EDEF0FCEBBE4EB88F6B030 /* Frameworks */,
+				925738892FACAD9E0B8680ED /* Pods */,
+				D4E172074D9AB38CC6346FC6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -149,13 +150,12 @@
 			path = darkvision;
 			sourceTree = "<group>";
 		};
-		D5895908E2A7A875EBEAC2CE /* Pods */ = {
+		D4E172074D9AB38CC6346FC6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A77544B24C5EFA1F0386FE72 /* Pods-darkvision.debug.xcconfig */,
-				12B471524F9B7187B801A82B /* Pods-darkvision.release.xcconfig */,
+				EB2395E151589E3B5980A95F /* Pods_darkvision.framework */,
 			);
-			name = Pods;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -165,12 +165,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B68D2B641C53B86900FA0CE0 /* Build configuration list for PBXNativeTarget "darkvision" */;
 			buildPhases = (
-				A98B19AD9867DAD20E47F394 /* Check Pods Manifest.lock */,
+				56F7A1156C2CE9FFDB67D9B2 /* [CP] Check Pods Manifest.lock */,
 				B68D2B4E1C53B86900FA0CE0 /* Sources */,
 				B68D2B4F1C53B86900FA0CE0 /* Frameworks */,
 				B68D2B501C53B86900FA0CE0 /* Resources */,
-				2CE3B6E6F33702264B46C398 /* Embed Pods Frameworks */,
-				4F043F6870222D8FE64EF35E /* Copy Pods Resources */,
+				314D30221FBB6C48E09A691A /* [CP] Embed Pods Frameworks */,
+				A5FE726A5BCE64167C603198 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -193,6 +193,7 @@
 				TargetAttributes = {
 					B68D2B511C53B86900FA0CE0 = {
 						CreatedOnToolsVersion = 7.2;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -229,14 +230,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		2CE3B6E6F33702264B46C398 /* Embed Pods Frameworks */ = {
+		314D30221FBB6C48E09A691A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -244,34 +245,34 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-darkvision/Pods-darkvision-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		4F043F6870222D8FE64EF35E /* Copy Pods Resources */ = {
+		56F7A1156C2CE9FFDB67D9B2 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-darkvision/Pods-darkvision-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A98B19AD9867DAD20E47F394 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		A5FE726A5BCE64167C603198 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-darkvision/Pods-darkvision-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -406,7 +407,7 @@
 		};
 		B68D2B651C53B86900FA0CE0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A77544B24C5EFA1F0386FE72 /* Pods-darkvision.debug.xcconfig */;
+			baseConfigurationReference = C5D52148113885F84FE763B6 /* Pods-darkvision.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -416,12 +417,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = net.mybluemix.DarkVision;
 				PRODUCT_NAME = "Dark Vision";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		B68D2B661C53B86900FA0CE0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 12B471524F9B7187B801A82B /* Pods-darkvision.release.xcconfig */;
+			baseConfigurationReference = EA3D018C0DCB75F83DC3CC35 /* Pods-darkvision.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -431,6 +433,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = net.mybluemix.DarkVision;
 				PRODUCT_NAME = "Dark Vision";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
