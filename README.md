@@ -117,6 +117,10 @@ visualize the results of each frame analysis.
 
 1. Change to the **web** directory.
 
+  ```
+  cd openwhisk-darkvisionapp/web
+  ```
+  
 1. If in the previous section you decided to use existing services instead of creating new ones,
 open **manifest.yml** and update the Cloudant service name.
 
