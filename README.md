@@ -177,7 +177,7 @@ a package so that all actions can get access to the services.
 1. Make sure to also update the value of ***DOCKER_EXTRACTOR_NAME*** with the name of the Docker
 image you created in the previous section.
 
-1. Ensure your OpenWhisk command line interface is property configured with:
+1. Ensure your [OpenWhisk command line interface](https://new-console.ng.bluemix.net/openwhisk/cli) is property configured with:
 
   ```
   wsk list
