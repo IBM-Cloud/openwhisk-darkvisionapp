@@ -1,4 +1,4 @@
-# Dark Vision App - discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
+# Dark Vision - Discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
 
 Dark Vision processes videos to discover dark data. By analyzing video frames with
 IBM Watson Visual Recognition, Dark Vision builds a summary
@@ -9,7 +9,7 @@ summary to enhance video search and categorization.
   <img src="xdocs/dv-ios-browse.png" width="200"/>
   <img src="xdocs/dv-ios-video-details.png" width="200"/>
 
-Additionally if you are not into processing videos, Dark Vision can also processes standalone images.
+In addition to processing videos, Dark Vision can also processes standalone images.
 
 ### Watch this Youtube video to know more about the app
 
@@ -24,9 +24,9 @@ Additionally if you are not into processing videos, Dark Vision can also process
 
 ### Extracting frames from a video
 
-The user uploads a video. Once the video is uploaded, OpenWhisk detects the new video by listening to Cloudant changes.
-OpenWhisk triggers the video extractor. During its execution, the extractor produces frames (images)
-and stores them in Cloudant.
+The user uploads a video or image using the Dark Vision web application, which stores it in a Cloudant DB. Once the video is uploaded, OpenWhisk detects the new video by listening to Cloudant changes (trigger).
+OpenWhisk then triggers the video extractor action. During its execution, the extractor produces frames (images)
+and stores them in Cloudant. The frames are then processed using Watson Visual Recognition and the results are stored in the same Cloudant DB. The results can be viewed using Dark Vision web application OR an iOS application.
 
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
@@ -130,7 +130,7 @@ open **manifest.yml** and update the Cloudant service name.
   cf push
   ```
 
-#### Protecting the upload, delete and reset actions
+#### Protecting the upload, delete and reset actions (optional)
 
 By default, anyone can upload/delete/reset videos and images. You can restrict access to these actions by defining the environment variables *ADMIN_USERNAME* and *ADMIN_PASSWORD* on your application. This can be done in the Bluemix console or with the command line:
 
@@ -194,22 +194,9 @@ image you created in the previous section.
   Note: the script can also be used to *--uninstall* the OpenWhisk artifacts to
   *--update* the artifacts if you change the action code, or simply with *--env*
   to show the environment variables set in* **local.env**.
+  
+  **That's it!. Use the web application to upload images/videos and view the results! You can also view the results using an iOS application as shown further down this README**
 
-### Configure XCode (Optional)
-
-The iOS application is a client to the API exposed by the web application
-to view the results of the analysis of videos. It is an optional piece.
-
-To configure the iOS application, you need the URL of the web application deployed before.
-The web app exposes an API to list all videos and retrieve the results.
-
-1. Open **ios/darkvision.xcworkspace** with XCode
-
-1. Open the file **darkvision/darkvision/model/API.swift**
-
-1. Set the value of the constant **apiUrl** to the application host previously deployed.
-
-1. Save the file
 
 ## Running the web application locally
 
@@ -234,6 +221,22 @@ The web app exposes an API to list all videos and retrieve the results.
 Look at the results. While OpenWhisk processes videos, the counter at the top of the
 application will evolve. These counters call the **/api/status** endpoint of the web
 application to retrieve statistics.
+
+### iOS application to view the results (Optional)
+
+The iOS application is a client to the API exposed by the web application
+to view the results of the analysis of videos. It is an optional piece.
+
+To configure the iOS application, you need the URL of the web application deployed before.
+The web app exposes an API to list all videos and retrieve the results.
+
+1. Open **ios/darkvision.xcworkspace** with XCode
+
+1. Open the file **darkvision/darkvision/model/API.swift**
+
+1. Set the value of the constant **apiUrl** to the application host previously deployed.
+
+1. Save the file
 
 ## Running the iOS application in the simulator
 
