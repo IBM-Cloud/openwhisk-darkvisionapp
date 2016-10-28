@@ -46,7 +46,16 @@ function getFps(durationInSeconds) {
   */
 }
 
-var visionDb = require('nano')(payload.cloudantUrl).db.use(payload.cloudantDbName);
+var visionDb = require('cloudant')({
+  url: payload.cloudantUrl,
+  plugin: 'retry',
+  retryAttempts: 10,
+  retryTimeout: 500
+}).db.use(payload.cloudantDbName);
+
+var attachmentDb = require('cloudant')({
+  url: payload.cloudantUrl
+}).db.use(payload.cloudantDbName);
 
 // create a temporary directory to process the video
 var workingDirectory = tmp.dirSync({
@@ -92,7 +101,7 @@ async.waterfall([
       var currentSize = 0;
       var lastProgress = undefined;
 
-      visionDb.attachment.get(videoDocument._id, "video.mp4")
+      attachmentDb.attachment.get(videoDocument._id, "video.mp4")
         .on('data', function (data) {
           currentSize += data.length
 
@@ -227,8 +236,8 @@ async.waterfall([
   // attach it to the video
   function (callback) {
       console.log("Attaching thumbnail to video");
-      fs.createReadStream(workingDirectory.name + "/thumbnail.jpg").pipe(
-        visionDb.attachment.insert(videoDocument._id, "thumbnail.jpg", null, "image/jpeg", {
+      fs.readFile(workingDirectory.name + "/thumbnail.jpg", function(err, data) {
+        visionDb.attachment.insert(videoDocument._id, "thumbnail.jpg", data, "image/jpeg", {
           rev: videoDocument._rev
         }, function (err, body) {
           console.log("Video thumbnail result", body);
@@ -238,7 +247,8 @@ async.waterfall([
           } else {
             callback(null, body);
           }
-        }));
+        });
+      });
   }
   ],
   function (err, result) {
@@ -262,8 +272,8 @@ function createDocument(frameDocument, attachmentName, attachmentMimetype, attac
       frameDocument = body;
       console.log("Created new document", frameDocument);
 
-      fs.createReadStream(attachmentFile).pipe(
-        visionDb.attachment.insert(frameDocument.id, attachmentName, null, attachmentMimetype, {
+      fs.readFile(attachmentFile, function(err, data) {
+        visionDb.attachment.insert(frameDocument.id, attachmentName, data, attachmentMimetype, {
           rev: frameDocument.rev
         }, function (err, body) {
           console.log("Upload completed", body);
@@ -273,7 +283,8 @@ function createDocument(frameDocument, attachmentName, attachmentMimetype, attac
           } else {
             callback(null);
           }
-        }));
+        });
+      });
     }
   });
 }

@@ -75,15 +75,32 @@ var appEnvOpts = vcapLocal ? {
 } : {}
 var appEnv = cfenv.getAppEnv(appEnvOpts);
 
-var cloudant = require('nano')(appEnv.getServiceCreds("cloudant-for-darkvision").url).db;
+var Cloudant = require('cloudant');
+
+// Cloudant plans have rate limits.
+// The 'retry' plugin catches error 429 from Cloudant and automatically retries
+var cloudantWithRetry = Cloudant({
+  url: appEnv.getServiceCreds("cloudant-for-darkvision").url,
+  plugin: 'retry',
+  retryAttempts: 10,
+  retryTimeout: 500
+}).db;
+
+// However the retry plugin does not support pipes thus when uploading attachments,
+// we will use another Cloudant object, pointing to the same db but without the retry plugin.
+var cloudantNoRetry = Cloudant({
+  url: appEnv.getServiceCreds("cloudant-for-darkvision").url,
+}).db;
+
 var visionDb;
+var uploadDb;
 var prepareDbTasks = [];
 
 // create the db
 prepareDbTasks.push(
   function (callback) {
     console.log("Creating database...");
-    cloudant.create("openwhisk-darkvision", function (err, body) {
+    cloudantWithRetry.create("openwhisk-darkvision", function (err, body) {
       if (err && err.statusCode == 412) {
         console.log("Database already exists");
         callback(null);
@@ -99,7 +116,8 @@ prepareDbTasks.push(
 prepareDbTasks.push(
   function (callback) {
     console.log("Setting current database to openwhisk-darkvision...");
-    visionDb = cloudant.use("openwhisk-darkvision");
+    visionDb = cloudantWithRetry.use("openwhisk-darkvision");
+    uploadDb = cloudantNoRetry.use("openwhisk-darkvision");
     callback(null);
   });
 
@@ -132,7 +150,13 @@ async.waterfall(prepareDbTasks, function (err, result) {
  * such as the thumbnail for a video or the original data for an image.
  */
 app.get("/images/:type/:id.jpg", function (req, res) {
-  visionDb.attachment.get(req.params.id, req.params.type + ".jpg").pipe(res);
+  visionDb.attachment.get(req.params.id, req.params.type + ".jpg", function(err, body) {
+    if (err) {
+      res.status(500).send();
+    } else {
+      res.send(body);
+    }
+  });
 });
 
 /**
@@ -325,7 +349,7 @@ app.get("/api/videos/:id/summary", function (req, res) {
               }
             });
           }
-          
+
           if (image.hasOwnProperty("analysis") && image.analysis.image_keywords) {
             image.analysis.image_keywords.forEach(function (keyword) {
               if (!keywordToOccurrences.hasOwnProperty(keyword.class)) {
@@ -605,7 +629,7 @@ function uploadDocument(doc, attachmentName, req, res) {
       doc = body;
       console.log("Created new document", doc);
       fs.createReadStream(req.file.destination + "/" + req.file.filename).pipe(
-        visionDb.attachment.insert(doc.id, attachmentName, null, req.file.mimetype, {
+        uploadDb.attachment.insert(doc.id, attachmentName, null, req.file.mimetype, {
             rev: doc.rev
           },
           function (err, body) {

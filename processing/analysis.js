@@ -16,7 +16,7 @@
 
 /**
  * Called by Whisk.
- * 
+ *
  * It expects the following parameters as attributes of "args"
  * - cloudantUrl: "https://username:password@host"
  * - cloudantDbName: "openwhisk-darkvision"
@@ -38,7 +38,7 @@ function main(args) {
 /**
  * Uses a callback so that this same code can be imported in another JavaScript
  * to test the function outside of OpenWhisk.
- * 
+ *
  * mainCallback(err, analysis)
  */
 function mainImpl(args, mainCallback) {
@@ -50,8 +50,8 @@ function mainImpl(args, mainCallback) {
   if (args.hasOwnProperty("doc")) {
     var imageDocumentId = args.doc._id;
     console.log("[", imageDocumentId, "] Processing image.jpg from document");
-    var nano = require("nano")(args.cloudantUrl);
-    var visionDb = nano.db.use(args.cloudantDbName);
+    var cloudant = require("cloudant")({url: args.cloudantUrl});
+    var visionDb = cloudant.db.use(args.cloudantDbName);
 
     // use image id to build a unique filename
     var fileName = imageDocumentId + "-image.jpg";
