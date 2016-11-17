@@ -120,7 +120,7 @@ visualize the results of each frame analysis.
   ```
   cd openwhisk-darkvisionapp/web
   ```
-  
+
 1. If in the previous section you decided to use existing services instead of creating new ones,
 open **manifest.yml** and update the Cloudant service name.
 
@@ -193,9 +193,9 @@ image you created in the previous section.
 
   Note: the script can also be used to *--uninstall* the OpenWhisk artifacts to
   *--update* the artifacts if you change the action code, or simply with *--env*
-  to show the environment variables set in* **local.env**.
-  
-  **That's it!. Use the web application to upload images/videos and view the results! You can also view the results using an iOS application as shown further down this README**
+  to show the environment variables set in **local.env**.
+
+**That's it!. Use the web application to upload images/videos and view the results! You can also view the results using an iOS application as shown further down this README**
 
 
 ## Running the web application locally
