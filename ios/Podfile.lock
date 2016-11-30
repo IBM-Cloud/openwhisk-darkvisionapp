@@ -1,59 +1,47 @@
 PODS:
-  - Alamofire (4.0.0)
-  - AlamofireImage (3.0.0):
-    - Alamofire (~> 4.0)
-  - Cosmos (6.0.1)
-  - DateTools (2.0.0-beta.1)
+  - Alamofire (4.2.0)
+  - AlamofireImage (3.2.0):
+    - Alamofire (~> 4.1)
+  - Cosmos (7.0.0)
+  - DateTools (2.0.0-beta.3)
   - RDHCollectionViewGridLayout (1.2.5)
-  - SwiftMoment (0.5.1)
-  - SwiftyJSON (3.0.0)
-  - TagListView (1.0.0)
+  - SwiftMoment (0.7)
+  - SwiftyJSON (3.1.3)
+  - TagListView (1.1.0)
   - TTTAttributedLabel (2.0.0)
 
 DEPENDENCIES:
-  - Alamofire (= 4.0)
-  - AlamofireImage (= 3.0)
-  - Cosmos (= 6.0.1)
+  - Alamofire (= 4.2)
+  - AlamofireImage (= 3.2)
+  - Cosmos (= 7.0)
   - DateTools (from `https://github.com/MatthewYork/DateTools.git`, branch `swift`)
   - RDHCollectionViewGridLayout (= 1.2.5)
-  - SwiftMoment (from `https://github.com/akosma/SwiftMoment.git`, branch `master`)
-  - SwiftyJSON (= 3.0)
-  - TagListView (from `https://github.com/xhacker/TagListView.git`, branch `master`)
+  - SwiftMoment (= 0.7)
+  - SwiftyJSON (= 3.1.3)
+  - TagListView (= 1.1.0)
   - TTTAttributedLabel (= 2.0.0)
 
 EXTERNAL SOURCES:
   DateTools:
     :branch: swift
     :git: https://github.com/MatthewYork/DateTools.git
-  SwiftMoment:
-    :branch: master
-    :git: https://github.com/akosma/SwiftMoment.git
-  TagListView:
-    :branch: master
-    :git: https://github.com/xhacker/TagListView.git
 
 CHECKOUT OPTIONS:
   DateTools:
-    :commit: 98cc7110c232a55fe8fa45561f3d4cca3c524d16
+    :commit: 7190d93025d82c985e1108a8dc9522129d1b68de
     :git: https://github.com/MatthewYork/DateTools.git
-  SwiftMoment:
-    :commit: 98cc7110c232a55fe8fa45561f3d4cca3c524d16
-    :git: https://github.com/akosma/SwiftMoment.git
-  TagListView:
-    :commit: 98cc7110c232a55fe8fa45561f3d4cca3c524d16
-    :git: https://github.com/xhacker/TagListView.git
 
 SPEC CHECKSUMS:
-  Alamofire: fef59f00388f267e52d9b432aa5d93dc97190f14
-  AlamofireImage: 6594aa1139a67dcd36cde6da79ea4e5b318e60fb
-  Cosmos: 374de9804e382a23662908688ab15c8f473977fe
-  DateTools: c64695216d1851bf290e851217aebffd4a2afc54
+  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
+  AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
+  Cosmos: 2c8299147138758f6ebbb247cf1aeed77998bdf9
+  DateTools: fe8ad1e2e77ebb9cf1db6becf077772dd83fdb63
   RDHCollectionViewGridLayout: 4b4229212ed8c136aa70101d92ecd43742ca62b6
-  SwiftMoment: 469c0734b5d4d6631a15a91f8093cf436c3cbb7c
-  SwiftyJSON: f57b2b44bc166617372d1c70773591fe9f0f5fd4
-  TagListView: 6bf4bded034c4c90b1e90d8cd3d8e1d852dba0a8
+  SwiftMoment: dc6dd27012e267819104cbb03f74ff9192dd0b42
+  SwiftyJSON: 38a8ea2006779c0fc4c310cb2ee8195327740faf
+  TagListView: d0267a71393f3c73db5c9ea2f979ac1125fcab56
   TTTAttributedLabel: 8cffe8e127e4e82ff3af1e5386d4cd0ad000b656
 
-PODFILE CHECKSUM: 4ff6c7332fea32a1364872178a12955a498853a2
+PODFILE CHECKSUM: 703fb4812f2843fe9f634af3ecf5b9ded8437dea
 
 COCOAPODS: 1.0.1

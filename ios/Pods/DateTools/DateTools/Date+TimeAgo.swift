@@ -8,8 +8,11 @@
 
 import Foundation
 
+/**
+ *  Extends the Date class by adding convenient methods to display the passage of
+ *  time in String format.
+ */
 public extension Date {
-    
     
     //MARK: - Time Ago
     
@@ -17,9 +20,9 @@ public extension Date {
      *  Takes in a date and returns a string with the most convenient unit of time representing
      *  how far in the past that date is from now.
      *
-     *  @param NSDate - Date to be measured from now
+     *  - parameter date: Date to be measured from now
      *
-     *  @return NSString - Formatted return string
+     *  - returns String - Formatted return string
      */
     static func timeAgo(since date:Date) -> String{
         return date.timeAgo(since: Date(), numericDates: false, numericTimes: false)
@@ -29,9 +32,9 @@ public extension Date {
      *  Takes in a date and returns a shortened string with the most convenient unit of time representing
      *  how far in the past that date is from now.
      *
-     *  @param NSDate - Date to be measured from now
+     *  - parameter date: Date to be measured from now
      *
-     *  @return NSString - Formatted return string
+     *  - returns String - Formatted return string
      */
     static func shortTimeAgo(since date:Date) -> String {
         return date.shortTimeAgo(since:Date())
@@ -41,7 +44,7 @@ public extension Date {
      *  Returns a string with the most convenient unit of time representing
      *  how far in the past that date is from now.
      *
-     *  @return NSString - Formatted return string
+     *  - returns String - Formatted return string
      */
     var timeAgoSinceNow: String {
         return self.timeAgo(since:Date())
@@ -51,7 +54,7 @@ public extension Date {
      *  Returns a shortened string with the most convenient unit of time representing
      *  how far in the past that date is from now.
      *
-     *  @return NSString - Formatted return string
+     *  - returns String - Formatted return string
      */
     var shortTimeAgoSinceNow: String {
         return self.shortTimeAgo(since:Date())
@@ -193,10 +196,15 @@ public extension Date {
             //return DateToolsLocalizedStrings(@"Now"); //string not yet translated 2014.04.05
         }
     }
-
+    
     
     private func logicalLocalizedStringFromFormat(format: String, value: Int) -> String{
-        let localeFormat = String.init(format: format, getLocaleFormatUnderscoresWithValue(Double(value)))
+        #if os(Linux)
+            let localeFormat = String.init(format: format, getLocaleFormatUnderscoresWithValue(Double(value)) as! CVarArg)  // this may not work, unclear!!
+        #else
+            let localeFormat = String.init(format: format, getLocaleFormatUnderscoresWithValue(Double(value)))
+        #endif
+        
         return String.init(format: DateToolsLocalizedStrings(localeFormat), value)
     }
     
@@ -222,25 +230,44 @@ public extension Date {
         
         return ""
     }
-
+    
     
     // MARK: - Localization
     
-    func DateToolsLocalizedStrings(_ string: String) -> String {
+    private func DateToolsLocalizedStrings(_ string: String) -> String {
         //let classBundle = Bundle(for:TimeChunk.self as! AnyClass.Type).resourcePath!.appending("DateTools.bundle")
         
         //let bundelPath = Bundle(path:classBundle)!
-        
-        return NSLocalizedString(string, tableName: "DateTools", bundle: Bundle.main, value: "", comment: "")
+        #if os(Linux)
+        // NSLocalizedString() is not available yet, see: https://github.com/apple/swift-corelibs-foundation/blob/16f83ddcd311b768e30a93637af161676b0a5f2f/Foundation/NSData.swift
+        // However, a seemingly-equivalent method from NSBundle is: https://github.com/apple/swift-corelibs-foundation/blob/master/Foundation/NSBundle.swift
+            return Bundle.main.localizedString(forKey: string, value: "", table: "DateTools")
+        #else
+            return NSLocalizedString(string, tableName: "DateTools", bundle: Bundle.dateToolsBundle(), value: "", comment: "")
+        #endif
     }
     
     
     // MARK: - Date Earlier/Later
     
+    /**
+     *  Return the earlier of two dates, between self and a given date.
+     *  
+     *  - parameter date: The date to compare to self
+     *
+     *  - returns: The date that is earlier
+     */
     func earlierDate(_ date:Date) -> Date{
         return (self.timeIntervalSince1970 <= date.timeIntervalSince1970) ? self : date
     }
     
+    /**
+     *  Return the later of two dates, between self and a given date.
+     *
+     *  - parameter date: The date to compare to self
+     *
+     *  - returns: The date that is later
+     */
     func laterDate(_ date:Date) -> Date{
         return (self.timeIntervalSince1970 >= date.timeIntervalSince1970) ? self : date
     }

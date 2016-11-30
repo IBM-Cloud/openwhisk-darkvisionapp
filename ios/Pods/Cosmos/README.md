@@ -34,7 +34,7 @@ Simply add [CosmosDistrib.swift](https://github.com/marketplacer/Cosmos/blob/mas
 
 #### Setup with Carthage (iOS 8+)
 
-Alternatively, add `github "marketplacer/Cosmos" ~> 6.0` to your Cartfile and run `carthage update`.
+Alternatively, add `github "marketplacer/Cosmos" ~> 7.0` to your Cartfile and run `carthage update`.
 
 #### Setup with CocoaPods (iOS 8+)
 
@@ -42,7 +42,7 @@ If you are using CocoaPods add this text to your Podfile and run `pod install`.
 
     use_frameworks!
     target 'Your target name'
-    pod 'Cosmos', '~> 6.0'
+    pod 'Cosmos', '~> 7.0'
 
 #### Legacy Swift versions
 
@@ -127,6 +127,9 @@ cosmosView.settings.emptyBorderColor = UIColor.orange
 cosmosView.settings.filledBorderColor = UIColor.orange
 ```
 
+## Using Cosmos settings from Objective-C
+
+[This manual](https://github.com/marketplacer/Cosmos/wiki/Using-Cosmos-settings-in-Objective-C) describes how to set/read Cosmos settings in Objective-C apps.
 
 ## Demo app
 
@@ -160,6 +163,7 @@ Here are some other star rating controls for iOS:
 
 We would like to thank the following people for their valuable contributions.
 
+* [0x7fffffff](https://github.com/0x7fffffff) for changing `public` access-level modifiers to `open`.
 * [ali-zahedi](https://github.com/ali-zahedi) for updating to the latest version of Swift 3.0.
 * [augmentedworks](https://github.com/augmentedworks) for adding borders to filled stars.
 * [craiggrummitt](https://github.com/craiggrummitt) for Xcode 8 beta 4 support.

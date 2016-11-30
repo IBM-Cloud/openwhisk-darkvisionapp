@@ -2,20 +2,20 @@ platform :ios, '10.0'
 use_frameworks!
 
 workspace 'darkvision.xcworkspace'
-xcodeproj 'darkvision.xcodeproj'
+project 'darkvision.xcodeproj'
 
 target 'darkvision' do
-  pod 'Alamofire', '4.0'
-  pod 'AlamofireImage', '3.0'
-  pod 'SwiftyJSON', '3.0'
+  pod 'Alamofire', '4.2'
+  pod 'AlamofireImage', '3.2'
+  pod 'SwiftyJSON', '3.1.3'
 
   pod 'RDHCollectionViewGridLayout', '1.2.5'
   pod 'TTTAttributedLabel', '2.0.0'
 
-  pod 'SwiftMoment', :git => 'https://github.com/akosma/SwiftMoment.git', :branch => 'master'
+  pod 'SwiftMoment', '0.7'
   pod 'DateTools', :git => 'https://github.com/MatthewYork/DateTools.git', :branch => 'swift'
-  pod 'Cosmos', '6.0.1'
-  pod 'TagListView', :git => 'https://github.com/xhacker/TagListView.git', :branch => 'master'
+  pod 'Cosmos', '7.0'
+  pod 'TagListView', '1.1.0'
 end
 
 post_install do |installer|
