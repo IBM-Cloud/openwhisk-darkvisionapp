@@ -47,7 +47,7 @@ function install() {
 
   echo "Creating trigger"
   wsk trigger create vision-cloudant-trigger --feed vision-cloudant/changes\
-    -p dbname $CLOUDANT_db -p includeDoc true
+    -p dbname $CLOUDANT_db -p includeDoc false
 
   echo "Creating actions"
   # timeout for extractor is increased as it needs to download the video,
@@ -57,6 +57,8 @@ function install() {
 
   echo "Creating change listener"
   wsk action create vision-cloudant-changelistener changelistener.js\
+    -p cloudantUrl https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host\
+    -p cloudantDbName $CLOUDANT_db\
     -p targetNamespace $CURRENT_NAMESPACE
 
   echo "Enabling change listener"
@@ -87,8 +89,7 @@ function uninstall() {
 }
 
 function update() {
-  wsk action update vision-cloudant-changelistener actions/changelistener.js\
-    -p targetNamespace $CURRENT_NAMESPACE
+  wsk action update vision-cloudant-changelistener changelistener.js
   wsk action update -t 300000 --docker vision/extractor $DOCKER_EXTRACTOR_NAME
   wsk action update vision/analysis analysis.js
 }
