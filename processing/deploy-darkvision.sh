@@ -17,11 +17,6 @@
 # load configuration variables
 source local.env
 
-# capture the namespace where actions will be created
-# as we need to pass it to our change listener
-CURRENT_NAMESPACE=`wsk property get --namespace | awk '{print $3}'`
-echo "Current namespace is $CURRENT_NAMESPACE."
-
 function usage() {
   echo "Usage: $0 [--install,--uninstall,--update,--env]"
 }
@@ -58,8 +53,7 @@ function install() {
   echo "Creating change listener"
   wsk action create vision-cloudant-changelistener changelistener.js\
     -p cloudantUrl https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host\
-    -p cloudantDbName $CLOUDANT_db\
-    -p targetNamespace $CURRENT_NAMESPACE
+    -p cloudantDbName $CLOUDANT_db
 
   echo "Enabling change listener"
   wsk rule create vision-rule vision-cloudant-trigger vision-cloudant-changelistener

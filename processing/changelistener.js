@@ -44,7 +44,7 @@ function main(event) {
 
   return new Promise(function(resolve, reject) {
     onDocumentChange(
-      event.cloudantUrl, event.cloudantDbName, event.targetNamespace,
+      event.cloudantUrl, event.cloudantDbName,
       event.id, event.changes[0].rev, function(err, result) {
         if (err) {
           reject({ ok: false});
@@ -56,7 +56,7 @@ function main(event) {
   });
 }
 
-function onDocumentChange(cloudantUrl, cloudantDbName, targetNamespace, documentId, documentRev, callback) {
+function onDocumentChange(cloudantUrl, cloudantDbName, documentId, documentRev, callback) {
   var cloudant = require("cloudant")({url: cloudantUrl});
   var visionDb = cloudant.db.use(cloudantDbName);
 
@@ -85,7 +85,7 @@ function onDocumentChange(cloudantUrl, cloudantDbName, targetNamespace, document
         doc._attachments.hasOwnProperty("video.mp4") &&
         !doc.hasOwnProperty("metadata")) {
       // trigger the frame-extractor
-      asyncCallAction("/" + targetNamespace +"/vision/extractor", doc, callback);
+      asyncCallAction("vision/extractor", doc, callback);
       return;
     }
 
@@ -95,7 +95,7 @@ function onDocumentChange(cloudantUrl, cloudantDbName, targetNamespace, document
       doc.hasOwnProperty("_attachments") &&
       doc._attachments.hasOwnProperty("image.jpg")) {
       // trigger the analysis
-      asyncCallAction("/" + targetNamespace +"/vision/analysis", doc, callback);
+      asyncCallAction("vision/analysis", doc, callback);
       return;
     }
 
