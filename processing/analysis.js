@@ -24,22 +24,19 @@
  * - doc: "image document in cloudant"
  */
 function main(args) {
-  if (mainImpl(args, function (err, result) {
+  return new Promise(function(resolve, reject) {
+    mainImpl(args, function(err, result) {
       if (err) {
-        whisk.error(err);
+        reject(err);
       } else {
-        whisk.done(result, null);
+        resolve(result);
       }
-    })) {
-    return whisk.async();
-  }
+    });
+  });
 }
 
 /**
- * Uses a callback so that this same code can be imported in another JavaScript
- * to test the function outside of OpenWhisk.
- *
- * mainCallback(err, analysis)
+ * @param mainCallback(err, analysis)
  */
 function mainImpl(args, mainCallback) {
   var fs = require('fs')

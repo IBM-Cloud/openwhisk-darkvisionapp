@@ -42,14 +42,21 @@ function main(event) {
     return;
   }
 
-  onDocumentChange(
-    event.cloudantUrl, event.cloudantDbName, event.targetNamespace,
-    event.id, event.changes[0].rev);
-
-  return whisk.async();
+  return new Promise(function(resolve, reject) {
+    onDocumentChange(
+      event.cloudantUrl, event.cloudantDbName, event.targetNamespace,
+      event.id, event.changes[0].rev, function(err, result) {
+        if (err) {
+          reject({ ok: false});
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
 }
 
-function onDocumentChange(cloudantUrl, cloudantDbName, targetNamespace, documentId, documentRev) {
+function onDocumentChange(cloudantUrl, cloudantDbName, targetNamespace, documentId, documentRev, callback) {
   var cloudant = require("cloudant")({url: cloudantUrl});
   var visionDb = cloudant.db.use(cloudantDbName);
 
@@ -58,7 +65,7 @@ function onDocumentChange(cloudantUrl, cloudantDbName, targetNamespace, document
   }, function (err, doc) {
     if (err) {
       console.log("[", doc._id, "] KO", err);
-      whisk.done(undefined, err);
+      callback(err);
       return;
     }
 
@@ -68,7 +75,7 @@ function onDocumentChange(cloudantUrl, cloudantDbName, targetNamespace, document
     if (doc._rev !== documentRev) {
       console.log("[", doc._id, "] OK - ignored, document has changed - event rev:",
         documentRev, "database rev:", doc._rev);
-      whisk.done(undefined);
+      callback(null, { ok: true, has_changed: true });
       return;
     }
 
@@ -78,7 +85,7 @@ function onDocumentChange(cloudantUrl, cloudantDbName, targetNamespace, document
         doc._attachments.hasOwnProperty("video.mp4") &&
         !doc.hasOwnProperty("metadata")) {
       // trigger the frame-extractor
-      asyncCallAction("/" + targetNamespace +"/vision/extractor", doc);
+      asyncCallAction("/" + targetNamespace +"/vision/extractor", doc, callback);
       return;
     }
 
@@ -88,32 +95,32 @@ function onDocumentChange(cloudantUrl, cloudantDbName, targetNamespace, document
       doc.hasOwnProperty("_attachments") &&
       doc._attachments.hasOwnProperty("image.jpg")) {
       // trigger the analysis
-      asyncCallAction("/" + targetNamespace +"/vision/analysis", doc);
+      asyncCallAction("/" + targetNamespace +"/vision/analysis", doc, callback);
       return;
     }
 
     // nothing to do with this change
     console.log("[", doc._id, "] OK - ignored");
-    whisk.done(undefined);
+    callback(null, {ok: true, ignored: true});
   });
 }
 
 
-function asyncCallAction(actionName, doc) {
+function asyncCallAction(actionName, doc, callback) {
   console.log("[", doc._id, "] Calling", actionName);
-  whisk.invoke({
-    name: actionName,
-    parameters: {
+  const openwhisk = require('openwhisk');
+  const whisk = openwhisk({ignore_certs: true});
+  whisk.actions.invoke({
+    actionName: actionName,
+    params: {
       doc: doc
     },
-    blocking: false,
-    next: function (error, activation) {
-      if (error) {
-        console.log("[", doc._id, "]", actionName, "[KO]", error);
-      } else {
-        console.log("[", doc._id, "]", actionName, "[OK]", activation);
-      }
-      whisk.done(undefined, error);
-    }
+    blocking: false
+  }).then(function(result) {
+    console.log("[", doc._id, "]", actionName, "[OK]", result);
+    callback(null, {ok: true});
+  }).catch(function(error) {
+    console.log("[", doc._id, "]", actionName, "[KO]", error);
+    callback(error);
   });
 }
