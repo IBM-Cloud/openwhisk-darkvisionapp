@@ -47,7 +47,7 @@ function install() {
 
   echo "Creating trigger"
   wsk trigger create vision-cloudant-trigger --feed vision-cloudant/changes\
-    -p dbname $CLOUDANT_db -p includeDoc false
+    -p dbname $CLOUDANT_db
 
   echo "Creating actions"
   # timeout for extractor is increased as it needs to download the video,
