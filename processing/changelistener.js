@@ -57,14 +57,19 @@ function main(event) {
 }
 
 function onDocumentChange(cloudantUrl, cloudantDbName, documentId, documentRev, callback) {
-  var cloudant = require("cloudant")({url: cloudantUrl});
+  var cloudant = require("cloudant")({
+    url: cloudantUrl,
+    plugin: 'retry',
+    retryAttempts: 10,
+    retryTimeout: 500
+  });
   var visionDb = cloudant.db.use(cloudantDbName);
 
   visionDb.get(documentId, {
     include_docs: true
   }, function (err, doc) {
     if (err) {
-      console.log("[", doc._id, "] KO", err);
+      console.log("[", documentId, "] KO", err);
       callback(err);
       return;
     }

@@ -7,10 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "async": "^2.1.2",
+    "async": "2.1.4",
     "fluent-ffmpeg": "^2.0.1",
-    "cloudant": "^1.5.1",
-    "rimraf": "^2.5.1",
-    "tmp": "0.0.29"
+    "cloudant": "1.6.2",
+    "rimraf": "2.5.4",
+    "tmp": "0.0.31"
   }
 }

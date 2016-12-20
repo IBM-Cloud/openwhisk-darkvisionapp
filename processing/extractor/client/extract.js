@@ -53,10 +53,6 @@ var visionDb = require('cloudant')({
   retryTimeout: 500
 }).db.use(payload.cloudantDbName);
 
-var attachmentDb = require('cloudant')({
-  url: payload.cloudantUrl
-}).db.use(payload.cloudantDbName);
-
 // create a temporary directory to process the video
 var workingDirectory = tmp.dirSync({
   prefix: 'extractor-' + doc._id
@@ -101,7 +97,7 @@ async.waterfall([
       var currentSize = 0;
       var lastProgress = undefined;
 
-      attachmentDb.attachment.get(videoDocument._id, "video.mp4")
+      visionDb.attachment.get(videoDocument._id, "video.mp4")
         .on('data', function (data) {
           currentSize += data.length
 

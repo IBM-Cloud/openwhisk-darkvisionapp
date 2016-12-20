@@ -47,7 +47,12 @@ function mainImpl(args, mainCallback) {
   if (args.hasOwnProperty("doc")) {
     var imageDocumentId = args.doc._id;
     console.log("[", imageDocumentId, "] Processing image.jpg from document");
-    var cloudant = require("cloudant")({url: args.cloudantUrl});
+    var cloudant = require("cloudant")({
+      url: args.cloudantUrl,
+      plugin: 'retry',
+      retryAttempts: 10,
+      retryTimeout: 500
+    });
     var visionDb = cloudant.db.use(args.cloudantDbName);
 
     // use image id to build a unique filename
