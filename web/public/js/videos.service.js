@@ -60,6 +60,15 @@
           deferred.reject();
         });
         return deferred.promise;
+      },
+      resetImages: function (videoId) {
+        var deferred = $q.defer();
+        $http.get("/api/videos/" + encodeURIComponent(videoId) + "/reset-images").success(function (data) {
+          deferred.resolve(data);
+        }).error(function () {
+          deferred.reject();
+        });
+        return deferred.promise;
       }
     };
   }

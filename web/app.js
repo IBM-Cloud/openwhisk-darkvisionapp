@@ -594,6 +594,47 @@ app.get("/api/videos/:id/reset", checkForAuthentication, function (req, res) {
   });
 });
 
+/**
+ * Deletes all generated data for images in the video so that they get analyzed again.
+ */
+app.get("/api/videos/:id/reset-images", checkForAuthentication, function (req, res) {
+  async.waterfall([
+    // get all images for this video
+    function (callback) {
+      console.log("Retrieving all images for", req.params.id);
+      visionDb.view("images", "by_video_id", {
+        key: req.params.id,
+        include_docs: true
+      }, function (err, body) {
+        callback(err, body ? body.rows.map(function(row) { return row.doc }) : null);
+      });
+    },
+    // remove their analysis and save them
+    function (images, callback) {
+      images.forEach(function(image) {
+        delete image.analysis;
+      });
+      var toBeUpdated = {
+        docs: images
+      };
+      console.log("Updating", toBeUpdated.docs.length, "images...");
+      visionDb.bulk(toBeUpdated, function (err, body) {
+        callback(err, body);
+      });
+    },
+  ], function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(500).send({
+        error: err
+      });
+    } else {
+      console.log("Done");
+      res.send(result);
+    }
+  });
+});
+
 // Protects the upload zone with login and password if they are configured
 app.use("/upload", checkForAuthentication);
 

@@ -44,12 +44,24 @@
       });
     };
 
-    controller.reset = function () {
-      VideosService.reset(controller.data.video._id).then(function (reset) {
+    controller.reset = function (targetImage) {
+      if (targetImage) {
+        ImagesService.reset(targetImage).then(function (targetImage) {
+        });
+      } else {
+        VideosService.reset(controller.data.video._id).then(function (reset) {
+          // reload the page, it will show empty
+          $state.reload();
+        });
+      }
+    };
+
+    controller.resetImages = function() {
+      VideosService.resetImages(controller.data.video._id).then(function (reset) {
         // reload the page, it will show empty
         $state.reload();
       });
-    };
+    }
   }
 
   angular.module('app')
