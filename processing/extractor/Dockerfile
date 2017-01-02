@@ -18,8 +18,11 @@ apt-get update --fix-missing && \
 apt-get install -y ffmpeg
 
 # install nodejs and npm
-RUN curl -sL https://deb.nodesource.com/setup_0.12 | bash - && \
-apt-get install -y nodejs
+# based on https://github.com/nodejs/docker-node
+ENV NODE_VERSION 6.9.1
+RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" \
+  && tar -xzf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
+  && rm "node-v$NODE_VERSION-linux-x64.tar.gz"
 
 RUN mkdir /logs
 
@@ -31,4 +34,4 @@ RUN cd /blackbox/client; npm install
 
 # Final steps
 EXPOSE 8080
-CMD ["/bin/bash", "-c", "cd blackbox/server && node ./app.js"]
+CMD ["/bin/bash", "-c", "cd blackbox/server && node -v && node ./app.js"]
