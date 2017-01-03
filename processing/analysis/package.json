@@ -1,0 +1,14 @@
+{
+  "name": "analysis",
+  "version": "1.0.0",
+  "description": "Analyzes one image",
+  "main": "analysis.js",
+  "dependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/"
+  },
+  "author": "IBM",
+  "license": "Apache-2.0"
+}

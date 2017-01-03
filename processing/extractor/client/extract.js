@@ -46,12 +46,8 @@ function getFps(durationInSeconds) {
   */
 }
 
-var visionDb = require('cloudant')({
-  url: payload.cloudantUrl,
-  plugin: 'retry',
-  retryAttempts: 10,
-  retryTimeout: 500
-}).db.use(payload.cloudantDbName);
+var mediaStorage = require('./lib/cloudantstorage')
+  (payload.cloudantUrl, payload.cloudantDbName);
 
 // create a temporary directory to process the video
 var workingDirectory = tmp.dirSync({
@@ -70,9 +66,8 @@ var inputFilename = workingDirectory.name + "/video.mp4";
 async.waterfall([
   // load the document from the database
   function (callback) {
-      visionDb.get(doc._id, {
-        include_docs: true
-      }, function (err, body, headers) {
+      mediaStorage.get(doc._id,
+        function (err, body) {
         if (err) {
           callback(err);
         } else {
@@ -97,7 +92,7 @@ async.waterfall([
       var currentSize = 0;
       var lastProgress = undefined;
 
-      visionDb.attachment.get(videoDocument._id, "video.mp4")
+      mediaStorage.read(videoDocument._id, "video.mp4")
         .on('data', function (data) {
           currentSize += data.length
 
@@ -131,7 +126,7 @@ async.waterfall([
   },
   // persist the videoDocument with its metadata
   function (callback) {
-      visionDb.insert(videoDocument, function (err, body, headers) {
+      mediaStorage.insert(videoDocument, function(err, body) {
         if (err) {
           callback(err);
         } else {
@@ -195,7 +190,7 @@ async.waterfall([
   },
   // persist the frame count
   function (callback) {
-      visionDb.insert(videoDocument, function (err, body, headers) {
+      mediaStorage.insert(videoDocument, function (err, body) {
         if (err) {
           callback(err);
         } else {
@@ -233,9 +228,8 @@ async.waterfall([
   function (callback) {
       console.log("Attaching thumbnail to video");
       fs.readFile(workingDirectory.name + "/thumbnail.jpg", function(err, data) {
-        visionDb.attachment.insert(videoDocument._id, "thumbnail.jpg", data, "image/jpeg", {
-          rev: videoDocument._rev
-        }, function (err, body) {
+        mediaStorage.attachFile(videoDocument, "thumbnail.jpg", data, "image/jpeg",
+          function (err, body) {
           console.log("Video thumbnail result", body);
           if (err) {
             console.log(err.statusCode, err.request);
@@ -243,7 +237,7 @@ async.waterfall([
           } else {
             callback(null, body);
           }
-        });
+        })
       });
   }
   ],
@@ -260,7 +254,7 @@ async.waterfall([
 
 function createDocument(frameDocument, attachmentName, attachmentMimetype, attachmentFile, callback) {
   console.log("Persisting", frameDocument.type);
-  visionDb.insert(frameDocument, function (err, body, headers) {
+  mediaStorage.insert(frameDocument, function (err, body) {
     if (err) {
       console.log("error saving image", err);
       callback(err);
@@ -269,9 +263,8 @@ function createDocument(frameDocument, attachmentName, attachmentMimetype, attac
       console.log("Created new document", frameDocument);
 
       fs.readFile(attachmentFile, function(err, data) {
-        visionDb.attachment.insert(frameDocument.id, attachmentName, data, attachmentMimetype, {
-          rev: frameDocument.rev
-        }, function (err, body) {
+        mediaStorage.attachFile(frameDocument, attachmentName, data, attachmentMimetype,
+          function (err, body) {
           console.log("Upload completed", body);
           if (err) {
             console.log(err.statusCode, err.request);

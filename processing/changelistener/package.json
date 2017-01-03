@@ -1,0 +1,14 @@
+{
+  "name": "changelistener",
+  "version": "1.0.0",
+  "description": "Dispatches to extractor or analysis based on change events",
+  "main": "changelistener.js",
+  "dependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/"
+  },
+  "author": "IBM",
+  "license": "Apache-2.0"
+}

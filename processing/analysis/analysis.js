@@ -35,6 +35,8 @@ function main(args) {
   });
 }
 
+exports.main = main;
+
 /**
  * @param mainCallback(err, analysis)
  */
@@ -47,30 +49,24 @@ function mainImpl(args, mainCallback) {
   if (args.hasOwnProperty("doc")) {
     var imageDocumentId = args.doc._id;
     console.log("[", imageDocumentId, "] Processing image.jpg from document");
-    var cloudant = require("cloudant")({
-      url: args.cloudantUrl,
-      plugin: 'retry',
-      retryAttempts: 10,
-      retryTimeout: 500
-    });
-    var visionDb = cloudant.db.use(args.cloudantDbName);
 
     // use image id to build a unique filename
     var fileName = imageDocumentId + "-image.jpg";
+
+    var mediaStorage = require('./lib/cloudantstorage')
+      (args.cloudantUrl, args.cloudantDbName);
 
     var async = require('async')
     async.waterfall([
       // get the image document from the db
       function (callback) {
-        visionDb.get(imageDocumentId, {
-          include_docs: true
-        }, function (err, image) {
+        mediaStorage.get(imageDocumentId, function (err, image) {
           callback(err, image);
         });
       },
       // get the image binary
       function (image, callback) {
-        visionDb.attachment.get(image._id, "image.jpg").pipe(fs.createWriteStream(fileName))
+        mediaStorage.read(image._id, "image.jpg").pipe(fs.createWriteStream(fileName))
           .on("finish", function () {
             callback(null, image);
           })
@@ -91,7 +87,7 @@ function mainImpl(args, mainCallback) {
       // write result in the db
       function (image, analysis, callback) {
         image.analysis = analysis
-        visionDb.insert(image, function (err, body, headers) {
+        mediaStorage.insert(image, function (err, body) {
           if (err) {
             callback(err);
           } else {
@@ -226,7 +222,10 @@ function analyzeImage(args, fileName, analyzeCallback) {
               if (err) {
                 console.log("Face Detection", err);
               } else if (body.images && body.images.length > 0) {
-                analysis.face_detection = body.images[0].faces;
+                // sort the faces from left to right
+                analysis.face_detection = body.images[0].faces.sort((face1, face2) => {
+                  return face1.face_location.left - face2.face_location.left;
+                });
               }
               callback(null);
             }));

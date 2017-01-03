@@ -21,7 +21,19 @@ function usage() {
   echo "Usage: $0 [--install,--uninstall,--update,--env]"
 }
 
+function prepare() {
+  echo "Preparing analysis action..."
+  (cd analysis && rm analysis.zip && zip analysis.zip analysis.js package.json)
+  (cd ../web && zip -r ../processing/analysis/analysis.zip lib)
+
+  echo "Preparing changelistener action..."
+  (cd changelistener && rm changelistener.zip && zip changelistener.zip changelistener.js package.json)
+  (cd ../web && zip -r ../processing/changelistener/changelistener.zip lib)
+}
+
 function install() {
+  prepare
+
   echo "Creating vision package"
   wsk package create vision
 
@@ -48,10 +60,10 @@ function install() {
   # timeout for extractor is increased as it needs to download the video,
   # in most cases it won't need all this time
   wsk action create -t 300000 --docker vision/extractor $DOCKER_EXTRACTOR_NAME
-  wsk action create vision/analysis analysis.js
+  wsk action create vision/analysis --kind nodejs:6 analysis/analysis.zip
 
   echo "Creating change listener"
-  wsk action create vision-cloudant-changelistener changelistener.js\
+  wsk action create vision-cloudant-changelistener --kind nodejs:6 changelistener/changelistener.zip\
     -p cloudantUrl https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host\
     -p cloudantDbName $CLOUDANT_db
 
@@ -83,9 +95,11 @@ function uninstall() {
 }
 
 function update() {
-  wsk action update vision-cloudant-changelistener changelistener.js
+  prepare
+
+  wsk action update vision-cloudant-changelistener --kind nodejs:6 changelistener/changelistener.zip
   wsk action update -t 300000 --docker vision/extractor $DOCKER_EXTRACTOR_NAME
-  wsk action update vision/analysis analysis.js
+  wsk action update vision/analysis --kind nodejs:6 analysis/analysis.zip
 }
 
 function disable() {
@@ -126,6 +140,9 @@ enable
 "--recycle" )
 uninstall
 install
+;;
+"--prepare" )
+prepare
 ;;
 * )
 usage
