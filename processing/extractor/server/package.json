@@ -1,10 +1,15 @@
 {
-  "name": "blackboxAction",
-  "version": "0.0.1",
-  "description": "Generic black box action",
+  "name": "extractor-server",
+  "version": "1.0.0",
+  "description": "Listens for invocation from OpenWhisk and calls the extractor client",
   "dependencies": {
-    "body-parser": "^1.11.0",
-    "express": "^4.11.2",
-    "log4js": "^0.6.20"
-  }
+    "body-parser": "1.15.2",
+    "express": "4.14.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/"
+  },
+  "author": "IBM",
+  "license": "Apache-2.0"
 }

@@ -123,6 +123,10 @@ disable
 "--enable" )
 enable
 ;;
+"--recycle" )
+uninstall
+install
+;;
 * )
 usage
 ;;

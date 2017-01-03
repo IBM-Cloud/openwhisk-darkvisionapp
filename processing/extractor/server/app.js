@@ -1,44 +1,61 @@
-var util = require('util');
-var bodyParser = require('body-parser');
-var express = require('express');
-var app = express();
-var logger = require('./src/logger').getLogger('logs/extractor.log', 'extractor');
+'use strict';
 
-var port = 8080
+const bodyParser = require('body-parser')
+const express = require('express')
+const app = express()
 
+app.set('port', 8080)
+app.use(bodyParser.json())
 
-/**
- * instantiate an object which handles REST calls from the Invoker
- */
-var service = require('./src/service').getService(console, logger);
-
-app.set('port', port);
-app.use(bodyParser.json());
-app.post('/init', safeEndpoint(service.initCode));
-app.post('/run', safeEndpoint(service.runCode));
-app.use(function (err, req, res, next) {
-  console.error(err.stack);
-  res.status(500).send('bad request');
+const server = app.listen(app.get('port'), function() {
+  const host = server.address().address;
+  const port = server.address().port;
+  console.log('[start] listening at http://%s:%s', host, port);
 });
-console.log('Starting a blackbox service');
-service.start(app);
 
-/**
- * Wraps an endpoint with a try-catch to catch errors and close off http
- * responses correctly in case of errors.
- *
- * @param ep function endpoint
- * @return new function closure with internal try-catch
- */
-function safeEndpoint(ep) {
-  return function safeEndpoint(req, res, next) {
-    try {
-      ep(req, res, next);
-    } catch (e) {
-      logger.error('[safeEndpoint]', 'exception caught', e);
-      res.json({
-        error: 'internal error'
-      });
-    }
-  };
+const run_req = (req, res) => {
+  console.log('[run]', req.body)
+  const args = req.body.value
+  invoke_extractor(args).then(result => {
+    res.json(result)
+  }).catch(err => {
+    console.log(err);
+    res.status(500).json({error: err});
+  })
+}
+
+app.post('/init', (req, res) => res.send())
+app.post('/run',  run_req);
+
+const invoke_extractor = (args) => {
+  return extractor(JSON.stringify(args));
+}
+
+const extractor = (value) => {
+  return new Promise((resolve, reject) => {
+    console.log('[running] value =', value);
+    const spawn = require('child_process').spawn;
+    const proc = spawn("node", ["/blackbox/client/extract.js", value], {
+      cwd: "/blackbox/client"
+    });
+
+    let output = ''
+    proc.stdout.on('data', function (data) {
+      console.log('[stdout] ' + data);
+      output += data;
+    });
+    proc.stderr.on('data', function (data) {
+      console.log('[stderr] ' + data);
+      output += data;
+    });
+    proc.on('close', function (code) {
+      console.log('[exit] with code', code);
+      const result = {
+        'result': {
+          'msg': output
+        }
+      };
+      resolve(result);
+    });
+  });
 }
