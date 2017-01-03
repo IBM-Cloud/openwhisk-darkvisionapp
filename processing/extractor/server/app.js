@@ -14,7 +14,7 @@ const server = app.listen(app.get('port'), function() {
 });
 
 const run_req = (req, res) => {
-  console.log('openwhisk invoke request: ', req.body)
+  console.log('[run]', req.body)
   const args = req.body.value
   invoke_extractor(args).then(result => {
     res.json(result)
@@ -41,15 +41,15 @@ const extractor = (value) => {
 
     let output = ''
     proc.stdout.on('data', function (data) {
-      console.log('stdout: ' + data);
+      console.log('[stdout] ' + data);
       output += data;
     });
     proc.stderr.on('data', function (data) {
-      console.log('stderr: ' + data);
+      console.log('[stderr] ' + data);
       output += data;
     });
     proc.on('close', function (code) {
-      console.log('child process exited with code ' + code);
+      console.log('[exit] with code', code);
       const result = {
         'result': {
           'msg': output
