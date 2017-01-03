@@ -88,7 +88,7 @@ async.waterfall([
       console.log("Downloading video attachment...");
       var videoStream = fs.createWriteStream(inputFilename)
 
-      var totalSize = videoDocument._attachments["video.mp4"].length;
+      var totalSize = mediaStorage.getAttachmentSize(videoDocument, "video.mp4");
       var currentSize = 0;
       var lastProgress = undefined;
 

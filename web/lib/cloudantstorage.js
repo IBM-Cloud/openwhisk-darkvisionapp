@@ -97,6 +97,11 @@ function CloudandStorage(cloudantUrl, cloudantDbName, initializeDatabase) {
     }, attachCallback);
   }
 
+  // return the length of the given attachment
+  self.getAttachmentSize = function(doc, attachmentName) {
+    return doc._attachments[attachmentName].length;
+  }
+
   // read a file attached to a document
   self.read = function(docId, attachmentName) {
     return visionDb.attachment.get(docId, attachmentName);
@@ -365,6 +370,22 @@ function CloudandStorage(cloudantUrl, cloudantDbName, initializeDatabase) {
         });
       },
     ], resetCallback);
+  }
+
+  // check if a video or image has already been processed
+  self.isReadyToProcess = function(doc) {
+    if (doc.type === "video") {
+      return doc.hasOwnProperty("_attachments") &&
+        doc._attachments.hasOwnProperty("video.mp4") &&
+        !doc.hasOwnProperty("metadata");
+    } else if (doc.type === "image") {
+      return !doc.hasOwnProperty("analysis") &&
+        doc.hasOwnProperty("_attachments") &&
+        doc._attachments.hasOwnProperty("image.jpg");
+    } else {
+      return false;
+    }
+
   }
 }
 

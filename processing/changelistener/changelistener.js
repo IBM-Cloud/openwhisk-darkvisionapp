@@ -78,20 +78,14 @@ function onDocumentChange(cloudantUrl, cloudantDbName, documentId, documentRev, 
     }
 
     // if it is a video, it has a "video.mp4" attachment and it has no metadata,
-    if (doc.type == "video" &&
-        doc.hasOwnProperty("_attachments") &&
-        doc._attachments.hasOwnProperty("video.mp4") &&
-        !doc.hasOwnProperty("metadata")) {
+    if (doc.type === "video" && mediaStorage.isReadyToProcess(doc)) {
       // trigger the frame-extractor
       asyncCallAction("vision/extractor", doc, callback);
       return;
     }
 
     // if this is an image, with an attachment and no analysis
-    if (doc.type == "image" &&
-      !doc.hasOwnProperty("analysis") &&
-      doc.hasOwnProperty("_attachments") &&
-      doc._attachments.hasOwnProperty("image.jpg")) {
+    if (doc.type === "image" && mediaStorage.isReadyToProcess(doc)) {
       // trigger the analysis
       asyncCallAction("vision/analysis", doc, callback);
       return;
