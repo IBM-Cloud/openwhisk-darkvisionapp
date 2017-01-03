@@ -75,105 +75,28 @@ var appEnvOpts = vcapLocal ? {
 } : {}
 var appEnv = cfenv.getAppEnv(appEnvOpts);
 
-var Cloudant = require('cloudant');
-
-// Cloudant plans have rate limits.
-// The 'retry' plugin catches error 429 from Cloudant and automatically retries
-var cloudantWithRetry = Cloudant({
-  url: appEnv.getServiceCreds("cloudant-for-darkvision").url,
-  plugin: 'retry',
-  retryAttempts: 10,
-  retryTimeout: 500
-}).db;
-
-// However the retry plugin does not support pipes thus when uploading attachments,
-// we will use another Cloudant object, pointing to the same db but without the retry plugin.
-var cloudantNoRetry = Cloudant({
-  url: appEnv.getServiceCreds("cloudant-for-darkvision").url,
-}).db;
-
-var visionDb;
-var uploadDb;
-var prepareDbTasks = [];
-
-// create the db
-prepareDbTasks.push(
-  function (callback) {
-    console.log("Creating database...");
-    cloudantWithRetry.create("openwhisk-darkvision", function (err, body) {
-      if (err && err.statusCode == 412) {
-        console.log("Database already exists");
-        callback(null);
-      } else if (err) {
-        callback(err);
-      } else {
-        callback(null);
-      }
-    });
-  });
-
-// use it
-prepareDbTasks.push(
-  function (callback) {
-    console.log("Setting current database to openwhisk-darkvision...");
-    visionDb = cloudantWithRetry.use("openwhisk-darkvision");
-    uploadDb = cloudantNoRetry.use("openwhisk-darkvision");
-    callback(null);
-  });
-
-// create design documents
-var designDocuments = JSON.parse(fs.readFileSync("./database-designs.json"));
-designDocuments.docs.forEach(function (doc) {
-  prepareDbTasks.push(function (callback) {
-    console.log("Creating", doc._id);
-    visionDb.insert(doc, function (err, body) {
-      if (err && err.statusCode == 409) {
-        console.log("Design", doc._id, "already exists");
-        callback(null);
-      } else if (err) {
-        callback(err);
-      } else {
-        callback(null);
-      }
-    });
-  });
-});
-
-async.waterfall(prepareDbTasks, function (err, result) {
-  if (err) {
-    console.log("Error in database preparation", err);
-  }
-});
+var mediaStorage = require('./lib/cloudantstorage')
+  (appEnv.getServiceCreds("cloudant-for-darkvision").url, 'openwhisk-darkvision', true);
 
 /**
  * Returns an image attachment for a given video or image id,
  * such as the thumbnail for a video or the original data for an image.
  */
 app.get("/images/:type/:id.jpg", function (req, res) {
-  visionDb.attachment.get(req.params.id, req.params.type + ".jpg", function(err, body) {
-    if (err) {
-      res.status(500).send();
-    } else {
-      res.send(body);
-    }
-  });
+  mediaStorage.read(req.params.id, `${req.params.type}.jpg`).pipe(res);
 });
 
 /**
  * Returns all standalone images (images not linked to a video)
  */
 app.get("/api/images", function (req, res) {
-  visionDb.view("images", "standalone", {
-    include_docs: true
-  }, function (err, body) {
+  mediaStorage.images((err, body) => {
     if (err) {
       res.status(500).send({
         error: err
       });
     } else {
-      res.send(body.rows.map(function (doc) {
-        return doc.doc
-      }));
+      res.send(body);
     }
   });
 });
@@ -182,23 +105,7 @@ app.get("/api/images", function (req, res) {
  * Removes the analysis from one image
  */
 app.get("/api/images/:id/reset", checkForAuthentication, function (req, res) {
-  async.waterfall([
-    function (callback) {
-      // get the image
-      visionDb.get(req.params.id, {
-        include_docs: true
-      }, function (err, body) {
-        callback(err, body);
-      });
-    },
-    function (image, callback) {
-      console.log("Removing analysis from image...");
-      delete image.analysis;
-      visionDb.insert(image, function (err, body, headers) {
-        callback(err, body);
-      });
-    }
-    ], function (err, result) {
+  mediaStorage.imageReset(req.params.id, (err, result) => {
     if (err) {
       console.log(err);
       res.status(500).send({
@@ -215,23 +122,7 @@ app.get("/api/images/:id/reset", checkForAuthentication, function (req, res) {
  * Deletes a single image
  */
 app.delete("/api/images/:id", checkForAuthentication, function (req, res) {
-  async.waterfall([
-    function (callback) {
-      // get the image
-      visionDb.get(req.params.id, {
-        include_docs: true
-      }, function (err, body) {
-        callback(err, body);
-      });
-    },
-    function (image, callback) {
-      console.log("Deleting image...");
-      delete image.analysis;
-      visionDb.destroy(image._id, image._rev, function (err, body) {
-        callback(err, body);
-      });
-    }
-    ], function (err, result) {
+  mediaStorage.imageDelete(req.params.id, (err, result) => {
     if (err) {
       console.log(err);
       res.status(500).send({
@@ -248,17 +139,13 @@ app.delete("/api/images/:id", checkForAuthentication, function (req, res) {
  * Returns all videos.
  */
 app.get("/api/videos", function (req, res) {
-  visionDb.view("videos", "all", {
-    include_docs: true
-  }, function (err, body) {
+  mediaStorage.videos((err, videos) => {
     if (err) {
       res.status(500).send({
         error: err
       });
     } else {
-      res.send(body.rows.map(function (doc) {
-        return doc.doc
-      }));
+      res.send(videos);
     }
   });
 });
@@ -267,15 +154,13 @@ app.get("/api/videos", function (req, res) {
  * Returns the video and its metadata.
  */
 app.get("/api/videos/:id", function (req, res) {
-  visionDb.get(req.params.id, {
-    include_docs: true
-  }, function (err, body) {
+  mediaStorage.get(req.params.id, (err, video) => {
     if (err) {
       res.status(500).send({
         error: err
       });
     } else {
-      res.send(body);
+      res.send(video);
     }
   });
 });
@@ -305,25 +190,18 @@ app.get("/api/videos/:id/summary", function (req, res) {
     // get the video document
     function (callback) {
         console.log("Retrieving video", req.params.id);
-        visionDb.get(req.params.id, {
-          include_docs: true
-        }, function (err, body) {
-          callback(err, body);
+        mediaStorage.get(req.params.id, (err, video) => {
+          callback(err, video);
         });
     },
     // get all images for this video
     function (video, callback) {
         console.log("Retrieving images for", video._id);
-        visionDb.view("images", "by_video_id", {
-          key: video._id,
-          include_docs: true
-        }, function (err, body) {
+        mediaStorage.videoImages(video._id, (err, images) => {
           if (err) {
             callback(err);
           } else {
-            callback(null, video, body.rows.map(function (doc) {
-              return doc.doc
-            }));
+            callback(null, video, images);
           }
         });
     },
@@ -462,19 +340,13 @@ app.get("/api/videos/:id/summary", function (req, res) {
  * Returns related videos. Currently it is all but the given video
  */
 app.get("/api/videos/:id/related", function (req, res) {
-  visionDb.view("videos", "all", {
-    include_docs: true
-  }, function (err, body) {
+  mediaStorage.videos((err, videos) => {
     if (err) {
       res.status(500).send({
         error: err
       });
     } else {
-      res.send(body.rows.map(function (doc) {
-        return doc.doc
-      }).filter(function (video) {
-        return video._id != req.params.id && video.metadata;
-      }));
+      res.send(videos.filter((video) =>video._id != req.params.id && video.metadata));
     }
   });
 });
@@ -483,20 +355,14 @@ app.get("/api/videos/:id/related", function (req, res) {
  * Returns all images for a video, including the analysis for each image.
  */
 app.get("/api/videos/:id/images", function (req, res) {
-  // get all images for this video
-  visionDb.view("images", "by_video_id", {
-    key: req.params.id,
-    include_docs: true
-  }, function (err, body) {
+  mediaStorage.videoImages(req.params.id, (err, images) => {
     if (err) {
       res.status(500).send({
         error: err
       });
     } else {
       // get the images document and sort them on the frame_number
-      var images = body.rows.map(function (doc) {
-        return doc.doc
-      }).sort(function (image1, image2) {
+      images.sort(function (image1, image2) {
         if (image1.hasOwnProperty("frame_number")) {
           return image1.frame_number - image2.frame_number;
         } else {
@@ -512,76 +378,7 @@ app.get("/api/videos/:id/images", function (req, res) {
  * Deletes all generated data for one video so that it gets analyzed again.
  */
 app.get("/api/videos/:id/reset", checkForAuthentication, function (req, res) {
-  // remove all analysis for the give video
-  async.waterfall([
-    // get all images for this video
-    function (callback) {
-      console.log("Retrieving all images for", req.params.id);
-      visionDb.view("images", "by_video_id", {
-        key: req.params.id,
-        include_docs: true
-      }, function (err, body) {
-        callback(err, body ? body.rows : null);
-      });
-    },
-    // delete the images
-    function (images, callback) {
-      var toBeDeleted = {
-        docs: images.map(function (row) {
-          return {
-            _id: row.doc._id,
-            _rev: row.doc._rev,
-            _deleted: true
-          }
-        })
-      };
-      console.log("Deleting", toBeDeleted.docs.length, "images...");
-      visionDb.bulk(toBeDeleted, function (err, body) {
-        callback(err);
-      });
-    },
-    // get the video
-    function (callback) {
-      visionDb.get(req.params.id, {
-        include_docs: true
-      }, function (err, body) {
-        callback(err, body);
-      });
-    },
-    // remove the thumbnail
-    function (video, callback) {
-      if (video.hasOwnProperty("_attachments") &&
-        video._attachments.hasOwnProperty("thumbnail.jpg")) {
-        console.log("Removing thumbnail...");
-        visionDb.attachment.destroy(video._id, "thumbnail.jpg", {
-          rev: video._rev
-        }, function (err, body) {
-          callback(err);
-        })
-      } else {
-        callback(null);
-      }
-    },
-    // read the video again (new rev)
-    function (callback) {
-      console.log("Refreshing video document...");
-      visionDb.get(req.params.id, {
-        include_docs: true
-      }, function (err, body) {
-        callback(err, body);
-      });
-    }
-    ,
-    // remove its metadata so it gets re-analyzed
-    function (video, callback) {
-      console.log("Removing metadata...");
-      delete video.metadata;
-      delete video.frame_count;
-      visionDb.insert(video, function (err, body, headers) {
-        callback(err, body);
-      });
-    }
-  ], function (err, result) {
+  mediaStorage.videoReset(req.params.id, (err, result) => {
     if (err) {
       console.log(err);
       res.status(500).send({
@@ -598,31 +395,7 @@ app.get("/api/videos/:id/reset", checkForAuthentication, function (req, res) {
  * Deletes all generated data for images in the video so that they get analyzed again.
  */
 app.get("/api/videos/:id/reset-images", checkForAuthentication, function (req, res) {
-  async.waterfall([
-    // get all images for this video
-    function (callback) {
-      console.log("Retrieving all images for", req.params.id);
-      visionDb.view("images", "by_video_id", {
-        key: req.params.id,
-        include_docs: true
-      }, function (err, body) {
-        callback(err, body ? body.rows.map(function(row) { return row.doc }) : null);
-      });
-    },
-    // remove their analysis and save them
-    function (images, callback) {
-      images.forEach(function(image) {
-        delete image.analysis;
-      });
-      var toBeUpdated = {
-        docs: images
-      };
-      console.log("Updating", toBeUpdated.docs.length, "images...");
-      visionDb.bulk(toBeUpdated, function (err, body) {
-        callback(err, body);
-      });
-    },
-  ], function (err, result) {
+  mediaStorage.videoImagesReset(req.params.id, (err, result) => {
     if (err) {
       console.log(err);
       res.status(500).send({
@@ -663,26 +436,23 @@ app.post("/upload/image", upload.single("file"), function (req, res) {
 });
 
 function uploadDocument(doc, attachmentName, req, res) {
-  visionDb.insert(doc, function (err, body, headers) {
+  mediaStorage.insert(doc, (err, insertedDoc) => {
     if (err) {
       res.status(err.statusCode).send("Error saving video document");
     } else {
-      doc = body;
-      console.log("Created new document", doc);
+      doc = insertedDoc;
+      console.log("Created new document", doc, "for", req.file);
       fs.createReadStream(req.file.destination + "/" + req.file.filename).pipe(
-        uploadDb.attachment.insert(doc.id, attachmentName, null, req.file.mimetype, {
-            rev: doc.rev
-          },
-          function (err, body) {
-            console.log("Upload completed");
-            fs.unlink(req.file.destination + "/" + req.file.filename);
-            if (err) {
-              console.log(err.statusCode, err.request);
-              res.status(err.statusCode).send("error saving file");
-            } else {
-              res.send(body);
-            }
-          }));
+        mediaStorage.attach(doc, attachmentName, req.file.mimetype, (err, attachedDoc) => {
+          console.log("Upload completed");
+          fs.unlink(req.file.destination + "/" + req.file.filename);
+          if (err) {
+            console.log(err.statusCode, err.request);
+            res.status(err.statusCode).send("error saving file");
+          } else {
+            res.send(attachedDoc);
+          }
+        }));
     }
   });
 }
@@ -694,71 +464,13 @@ function uploadDocument(doc, attachmentName, req, res) {
 app.get("/api/status", function (req, res) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
-  var status = {
-    videos: {},
-    images: {}
-  }
-
-  async.parallel([
-    function (callback) {
-      visionDb.view("videos", "all", function (err, body) {
-        if (body) {
-          status.videos.count = body.total_rows;
-          status.videos.all = body.rows;
-        }
-        callback(null);
-      });
-    },
-    function (callback) {
-      visionDb.view("videos", "to_be_analyzed", function (err, body) {
-        if (body) {
-          status.videos.to_be_analyzed = body.total_rows;
-        }
-        callback(null);
-      });
-    },
-    function (callback) {
-      visionDb.view("images", "all", function (err, body) {
-        if (body) {
-          status.images.count = body.total_rows;
-        }
-        callback(null);
-      });
-    },
-    function (callback) {
-      visionDb.view("images", "to_be_analyzed", function (err, body) {
-        if (body) {
-          status.images.to_be_analyzed = body.total_rows;
-        }
-        callback(null);
-      });
-    },
-    function (callback) {
-      visionDb.view("images", "total_by_video_id", {
-        reduce: true,
-        group: true
-      }, function (err, body) {
-        if (body) {
-          status.images.by_video_id = body.rows;
-        }
-        callback(null);
-      });
-    },
-    function (callback) {
-      visionDb.view("images", "processed_by_video_id", {
-        reduce: true,
-        group: true
-      }, function (err, body) {
-        if (body) {
-          status.images.processed_by_video_id = body.rows;
-        }
-        callback(null);
-      });
+  mediaStorage.status((err, status) => {
+    if (err) {
+      res.send(500);
+    } else {
+      res.send(status);
     }
-  ], function (err, result) {
-    res.send(status);
-  });
+  })
 });
 
 // serve the files out of ./public as our main files
