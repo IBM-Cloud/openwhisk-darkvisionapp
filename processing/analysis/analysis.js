@@ -53,8 +53,10 @@ function mainImpl(args, mainCallback) {
     // use image id to build a unique filename
     var fileName = imageDocumentId + "-image.jpg";
 
-    var mediaStorage = require('./lib/cloudantstorage')
-      (args.cloudantUrl, args.cloudantDbName);
+    var mediaStorage = require('./lib/cloudantstorage')({
+      cloudantUrl: args.cloudantUrl,
+      cloudantDbName: args.cloudantDbName
+    });
 
     var async = require('async')
     async.waterfall([
@@ -66,7 +68,7 @@ function mainImpl(args, mainCallback) {
       },
       // get the image binary
       function (image, callback) {
-        mediaStorage.read(image._id, "image.jpg").pipe(fs.createWriteStream(fileName))
+        mediaStorage.read(image, "image.jpg").pipe(fs.createWriteStream(fileName))
           .on("finish", function () {
             callback(null, image);
           })

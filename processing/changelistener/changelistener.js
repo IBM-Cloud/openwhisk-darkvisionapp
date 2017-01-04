@@ -59,7 +59,10 @@ function main(event) {
 exports.main = main;
 
 function onDocumentChange(cloudantUrl, cloudantDbName, documentId, documentRev, callback) {
-  var mediaStorage = require('./lib/cloudantstorage')(cloudantUrl, cloudantDbName);
+  var mediaStorage = require('./lib/cloudantstorage')({
+    cloudantUrl: cloudantUrl,
+    cloudantDbName: cloudantDbName
+  });
   mediaStorage.get(documentId, function (err, doc) {
     if (err) {
       console.log("[", documentId, "] KO", err);

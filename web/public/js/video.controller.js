@@ -32,6 +32,7 @@
 
     VideosService.images($stateParams.videoId).then(function (images) {
       controller.data.images = images;
+      controller.data.notProcessed = images.filter(image => image.analysis === null).length;
     });
 
     VideosService.summary($stateParams.videoId).then(function (summary) {

@@ -41,7 +41,13 @@ function install() {
   wsk package update vision\
     -p cloudantUrl https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host\
     -p watsonApiKey $WATSON_API_KEY\
-    -p cloudantDbName $CLOUDANT_db
+    -p cloudantDbName $CLOUDANT_db\
+    -p osAuthUrl "$OS_AUTH_URL"\
+    -p osProjectId "$OS_PROJECT_ID"\
+    -p osRegion "$OS_REGION"\
+    -p osUsername "$OS_USERNAME"\
+    -p osPassword "$OS_PASSWORD"\
+    -p osDomainId "$OS_DOMAIN_ID"
 
   # we will need to listen to cloudant event
   echo "Binding cloudant"

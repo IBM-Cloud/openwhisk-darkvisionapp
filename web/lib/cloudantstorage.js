@@ -1,28 +1,28 @@
 const Cloudant = require('cloudant');
 const async = require('async');
-const fs = require('fs');
 
-function CloudandStorage(cloudantUrl, cloudantDbName, initializeDatabase) {
-  var self = this;
+function CloudandStorage(options) {
+  const self = this;
 
   // Cloudant plans have rate limits.
   // The 'retry' plugin catches error 429 from Cloudant and automatically retries
   const cloudant = Cloudant({
-    url: cloudantUrl,
+    url: options.cloudantUrl,
     plugin: 'retry',
     retryAttempts: 10,
     retryTimeout: 500
   }).db;
   const cloudantNoRetry = Cloudant({
-    url: cloudantUrl
+    url: options.cloudantUrl
   }).db;
 
   let visionDb;
   let uploadDb;
+  const fileStore = options.fileStore;
 
-  if (!initializeDatabase) {
-    visionDb = cloudant.use(cloudantDbName);
-    uploadDb = cloudantNoRetry.use(cloudantDbName);
+  if (!options.initializeDatabase) {
+    visionDb = cloudant.use(options.cloudantDbName);
+    uploadDb = cloudantNoRetry.use(options.cloudantDbName);
   } else {
     const prepareDbTasks = [];
 
@@ -30,7 +30,7 @@ function CloudandStorage(cloudantUrl, cloudantDbName, initializeDatabase) {
     prepareDbTasks.push(
       function (callback) {
         console.log('Creating database...');
-        cloudant.create(cloudantDbName, function (err, body) {
+        cloudant.create(options.cloudantDbName, function (err, body) {
           if (err && err.statusCode == 412) {
             console.log('Database already exists');
             callback(null);
@@ -45,9 +45,9 @@ function CloudandStorage(cloudantUrl, cloudantDbName, initializeDatabase) {
     // use it
     prepareDbTasks.push(
       function (callback) {
-        console.log('Setting current database to', cloudantDbName);
-        visionDb = cloudant.use(cloudantDbName);
-        uploadDb = cloudantNoRetry.use(cloudantDbName);
+        console.log('Setting current database to', options.cloudantDbName);
+        visionDb = cloudant.use(options.cloudantDbName);
+        uploadDb = cloudantNoRetry.use(options.cloudantDbName);
         callback(null);
       });
 
@@ -85,26 +85,80 @@ function CloudandStorage(cloudantUrl, cloudantDbName, initializeDatabase) {
 
   // attach a file to a document with a pipe
   self.attach = function(doc, attachmentName, attachmentMimetype, attachCallback/*err, body*/) {
-    return uploadDb.attachment.insert(doc._id || doc.id, attachmentName, null, attachmentMimetype, {
-        rev: doc._rev || doc.rev
-      }, attachCallback);
+    if (!doc._id) {
+      throw new Error('Need a full document here');
+    }
+
+    if (fileStore) {
+      // store the file
+      console.log('Attaching file to external storage...');
+      const filename = `${doc._id}-${attachmentName}`;
+      const uploadBucket = fileStore.write(filename);
+
+      uploadBucket.on('error', function(err) {
+        attachCallback(err);
+      });
+
+      uploadBucket.on('success', function(file) {
+        console.log(`Upload complete ${file.name} (${file.size} bytes)`);
+
+        if (!doc.attachments) {
+          doc.attachments = {};
+        }
+        // update the document in cloudant with the pointer to the attachment
+        doc.attachments[attachmentName] = {
+          content_type: attachmentMimetype,
+          length: file.size,
+          url: fileStore.storageUrl() + '/' + filename
+        };
+        visionDb.insert(doc, function(err, body) {
+          attachCallback(err, body);
+        });
+      });
+
+      return uploadBucket;
+    } else {
+      return uploadDb.attachment.insert(doc._id, attachmentName, null, attachmentMimetype, {
+          rev: doc._rev
+        }, attachCallback);
+    }
   }
 
   // attach a file passed as argument to a document
   self.attachFile = function(doc, attachmentName, data, attachmentMimetype, attachCallback/*err, body*/) {
-    visionDb.attachment.insert(doc._id || doc.id, attachmentName, data, attachmentMimetype, {
-      rev: doc._rev || doc.rev
-    }, attachCallback);
+    if (fileStore) {
+      var stream = require('stream');
+      var bufferStream = new stream.PassThrough();
+      bufferStream.end(data);
+      bufferStream.pipe(self.attach(doc, attachmentName, attachmentMimetype, attachCallback));
+    } else {
+      visionDb.attachment.insert(doc._id || doc.id, attachmentName, data, attachmentMimetype, {
+        rev: doc._rev || doc.rev
+      }, attachCallback);
+    }
   }
 
   // return the length of the given attachment
   self.getAttachmentSize = function(doc, attachmentName) {
-    return doc._attachments[attachmentName].length;
+    if (doc.hasOwnProperty('_attachments')) {
+      return doc._attachments[attachmentName].length;
+    } else if (doc.hasOwnProperty('attachments')) {
+      return doc.attachments[attachmentName].length;
+    } else {
+      return -1;
+    }
   }
 
-  // read a file attached to a document
-  self.read = function(docId, attachmentName) {
-    return visionDb.attachment.get(docId, attachmentName);
+  // read a file attached to a document or a URL as a string pointing to the content
+  self.read = function(docOrId, attachmentName) {
+     // this is a real doc and we detect and external storage, stream from the storage
+    if (docOrId.attachments) {
+      return require('request').get(docOrId.attachments[attachmentName].url);
+    } else if (fileStore) {
+      return fileStore.read(`${docOrId}-${attachmentName}`);
+    } else {
+      return visionDb.attachment.get(docOrId._id || docOrId, attachmentName);
+    }
   }
 
   // return statistics about processed vs. unprocessed videos
@@ -209,21 +263,20 @@ function CloudandStorage(cloudantUrl, cloudantDbName, initializeDatabase) {
     ], resetCallback);
   }
 
-  // delete one image
-  self.imageDelete = function(imageId, deleteCallback/*err, result*/) {
+  // delete one media
+  self.delete = function(mediaId, deleteCallback/*err, result*/) {
     async.waterfall([
       function (callback) {
         // get the image
-        visionDb.get(imageId, {
+        visionDb.get(mediaId, {
           include_docs: true
         }, (err, body) => {
           callback(err, body);
         });
       },
-      function (image, callback) {
-        console.log("Deleting image...");
-        delete image.analysis;
-        visionDb.destroy(image._id, image._rev, (err, body) => {
+      function (doc, callback) {
+        console.log("Deleting media...");
+        visionDb.destroy(doc._id, doc._rev, (err, body) => {
           callback(err, body);
         });
       }
@@ -372,23 +425,29 @@ function CloudandStorage(cloudantUrl, cloudantDbName, initializeDatabase) {
     ], resetCallback);
   }
 
+  function hasAttachment(doc, attachmentName) {
+    return (doc.hasOwnProperty('attachments') && doc.attachments.hasOwnProperty(attachmentName)) ||
+      (doc.hasOwnProperty('_attachments') && doc._attachments.hasOwnProperty(attachmentName));
+  }
+
   // check if a video or image has already been processed
   self.isReadyToProcess = function(doc) {
-    if (doc.type === "video") {
-      return doc.hasOwnProperty("_attachments") &&
-        doc._attachments.hasOwnProperty("video.mp4") &&
-        !doc.hasOwnProperty("metadata");
-    } else if (doc.type === "image") {
-      return !doc.hasOwnProperty("analysis") &&
-        doc.hasOwnProperty("_attachments") &&
-        doc._attachments.hasOwnProperty("image.jpg");
-    } else {
+    try {
+      if (doc.type === "video") {
+        return hasAttachment(doc, "video.mp4") && !doc.hasOwnProperty("metadata");
+      } else if (doc.type === "image") {
+        return hasAttachment(doc, "image.jpg") && !doc.hasOwnProperty("analysis");
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log(error);
       return false;
     }
-
   }
+
 }
 
-module.exports = function(cloudantUrl, cloudantDbName, initializeDatabase = false) {
-  return new CloudandStorage(cloudantUrl, cloudantDbName, initializeDatabase);
+module.exports = function(options) {
+  return new CloudandStorage(options);
 }

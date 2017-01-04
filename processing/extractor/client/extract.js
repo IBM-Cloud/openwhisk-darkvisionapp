@@ -46,9 +46,6 @@ function getFps(durationInSeconds) {
   */
 }
 
-var mediaStorage = require('./lib/cloudantstorage')
-  (payload.cloudantUrl, payload.cloudantDbName);
-
 // create a temporary directory to process the video
 var workingDirectory = tmp.dirSync({
   prefix: 'extractor-' + doc._id
@@ -60,10 +57,48 @@ console.log("Using temp dir", workingDirectory.name);
 var framesDirectory = workingDirectory.name + "/frames";
 fs.mkdirSync(framesDirectory);
 
+var mediaStorage;
 var videoDocument;
 var inputFilename = workingDirectory.name + "/video.mp4";
 
 async.waterfall([
+  // establish the storage connection if configured in payload
+  function(callback) {
+    if (!payload.osPassword) {
+      console.log('Media files are stored in Cloudant.');
+      callback(null, null);
+    } else {
+      var osConfig = {
+          provider: 'openstack',
+          useServiceCatalog: true,
+          useInternal: false,
+          keystoneAuthVersion: 'v3',
+          authUrl: payload.osAuthUrl,
+          tenantId: payload.osProjectId,
+          domainId: payload.osDomainId,
+          username: payload.osUsername,
+          password: payload.osPassword,
+          region: payload.osRegion
+      };
+      require('./lib/objectstorage')(osConfig, function(err, fileStore) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, fileStore);
+        }
+      });
+    }
+  },
+  // connect to the database
+  function (fileStore, callback) {
+    console.log('Initializing Cloudant...');
+    mediaStorage = require('./lib/cloudantstorage')({
+      cloudantUrl: payload.cloudantUrl,
+      cloudantDbName: payload.cloudantDbName,
+      fileStore: fileStore
+    });
+    callback(null);
+  },
   // load the document from the database
   function (callback) {
       mediaStorage.get(doc._id,
@@ -92,7 +127,7 @@ async.waterfall([
       var currentSize = 0;
       var lastProgress = undefined;
 
-      mediaStorage.read(videoDocument._id, "video.mp4")
+      mediaStorage.read(videoDocument, "video.mp4")
         .on('data', function (data) {
           currentSize += data.length
 
@@ -259,7 +294,8 @@ function createDocument(frameDocument, attachmentName, attachmentMimetype, attac
       console.log("error saving image", err);
       callback(err);
     } else {
-      frameDocument = body;
+      frameDocument._id = body.id;
+      frameDocument._rev = body.rev;
       console.log("Created new document", frameDocument);
 
       fs.readFile(attachmentFile, function(err, data) {

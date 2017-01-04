@@ -60,9 +60,26 @@ try {
           },
           "label": "cloudant",
           "name": "cloudant-for-darkvision"
-      }
-    ]
+        }
+      ]
     }
+  };
+
+  if (process.env.OS_PASSWORD) {
+    vcapLocal.services["Object-Storage"] = [
+      {
+        "credentials": {
+          "auth_url": process.env.OS_AUTH_URL,
+          "projectId": process.env.OS_PROJECT_ID,
+          "region": process.env.OS_REGION,
+          "username": process.env.OS_USERNAME,
+          "password": process.env.OS_PASSWORD,
+          "domainId": process.env.OS_DOMAIN_ID
+        },
+        "label": "Object-Storage",
+        "name": "objectstorage-for-darkvision"
+      }
+    ];
   };
   console.log("Loaded local VCAP", vcapLocal);
 } catch (e) {
@@ -75,8 +92,31 @@ var appEnvOpts = vcapLocal ? {
 } : {}
 var appEnv = cfenv.getAppEnv(appEnvOpts);
 
-var mediaStorage = require('./lib/cloudantstorage')
-  (appEnv.getServiceCreds("cloudant-for-darkvision").url, 'openwhisk-darkvision', true);
+var osCreds = appEnv.getServiceCreds("objectstorage-for-darkvision");
+var fileStore = null;
+if (osCreds) {
+  var osConfig = {
+      provider: 'openstack',
+      useServiceCatalog: true,
+      useInternal: false,
+      keystoneAuthVersion: 'v3',
+      authUrl: osCreds.auth_url,
+      tenantId: osCreds.projectId,
+      domainId: osCreds.domainId,
+      username: osCreds.username,
+      password: osCreds.password,
+      region: osCreds.region
+  };
+  fileStore = require('./lib/objectstorage')(osConfig);
+}
+
+var mediaStorage = require('./lib/cloudantstorage')(
+  {
+    cloudantUrl: appEnv.getServiceCreds("cloudant-for-darkvision").url,
+    cloudantDbName: 'openwhisk-darkvision',
+    initializeDatabase: true,
+    fileStore: fileStore
+  });
 
 /**
  * Returns an image attachment for a given video or image id,
@@ -122,7 +162,7 @@ app.get("/api/images/:id/reset", checkForAuthentication, function (req, res) {
  * Deletes a single image
  */
 app.delete("/api/images/:id", checkForAuthentication, function (req, res) {
-  mediaStorage.imageDelete(req.params.id, (err, result) => {
+  mediaStorage.delete(req.params.id, (err, result) => {
     if (err) {
       console.log(err);
       res.status(500).send({
@@ -438,9 +478,10 @@ app.post("/upload/image", upload.single("file"), function (req, res) {
 function uploadDocument(doc, attachmentName, req, res) {
   mediaStorage.insert(doc, (err, insertedDoc) => {
     if (err) {
-      res.status(err.statusCode).send("Error saving video document");
+      res.status(err.statusCode).send("Error persisting media document");
     } else {
-      doc = insertedDoc;
+      doc._id = insertedDoc.id;
+      doc._rev = insertedDoc.rev;
       console.log("Created new document", doc, "for", req.file);
       fs.createReadStream(req.file.destination + "/" + req.file.filename).pipe(
         mediaStorage.attach(doc, attachmentName, req.file.mimetype, (err, attachedDoc) => {
@@ -448,8 +489,11 @@ function uploadDocument(doc, attachmentName, req, res) {
           fs.unlink(req.file.destination + "/" + req.file.filename);
           if (err) {
             console.log(err.statusCode, err.request);
-            res.status(err.statusCode).send("error saving file");
+            mediaStorage.delete(doc, function(deleteErr, deleteResult) {
+              res.status(err.statusCode).send("Error saving media attachment");
+            });
           } else {
+            console.log('Sending', attachedDoc);
             res.send(attachedDoc);
           }
         }));

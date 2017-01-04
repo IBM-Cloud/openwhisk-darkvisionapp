@@ -54,7 +54,7 @@
 
   </div>
 
-  <h2>{{controller.data.images.length}} Frames</h2>
+  <h2>{{controller.data.images.length}} Frames <span ng-if="controller.data.notProcessed>0" class="text-muted">({{controller.data.notProcessed}})</span></h2>
   <div>
     <ng-include ng-repeat="image in controller.data.images" src="'/partials/image.html'"></ng-include>
   </div>
