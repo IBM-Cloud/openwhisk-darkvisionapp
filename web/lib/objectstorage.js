@@ -15,14 +15,14 @@ function ObjectStorage(osConfig, initializeStorageCallback/* err, objectStorage*
         if (err) {
           callback(err);
         } else {
-          console.log('Connected to storage with tenant', storageClient._identity.options.tenantId);
+          console.log('[objectstorage]', 'Connected to storage with tenant', storageClient._identity.options.tenantId);
           callback(null);
         }
       });
     },
     // create container
     function(callback) {
-      console.log('Creating storage container...');
+      console.log('[objectstorage]', 'Creating storage container...');
       storageClient.createContainer({
         name: storageContainerName,
         metadata: {
@@ -32,7 +32,7 @@ function ObjectStorage(osConfig, initializeStorageCallback/* err, objectStorage*
         if (err) {
           callback(err);
         } else {
-          console.log('Got container at', container.client._serviceUrl);
+          console.log('[objectstorage]', 'Got container at', container.client._serviceUrl);
           storageContainer = container;
           callback(null);
         }
@@ -40,7 +40,7 @@ function ObjectStorage(osConfig, initializeStorageCallback/* err, objectStorage*
     },
     // make container public
     function(callback) {
-      console.log('Making storage container public...');
+      console.log('[objectstorage]', 'Making storage container public...');
       require('request')({
         url: self.storageUrl(),
         method: 'POST',
@@ -54,9 +54,9 @@ function ObjectStorage(osConfig, initializeStorageCallback/* err, objectStorage*
     }
   ], (err) => {
     if (err) {
-      console.log(err);
+      console.log('[objectstorage]', err);
     } else {
-      console.log('Storage container is ready at', self.storageUrl());
+      console.log('[objectstorage]', 'Storage container is ready at', self.storageUrl());
     }
     if (initializeStorageCallback) {
       initializeStorageCallback(err, self);
@@ -68,6 +68,7 @@ function ObjectStorage(osConfig, initializeStorageCallback/* err, objectStorage*
   };
 
   self.write = function(filename) {
+    console.log('[objectstorage]', 'New upload to', filename);
     const upload = storageClient.upload({
       container: storageContainerName,
       remote: filename
@@ -78,6 +79,7 @@ function ObjectStorage(osConfig, initializeStorageCallback/* err, objectStorage*
   };
 
   self.read = function(filename) {
+    console.log('[objectstorage]', 'Read', filename);
     const download = storageClient.download({
       container: storageContainerName,
       remote: filename
@@ -85,7 +87,13 @@ function ObjectStorage(osConfig, initializeStorageCallback/* err, objectStorage*
     return download;
   };
 
-  self.delete = function() {
+  self.delete = function(filename, callback) {
+    console.log('[objectstorage]', 'Delete', filename);
+    storageClient.removeFile(storageContainer, filename, (err) => {
+      if (callback) {
+        callback(err);
+      }
+    });
   };
 }
 

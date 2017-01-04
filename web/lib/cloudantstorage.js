@@ -266,16 +266,18 @@ function CloudandStorage(options) {
   // delete one media
   self.delete = function(mediaId, deleteCallback/*err, result*/) {
     async.waterfall([
+      // get the media
       function (callback) {
-        // get the image
         visionDb.get(mediaId, {
           include_docs: true
         }, (err, body) => {
           callback(err, body);
         });
       },
+      // delete its attachments
       function (doc, callback) {
         console.log("Deleting media...");
+        removeFileStoreAttachments(doc);
         visionDb.destroy(doc._id, doc._rev, (err, body) => {
           callback(err, body);
         });
@@ -294,6 +296,30 @@ function CloudandStorage(options) {
         videosCallback(null, body.rows.map((doc) => doc.doc));
       }
     });
+  }
+
+  function removeFileStoreAttachments(doc) {
+    if (fileStore && doc.attachments) {
+      Object.keys(doc.attachments).forEach((key) => {
+        const filename = `${doc._id}-${key}`;
+        fileStore.delete(filename, (err) => {
+          if (err) {
+            console.log('Failed to delete', filename);
+          }
+        });
+      });
+    }
+  }
+
+  function removeFileStoreAttachment(doc, attachmentName) {
+    if (fileStore && doc.attachments && doc.attachments[attachmentName]) {
+      const filename = `${doc._id}-${attachmentName}`;
+      fileStore.delete(filename, (err) => {
+        if (err) {
+          console.log('Failed to delete', filename);
+        }
+      });
+    }
   }
 
   // get one media
@@ -342,6 +368,7 @@ function CloudandStorage(options) {
             }
           })
         };
+        images.forEach((image) => removeFileStoreAttachments(image.doc));
         console.log("Deleting", toBeDeleted.docs.length, "images...");
         if (toBeDeleted.docs.length > 0) {
           visionDb.bulk(toBeDeleted, function (err, body) {
@@ -362,7 +389,10 @@ function CloudandStorage(options) {
       },
       // remove the thumbnail
       function (video, callback) {
-        if (video.hasOwnProperty("_attachments") &&
+        if (fileStore) {
+          removeFileStoreAttachment(video, "thumbnail.jpg");
+          callback(null);
+        } else if (video.hasOwnProperty("_attachments") &&
           video._attachments.hasOwnProperty("thumbnail.jpg")) {
           console.log("Removing thumbnail...");
           visionDb.attachment.destroy(video._id, "thumbnail.jpg", {
@@ -382,8 +412,7 @@ function CloudandStorage(options) {
         }, function (err, body) {
           callback(err, body);
         });
-      }
-      ,
+      },
       // remove its metadata so it gets re-analyzed
       function (video, callback) {
         console.log("Removing metadata...");
