@@ -1,0 +1,16 @@
+{
+  "name": "openwhisk-darkvisionapp",
+  "version": "1.0.0",
+  "scripts": {
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "eslint": "3.9.1",
+    "eslint-config-airbnb": "13.0.0",
+    "eslint-plugin-import": "2.2.0",
+    "eslint-plugin-jsx-a11y": "2.2.3",
+    "eslint-plugin-promise": "3.3.2",
+    "eslint-plugin-react": "6.6.0"
+  }
+}

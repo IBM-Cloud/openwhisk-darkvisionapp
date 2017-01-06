@@ -17,15 +17,15 @@
 /**
  * Called by Whisk.
  *
- * It expects the following parameters as attributes of "args"
+ * It expects the following parameters as attributes of 'args'
  * - cloudantUrl: "https://username:password@host"
  * - cloudantDbName: "openwhisk-darkvision"
  * - watsonApiKey: "123456"
  * - doc: "image document in cloudant"
  */
 function main(args) {
-  return new Promise(function(resolve, reject) {
-    mainImpl(args, function(err, result) {
+  return new Promise((resolve, reject) => {
+    mainImpl(args, (err, result) => {
       if (err) {
         reject(err);
       } else {
@@ -41,44 +41,42 @@ exports.main = main;
  * @param mainCallback(err, analysis)
  */
 function mainImpl(args, mainCallback) {
-  var fs = require('fs')
-  var request = require('request')
+  const fs = require('fs');
+  const startTime = (new Date()).getTime();
 
-  var startTime = (new Date).getTime();
-
-  if (args.hasOwnProperty("doc")) {
-    var imageDocumentId = args.doc._id;
-    console.log("[", imageDocumentId, "] Processing image.jpg from document");
+  if (args.doc) {
+    const imageDocumentId = args.doc._id;
+    console.log('[', imageDocumentId, '] Processing image.jpg from document');
 
     // use image id to build a unique filename
-    var fileName = imageDocumentId + "-image.jpg";
+    const fileName = `${imageDocumentId}-image.jpg`;
 
-    var mediaStorage = require('./lib/cloudantstorage')({
+    const mediaStorage = require('./lib/cloudantstorage')({
       cloudantUrl: args.cloudantUrl,
       cloudantDbName: args.cloudantDbName
     });
 
-    var async = require('async')
+    const async = require('async');
     async.waterfall([
       // get the image document from the db
-      function (callback) {
-        mediaStorage.get(imageDocumentId, function (err, image) {
+      (callback) => {
+        mediaStorage.get(imageDocumentId, (err, image) => {
           callback(err, image);
         });
       },
       // get the image binary
-      function (image, callback) {
-        mediaStorage.read(image, "image.jpg").pipe(fs.createWriteStream(fileName))
-          .on("finish", function () {
+      (image, callback) => {
+        mediaStorage.read(image, 'image.jpg').pipe(fs.createWriteStream(fileName))
+          .on('finish', () => {
             callback(null, image);
           })
-          .on("error", function (err) {
+          .on('error', (err) => {
             callback(err);
           });
       },
       // trigger the analysis on the image file
-      function (image, callback) {
-        processImage(args, fileName, function (err, analysis) {
+      (image, callback) => {
+        processImage(args, fileName, (err, analysis) => {
           if (err) {
             callback(err);
           } else {
@@ -87,9 +85,9 @@ function mainImpl(args, mainCallback) {
         });
       },
       // write result in the db
-      function (image, analysis, callback) {
-        image.analysis = analysis
-        mediaStorage.insert(image, function (err, body) {
+      (image, analysis, callback) => {
+        image.analysis = analysis;
+        mediaStorage.insert(image, (err) => {
           if (err) {
             callback(err);
           } else {
@@ -97,23 +95,23 @@ function mainImpl(args, mainCallback) {
           }
         });
       }
-    ], function (err, analysis) {
-      var durationInSeconds = ((new Date).getTime() - startTime) / 1000;
+    ], (err, analysis) => {
+      const durationInSeconds = ((new Date()).getTime() - startTime) / 1000;
 
       if (err) {
-        console.log("[", imageDocumentId, "] KO (", durationInSeconds, "s)", err);
+        console.log('[', imageDocumentId, '] KO (', durationInSeconds, 's)', err);
         mainCallback(err);
       } else {
-        console.log("[", imageDocumentId, "] OK (", durationInSeconds, "s)");
+        console.log('[', imageDocumentId, '] OK (', durationInSeconds, 's)');
         mainCallback(null, analysis);
       }
     });
     return true;
-  } else {
-    console.log("Parameter 'doc' not found", args);
-    mainCallback("Parameter 'doc' not found");
-    return false;
   }
+
+  console.log('Parameter "doc" not found', args);
+  mainCallback('Parameter "doc" not found');
+  return false;
 }
 
 /**
@@ -121,12 +119,12 @@ function mainImpl(args, mainCallback) {
  * processCallback = function(err, analysis);
  */
 function processImage(args, fileName, processCallback) {
-  prepareImage(fileName, function (prepareErr, prepareFileName) {
+  prepareImage(fileName, (prepareErr, prepareFileName) => {
     if (prepareErr) {
       processCallback(prepareErr, null);
     } else {
-      analyzeImage(args, prepareFileName, function (err, analysis) {
-        var fs = require('fs');
+      analyzeImage(args, prepareFileName, (err, analysis) => {
+        const fs = require('fs');
         fs.unlink(prepareFileName);
         processCallback(err, analysis);
       });
@@ -139,17 +137,16 @@ function processImage(args, fileName, processCallback) {
  * prepareCallback = function(err, fileName);
  */
 function prepareImage(fileName, prepareCallback) {
-  var
-    fs = require('fs'),
-    async = require('async'),
-    gm = require('gm').subClass({
-      imageMagick: true
-    });
+  const fs = require('fs');
+  const async = require('async');
+  const gm = require('gm').subClass({
+    imageMagick: true
+  });
 
   async.waterfall([
-    function (callback) {
+    (callback) => {
       // Retrieve the file size
-      fs.stat(fileName, function (err, stats) {
+      fs.stat(fileName, (err, stats) => {
         if (err) {
           callback(err);
         } else {
@@ -158,24 +155,24 @@ function prepareImage(fileName, prepareCallback) {
       });
     },
     // Check if size is OK
-    function (fileStats, callback) {
+    (fileStats, callback) => {
       if (fileStats.size > 900 * 1024) {
         // Resize the file
-        gm(fileName).define("jpeg:extent=900KB").write(fileName + ".jpg",
-          function (err) {
+        gm(fileName).define('jpeg:extent=900KB').write(`${fileName}.jpg`,
+          (err) => {
             if (err) {
               callback(err);
             } else {
               // Process the modified file
-              callback(null, fileName + ".jpg");
+              callback(null, `${fileName}.jpg`);
             }
           });
       } else {
         callback(null, fileName);
       }
     }
-  ], function (err, fileName) {
-    prepareCallback(err, fileName);
+  ], (err, resultFileName) => {
+    prepareCallback(err, resultFileName);
   });
 }
 
@@ -184,81 +181,75 @@ function prepareImage(fileName, prepareCallback) {
  * analyzeCallback = function(err, analysis);
  */
 function analyzeImage(args, fileName, analyzeCallback) {
-  var
-    request = require('request'),
-    async = require('async'),
-    fs = require('fs'),
-    gm = require('gm').subClass({
-      imageMagick: true
-    }),
-    analysis = {};
+  const request = require('request');
+  const async = require('async');
+  const fs = require('fs');
+  const gm = require('gm').subClass({
+    imageMagick: true
+  });
+  const analysis = {};
 
   async.parallel([
-    function (callback) {
-        // Write down meta data about the image
-        gm(fileName).size(function (err, size) {
+    (callback) => {
+      // Write down meta data about the image
+      gm(fileName).size((err, size) => {
+        if (err) {
+          console.log('Image size', err);
+        } else {
+          analysis.size = size;
+        }
+        callback(null);
+      });
+    },
+    (callback) => {
+      // Call Face Detection passing the image in the request
+      // http://www.ibm.com/watson/developercloud/visual-recognition/api/v3/?curl#detect_faces
+      fs.createReadStream(fileName).pipe(
+        request({
+          method: 'POST',
+          url: 'https://gateway-a.watsonplatform.net/visual-recognition/api/v3/detect_faces' + // eslint-disable-line
+            '?api_key=' + args.watsonApiKey +
+            '&version=2016-05-20',
+          headers: {
+            'Content-Length': fs.statSync(fileName).size
+          },
+          json: true
+        }, (err, response, body) => {
           if (err) {
-            console.log("Image size", err);
-          } else {
-            analysis.size = size;
+            console.log('Face Detection', err);
+          } else if (body.images && body.images.length > 0) {
+            // sort the faces from left to right
+            analysis.face_detection = body.images[0].faces.sort((face1, face2) =>
+              face1.face_location.left - face2.face_location.left
+            );
           }
           callback(null);
-        });
+        }));
     },
-    function (callback) {
-        // Call Face Detection passing the image in the request
-        // http://www.ibm.com/watson/developercloud/visual-recognition/api/v3/?curl#detect_faces
-        fs.createReadStream(fileName).pipe(
-          request({
-              method: "POST",
-              url: "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/detect_faces" +
-                "?api_key=" + args.watsonApiKey +
-                "&version=2016-05-20",
-              headers: {
-                'Content-Length': fs.statSync(fileName).size
-              },
-              json: true
-
-            },
-            function (err, response, body) {
-              if (err) {
-                console.log("Face Detection", err);
-              } else if (body.images && body.images.length > 0) {
-                // sort the faces from left to right
-                analysis.face_detection = body.images[0].faces.sort((face1, face2) => {
-                  return face1.face_location.left - face2.face_location.left;
-                });
-              }
-              callback(null);
-            }));
-    },
-    function (callback) {
-        // Call Classify passing the image in the request
-        // http://www.ibm.com/watson/developercloud/visual-recognition/api/v3/?curl#classify_an_image
-        fs.createReadStream(fileName).pipe(
-          request({
-              method: "POST",
-              url: "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/classify" +
-                "?api_key=" + args.watsonApiKey +
-                "&version=2016-05-20",
-              headers: {
-                'Content-Length': fs.statSync(fileName).size
-              },
-              json: true
-
-            },
-            function (err, response, body) {
-              if (err) {
-                console.log("Image Keywords", err);
-              } else if (body.images && body.images.length > 0) {
-                analysis.image_keywords = body.images[0].classifiers[0].classes;
-              }
-              callback(null);
-            }));
+    (callback) => {
+      // Call Classify passing the image in the request
+      // http://www.ibm.com/watson/developercloud/visual-recognition/api/v3/?curl#classify_an_image
+      fs.createReadStream(fileName).pipe(
+        request({
+          method: 'POST',
+          url: 'https://gateway-a.watsonplatform.net/visual-recognition/api/v3/classify' + // eslint-disable-line
+            '?api_key=' + args.watsonApiKey +
+            '&version=2016-05-20',
+          headers: {
+            'Content-Length': fs.statSync(fileName).size
+          },
+          json: true
+        }, (err, response, body) => {
+          if (err) {
+            console.log('Image Keywords', err);
+          } else if (body.images && body.images.length > 0) {
+            analysis.image_keywords = body.images[0].classifiers[0].classes;
+          }
+          callback(null);
+        }));
     }
   ],
-    function (err, result) {
-      analyzeCallback(err, analysis);
-    }
-  )
+  (err) => {
+    analyzeCallback(err, analysis);
+  });
 }

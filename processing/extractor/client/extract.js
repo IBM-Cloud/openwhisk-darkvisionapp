@@ -13,53 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var async = require('async');
-var fs = require('fs');
-var ffmpeg = require("fluent-ffmpeg");
-var tmp = require('tmp');
-var rimraf = require('rimraf');
+const async = require('async');
+const fs = require('fs');
+const ffmpeg = require('fluent-ffmpeg');
+const tmp = require('tmp');
+const rimraf = require('rimraf');
 
 // argv[2] is expected to be the payload JSON object as a string
-var payload = JSON.parse(process.argv[2])
+const payload = JSON.parse(process.argv[2]);
 
-console.log("Payload", payload);
-var doc = payload.doc;
+console.log('Payload', payload);
+const doc = payload.doc;
 
-var extractOptions = {
+const extractOptions = {
   videoThumbnailSize: 640
 };
 
 function getFps(durationInSeconds) {
   // this gives around 15 images per video
-  return "1/" + Math.ceil(durationInSeconds / 15);
+  return `1/${Math.ceil(durationInSeconds / 15)}`;
 
   // for a more complete analysis,
   // use this code that will extract up to 100 images
   /*
   if (durationInSeconds <= 10) {
-    return "2/1"; // 2 images per seconds
+    return '2/1'; // 2 images per seconds
   } else if (durationInSeconds > 10 && durationInSeconds <= 100) {
-    return "1/1"; // 1 image per seconds
-  } else {
-    return "1/" + Math.ceil(durationInSeconds / 100);
+    return '1/1'; // 1 image per seconds
+  } else { // eslint-disable-line no-else-return
+    return `1/${Math.ceil(durationInSeconds / 100)}`;
   }
   */
 }
 
 // create a temporary directory to process the video
-var workingDirectory = tmp.dirSync({
-  prefix: 'extractor-' + doc._id
+const workingDirectory = tmp.dirSync({
+  prefix: `extractor-${doc._id}`
 });
 // plan to clean up temp directories
 tmp.setGracefulCleanup();
-console.log("Using temp dir", workingDirectory.name);
+console.log('Using temp dir', workingDirectory.name);
 
-var framesDirectory = workingDirectory.name + "/frames";
+const framesDirectory = `${workingDirectory.name}/frames`;
 fs.mkdirSync(framesDirectory);
 
-var mediaStorage;
-var videoDocument;
-var inputFilename = workingDirectory.name + "/video.mp4";
+let mediaStorage;
+let videoDocument;
+const inputFilename = `${workingDirectory.name}/video.mp4`;
 
 async.waterfall([
   // establish the storage connection if configured in payload
@@ -68,19 +68,19 @@ async.waterfall([
       console.log('Media files are stored in Cloudant.');
       callback(null, null);
     } else {
-      var osConfig = {
-          provider: 'openstack',
-          useServiceCatalog: true,
-          useInternal: false,
-          keystoneAuthVersion: 'v3',
-          authUrl: payload.osAuthUrl,
-          tenantId: payload.osProjectId,
-          domainId: payload.osDomainId,
-          username: payload.osUsername,
-          password: payload.osPassword,
-          region: payload.osRegion
+      const osConfig = {
+        provider: 'openstack',
+        useServiceCatalog: true,
+        useInternal: false,
+        keystoneAuthVersion: 'v3',
+        authUrl: payload.osAuthUrl,
+        tenantId: payload.osProjectId,
+        domainId: payload.osDomainId,
+        username: payload.osUsername,
+        password: payload.osPassword,
+        region: payload.osRegion
       };
-      require('./lib/objectstorage')(osConfig, function(err, fileStore) {
+      require('./lib/objectstorage')(osConfig, (err, fileStore) => {
         if (err) {
           callback(err);
         } else {
@@ -90,225 +90,222 @@ async.waterfall([
     }
   },
   // connect to the database
-  function (fileStore, callback) {
+  (initializedFileStore, callback) => {
     console.log('Initializing Cloudant...');
     mediaStorage = require('./lib/cloudantstorage')({
       cloudantUrl: payload.cloudantUrl,
       cloudantDbName: payload.cloudantDbName,
-      fileStore: fileStore
+      fileStore: initializedFileStore
     });
     callback(null);
   },
   // load the document from the database
-  function (callback) {
-      mediaStorage.get(doc._id,
-        function (err, body) {
-        if (err) {
-          callback(err);
-        } else {
-          videoDocument = body;
-          console.log("Video is", videoDocument);
+  (callback) => {
+    mediaStorage.get(doc._id, (err, body) => {
+      if (err) {
+        callback(err);
+      } else {
+        videoDocument = body;
+        console.log('Video is', videoDocument);
 
-          // if metadata exists we consider this document as already processed and do nothing
-          if (videoDocument.metadata) {
-            callback("already processed");
-          } else {
-            callback(null);
-          }
+        // if metadata exists we consider this document as already processed and do nothing
+        if (videoDocument.metadata) {
+          callback('already processed');
+        } else {
+          callback(null);
         }
-      });
+      }
+    });
   },
   // save its video attachment to disk
-  function (callback) {
-      console.log("Downloading video attachment...");
-      var videoStream = fs.createWriteStream(inputFilename)
+  (callback) => {
+    console.log('Downloading video attachment...');
+    const videoStream = fs.createWriteStream(inputFilename);
+    const totalSize = mediaStorage.getAttachmentSize(videoDocument, 'video.mp4');
+    let currentSize = 0;
+    let lastProgress;
 
-      var totalSize = mediaStorage.getAttachmentSize(videoDocument, "video.mp4");
-      var currentSize = 0;
-      var lastProgress = undefined;
+    mediaStorage.read(videoDocument, 'video.mp4')
+      .on('data', (data) => {
+        currentSize += data.length;
 
-      mediaStorage.read(videoDocument, "video.mp4")
-        .on('data', function (data) {
-          currentSize += data.length
-
-          var progress = Math.round(currentSize * 100 / totalSize);
-          if (progress != lastProgress && progress % 5 == 0) {
-            console.log('Downloaded', progress, "% (", currentSize, "/", totalSize, ")");
-            lastProgress = progress;
-          }
-        })
-        .pipe(videoStream)
-        .on("finish", function () {
-          videoStream.end();
-          console.log("write complete");
-          callback(null);
-        })
-        .on("error", function (err) {
-          videoStream.end();
-          console.log("error while writing", err);
-          callback(err);
-        });
-  },
-  // extract metata
-  function (callback) {
-      ffmpeg.ffprobe(inputFilename, function (err, metadata) {
-        if (!err) {
-          videoDocument.metadata = metadata;
-          console.log("Extracted video metadata", videoDocument);
+        const progress = Math.round((currentSize * 100) / totalSize);
+        if (progress !== lastProgress && progress % 5 === 0) {
+          console.log('Downloaded', progress, '% (', currentSize, '/', totalSize, ')');
+          lastProgress = progress;
         }
+      })
+      .pipe(videoStream)
+      .on('finish', () => {
+        videoStream.end();
+        console.log('write complete');
+        callback(null);
+      })
+      .on('error', (err) => {
+        videoStream.end();
+        console.log('error while writing', err);
         callback(err);
       });
   },
+  // extract metata
+  (callback) => {
+    ffmpeg.ffprobe(inputFilename, (err, metadata) => {
+      if (!err) {
+        videoDocument.metadata = metadata;
+        console.log('Extracted video metadata', videoDocument);
+      }
+      callback(err);
+    });
+  },
   // persist the videoDocument with its metadata
-  function (callback) {
-      mediaStorage.insert(videoDocument, function(err, body) {
-        if (err) {
-          callback(err);
-        } else {
-          videoDocument._rev = body.rev;
-          callback(null);
-        }
-      });
+  (callback) => {
+    mediaStorage.insert(videoDocument, (err, body) => {
+      if (err) {
+        callback(err);
+      } else {
+        videoDocument._rev = body.rev;
+        callback(null);
+      }
+    });
   },
   // split frames
-  function (callback) {
-      var fps = getFps(videoDocument.metadata.streams[0].duration);
-      console.log("FPS", fps);
+  (callback) => {
+    const fps = getFps(videoDocument.metadata.streams[0].duration);
+    console.log('FPS', fps);
 
+    ffmpeg()
+      .input(inputFilename)
+      .outputOptions([
+        '-filter:v',
+        `fps=fps=${fps}`
+      ])
+      .output(`${framesDirectory}/%0d.jpg`)
+      .on('progress', (progress) => {
+        console.log(`Processing: ${Math.round(progress.percent)}% done`);
+      })
+      .on('error', (err) => {
+        console.log('split frames', err);
+        callback(err);
+      })
+      .on('end', () => {
+        callback(null);
+      })
+      .run();
+  },
+  // persist frames
+  (callback) => {
+    const fps = getFps(videoDocument.metadata.streams[0].duration);
+    const timeBetweenFrame = 1 / eval(fps); // eslint-disable-line no-eval
+
+    fs.readdir(framesDirectory, (err, files) => {
+      const uploadFrames = [];
+      files.forEach((file) => {
+        uploadFrames.push((uploadCallback) => {
+          console.log('Persist', file);
+          const frameDocument = {
+            type: 'image',
+            createdAt: new Date(),
+            video_id: videoDocument._id,
+            frame_number: parseInt(file, 10),
+            frame_timecode: parseInt(file, 10) * timeBetweenFrame
+          };
+          createDocument(frameDocument, 'image.jpg', 'image/jpeg', `${framesDirectory}/${file}`, uploadCallback);
+        });
+      });
+
+      // keep track of the number of frames we extracted
+      videoDocument.frame_count = uploadFrames.length;
+
+      async.parallelLimit(uploadFrames, 5, (uploadErr) => {
+        callback(uploadErr);
+      });
+    });
+  },
+  // persist the frame count
+  (callback) => {
+    mediaStorage.insert(videoDocument, (err, body) => {
+      if (err) {
+        callback(err);
+      } else {
+        videoDocument._rev = body.rev;
+        callback(null);
+      }
+    });
+  },
+  // pick one frame as preview for the video
+  (callback) => {
+    fs.readdir(framesDirectory, (err, files) => {
+      // use the frame in the middle
+      const candidate = files[Math.ceil(files.length / 2)];
+
+      console.log(`Candidate is ${framesDirectory}/${candidate}`);
+      // convert it to the right size
       ffmpeg()
-        .input(inputFilename)
+        .input(`${framesDirectory}/${candidate}`)
         .outputOptions([
-      '-filter:v',
-      'fps=fps=' + fps
-    ])
-        .output(framesDirectory + "/%0d.jpg")
-        .on('progress', function (progress) {
-          console.log('Processing: ' + Math.round(progress.percent) + '% done');
+          `-vf scale=${extractOptions.videoThumbnailSize}:-1`
+        ])
+        .output(`${workingDirectory.name}/thumbnail.jpg`)
+        .on('error', (ffErr) => {
+          console.log('Error processing thumbnail');
+          callback(ffErr);
         })
-        .on('error', function (err) {
-          console.log("split frames", err);
-          callback(err);
-        })
-        .on('end', function () {
+        .on('end', () => {
+          console.log('End of thumbnail processing');
           callback(null);
         })
         .run();
-  },
-  // persist frames
-  function (callback) {
-      var fps = getFps(videoDocument.metadata.streams[0].duration);
-      var timeBetweenFrame = 1 / eval(fps)
-
-      fs.readdir(framesDirectory, function (err, files) {
-        var uploadFrames = [];
-        files.forEach(function (file) {
-          uploadFrames.push(function (callback) {
-            console.log("Persist", file);
-            var frameDocument = {
-              type: "image",
-              createdAt: new Date(),
-              video_id: videoDocument._id,
-              frame_number: parseInt(file, 10),
-              frame_timecode: parseInt(file, 10) * timeBetweenFrame
-            }
-            createDocument(frameDocument, "image.jpg", "image/jpeg", framesDirectory + "/" + file, callback);
-          })
-        });
-
-        // keep track of the number of frames we extracted
-        videoDocument.frame_count = uploadFrames.length
-
-        async.parallelLimit(uploadFrames, 5, function (err, result) {
-          callback(err);
-        });
-      });
-  },
-  // persist the frame count
-  function (callback) {
-      mediaStorage.insert(videoDocument, function (err, body) {
-        if (err) {
-          callback(err);
-        } else {
-          videoDocument._rev = body.rev;
-          callback(null);
-        }
-      });
-  },
-  // pick one frame as preview for the video
-  function (callback) {
-      fs.readdir(framesDirectory, function (err, files) {
-        // use the frame in the middle
-        var candidate = files[Math.ceil(files.length / 2)];
-
-        console.log("Candidate is ", framesDirectory + "/" + candidate);
-        // convert it to the right size
-        ffmpeg()
-          .input(framesDirectory + "/" + candidate)
-          .outputOptions([
-            "-vf scale=" + extractOptions.videoThumbnailSize + ":-1"
-          ])
-          .output(workingDirectory.name + "/thumbnail.jpg")
-          .on('error', function (err) {
-            console.log("Error processing thumbnail");
-            callback(err);
-          })
-          .on('end', function () {
-            console.log("End of thumbnail processing");
-            callback(null);
-          })
-          .run();
-      });
+    });
   },
   // attach it to the video
-  function (callback) {
-      console.log("Attaching thumbnail to video");
-      fs.readFile(workingDirectory.name + "/thumbnail.jpg", function(err, data) {
-        mediaStorage.attachFile(videoDocument, "thumbnail.jpg", data, "image/jpeg",
-          function (err, body) {
-          console.log("Video thumbnail result", body);
-          if (err) {
-            console.log(err.statusCode, err.request);
-            callback(err);
+  (callback) => {
+    console.log('Attaching thumbnail to video');
+    fs.readFile(`${workingDirectory.name}/thumbnail.jpg`, (err, data) => {
+      mediaStorage.attachFile(videoDocument, 'thumbnail.jpg', data, 'image/jpeg',
+        (attachErr, body) => {
+          console.log('Video thumbnail result', body);
+          if (attachErr) {
+            console.log(attachErr.statusCode, attachErr.request);
+            callback(attachErr);
           } else {
             callback(null, body);
           }
-        })
-      });
+        });
+    });
+  }], (err) => {
+  if (err) {
+    console.log('Waterfall failed with', err);
+  } else {
+    console.log('Waterfall completed successfully');
   }
-  ],
-  function (err, result) {
-    if (err) {
-      console.log("Waterfall failed with", err);
-    } else {
-      console.log("Waterfall completed successfully");
-    }
 
-    console.log("Removing temp directory");
-    rimraf.sync(workingDirectory.name);
-  });
+  console.log('Removing temp directory');
+  rimraf.sync(workingDirectory.name);
+});
 
-function createDocument(frameDocument, attachmentName, attachmentMimetype, attachmentFile, callback) {
-  console.log("Persisting", frameDocument.type);
-  mediaStorage.insert(frameDocument, function (err, body) {
+function createDocument(frameDocument, attachmentName,
+  attachmentMimetype, attachmentFile, callback) {
+  console.log('Persisting', frameDocument.type);
+  mediaStorage.insert(frameDocument, (err, body) => {
     if (err) {
-      console.log("error saving image", err);
+      console.log('error saving image', err);
       callback(err);
     } else {
       frameDocument._id = body.id;
       frameDocument._rev = body.rev;
-      console.log("Created new document", frameDocument);
+      console.log('Created new document', frameDocument);
 
-      fs.readFile(attachmentFile, function(err, data) {
+      fs.readFile(attachmentFile, (rErr, data) => {
         mediaStorage.attachFile(frameDocument, attachmentName, data, attachmentMimetype,
-          function (err, body) {
-          console.log("Upload completed", body);
-          if (err) {
-            console.log(err.statusCode, err.request);
-            callback(err);
-          } else {
-            callback(null);
-          }
-        });
+          (aErr, aBody) => {
+            console.log('Upload completed', aBody);
+            if (aErr) {
+              console.log(aErr.statusCode, aErr.request);
+              callback(aErr);
+            } else {
+              callback(null);
+            }
+          });
       });
     }
   });
