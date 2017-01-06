@@ -52,12 +52,12 @@ try {
   require('node-env-file')('../processing/local.env');
   vcapLocal = {
     services: {
-      cloudant: [
+      cloudantNoSQLDB: [
         {
           credentials: {
             url: 'https://' + process.env.CLOUDANT_username + ':' + process.env.CLOUDANT_password + '@' + process.env.CLOUDANT_host // eslint-disable-line prefer-template
           },
-          label: 'cloudant',
+          label: 'cloudantNoSQLDB',
           name: 'cloudant-for-darkvision'
         }
       ]
@@ -91,9 +91,9 @@ const appEnvOpts = vcapLocal ? {
 } : {};
 const appEnv = cfenv.getAppEnv(appEnvOpts);
 
-const osCreds = appEnv.getServiceCreds('objectstorage-for-darkvision');
 let fileStore;
-if (osCreds) {
+if (appEnv.services['Object-Storage']) {
+  const osCreds = appEnv.services['Object-Storage'][0].credentials;
   const osConfig = {
     provider: 'openstack',
     useServiceCatalog: true,
@@ -111,7 +111,7 @@ if (osCreds) {
 
 const mediaStorage = require('./lib/cloudantstorage')(
   {
-    cloudantUrl: appEnv.getServiceCreds('cloudant-for-darkvision').url,
+    cloudantUrl: appEnv.services.cloudantNoSQLDB[0].credentials.url,
     cloudantDbName: 'openwhisk-darkvision',
     initializeDatabase: true,
     fileStore: fileStore
