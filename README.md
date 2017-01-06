@@ -29,7 +29,7 @@ The user uploads a video or image using the Dark Vision web application, which s
 OpenWhisk then triggers the video extractor action. During its execution, the extractor produces frames (images)
 and stores them in Cloudant. The frames are then processed using Watson Visual Recognition and the results are stored in the same Cloudant DB. The results can be viewed using Dark Vision web application OR an iOS application.
 
-Object Storage can be used in completement to Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
+Object Storage can be used in addition to Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
 
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
