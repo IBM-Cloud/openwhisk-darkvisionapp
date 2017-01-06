@@ -21,6 +21,7 @@ In addition to processing videos, Dark Vision can also processes standalone imag
   * Watson Visual Recognition
   * OpenWhisk
   * Cloudant
+  * Object Storage (optional component)
 
 ### Extracting frames from a video
 
@@ -28,23 +29,25 @@ The user uploads a video or image using the Dark Vision web application, which s
 OpenWhisk then triggers the video extractor action. During its execution, the extractor produces frames (images)
 and stores them in Cloudant. The frames are then processed using Watson Visual Recognition and the results are stored in the same Cloudant DB. The results can be viewed using Dark Vision web application OR an iOS application.
 
+Object Storage can be used in completement to Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
+
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
     node [fontname = "helvetica"]
     rankdir=LR
     /* stores a video */
-    user -> cloudant
+    user -> storage
     /* cloudant change sent to openwhisk */
-    cloudant -> openwhisk
+    storage -> openwhisk
     /* openwhisk triggers the extractor */
     openwhisk -> extractor
     /* extractor produces image frames */
     extractor -> frames
     /* frames are stored in cloudant */
-    frames -> cloudant
+    frames -> storage
     /* styling */
     frames [label="Image Frames"]
-    cloudant [shape=circle style=filled color="%234E96DB" fontcolor=white label="Cloudant"]
+    storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
   }
 )
@@ -58,21 +61,21 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
   digraph G {
     node [fontname = "helvetica"]
     /* stores a image */
-    frame -> cloudant
+    frame -> storage
     /* cloudant change sent to openwhisk */
-    cloudant -> openwhisk
+    storage -> openwhisk
     /* openwhisk triggers the analysis */
     openwhisk -> analysis
     /* extractor produces image frames */
-    {rank=same; frame -> cloudant -> openwhisk -> analysis -> watson [style=invis] }
+    {rank=same; frame -> storage -> openwhisk -> analysis -> watson [style=invis] }
     /* analysis calls Watson */
     analysis -> watson
     /* results are stored */
-    analysis -> cloudant
+    analysis -> storage
     /* styling */
     frame [label="Image Frame"]
     analysis [label="Image Analysis"]
-    cloudant [shape=circle style=filled color="%234E96DB" fontcolor=white label="Cloudant"]
+    storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
     watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\nVisual\\nRecognition"]
   }
@@ -81,7 +84,6 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
 ## Application Requirements
 
 * IBM Bluemix account. [Sign up][bluemix_signup_url] for Bluemix, or use an existing account.
-* IBM Bluemix OpenWhisk early access. [Sign up for Bluemix OpenWhisk](https://new-console.ng.bluemix.net/openwhisk).
 * Docker Hub account. [Sign up](https://hub.docker.com/) for Docker Hub, or use an existing account.
 * XCode 8.0, iOS 10, Swift 3
 
@@ -99,6 +101,9 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
 
 ### Create the Bluemix Services
 
+***Note***: *if you have existing instances of these services, you don't need to create new instances.
+You can simply reuse the existing ones.*
+
 1. Open the IBM Bluemix console
 
 1. Create a Cloudant NoSQL DB service instance named **cloudant-for-darkvision**
@@ -107,8 +112,9 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
 
 1. Create a Watson Visual Recognition service instance named **visualrecognition-for-darkvision**
 
-***Note***: *if you have existing instances of these services, you don't need to create new instances.
-You can simply reuse the existing ones.*
+1. Optionally create a Object Storage service instance named **objectstorage-for-darkvision**
+
+  > If configured, media files will be stored in Object Storage instead of Cloudant. A container named *openwhisk-darkvision* will be automatically created.
 
 ### Deploy the web interface to upload videos and images
 
@@ -121,8 +127,9 @@ visualize the results of each frame analysis.
   cd openwhisk-darkvisionapp/web
   ```
 
-1. If in the previous section you decided to use existing services instead of creating new ones,
-open **manifest.yml** and update the Cloudant service name.
+1. If in the previous section you decided to use existing services instead of creating new ones, open **manifest.yml** and update the Cloudant service name.
+
+1. If you configured an Object Storage service, make sure to add its name to the list of services in the **manifest.yml** services section or to uncomment the existing **objectstorage-for-darkvision** entry.
 
 1. Push the application to Bluemix:
 
@@ -174,6 +181,8 @@ To build the extractor image, follow these steps:
 with corresponding values (usernames, passwords, urls). These properties will be injected into
 a package so that all actions can get access to the services.
 
+  > If you configured an Object Storage service, specify its properties in this file too.
+
 1. Make sure to also update the value of ***DOCKER_EXTRACTOR_NAME*** with the name of the Docker
 image you created in the previous section.
 
@@ -214,7 +223,7 @@ image you created in the previous section.
   npm start
   ```
 
-  Note: To find the Cloudant database to connect to when running locally,
+  Note: To find the Cloudant database (and Object Storage) to connect to when running locally,
   the application uses the environment variables defined in **processing/local.env** in previous steps.
 
 1. Upload videos through the web user interface. Wait for OpenWhisk to process the videos.
