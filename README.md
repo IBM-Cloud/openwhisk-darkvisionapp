@@ -129,7 +129,7 @@ visualize the results of each frame analysis.
 
 1. If in the previous section you decided to use existing services instead of creating new ones, open **manifest.yml** and update the Cloudant service name.
 
-1. If you configured an Object Storage service, make sure to add its name to the list of services in the **manifest.yml** services section or to uncomment the existing **objectstorage-for-darkvision** entry.
+1. If you configured an Object Storage service, make sure to add its name to the list of services in the **manifest.yml** *services* section or to uncomment the existing **objectstorage-for-darkvision** entry.
 
 1. Push the application to Bluemix:
 
@@ -181,7 +181,7 @@ To build the extractor image, follow these steps:
 with corresponding values (usernames, passwords, urls). These properties will be injected into
 a package so that all actions can get access to the services.
 
-  > If you configured an Object Storage service, specify its properties in this file too.
+  > If you configured an Object Storage service, specify its properties in this file too but uncommenting the placeholder variables.
 
 1. Make sure to also update the value of ***DOCKER_EXTRACTOR_NAME*** with the name of the Docker
 image you created in the previous section.
@@ -204,7 +204,7 @@ image you created in the previous section.
   *--update* the artifacts if you change the action code, or simply with *--env*
   to show the environment variables set in **local.env**.
 
-**That's it!. Use the web application to upload images/videos and view the results! You can also view the results using an iOS application as shown further down this README**
+**That's it! Use the web application to upload images/videos and view the results! You can also view the results using an iOS application as shown further down this README.**
 
 
 ## Running the web application locally
@@ -227,8 +227,8 @@ image you created in the previous section.
   the application uses the environment variables defined in **processing/local.env** in previous steps.
 
 1. Upload videos through the web user interface. Wait for OpenWhisk to process the videos.
-Look at the results. While OpenWhisk processes videos, the counter at the top of the
-application will evolve. These counters call the **/api/status** endpoint of the web
+Look at the results. While OpenWhisk processes videos, the counters at the top of the
+application will update. These counters call the **/api/status** endpoint of the web
 application to retrieve statistics.
 
 ### iOS application to view the results (Optional)
@@ -279,7 +279,7 @@ The web app exposes an API to list all videos and retrieve the results.
 
 | File | Description |
 | ---- | ----------- |
-|[**changelistener.js**](processing/changelistener.js)|Processes Cloudant change events and calls the right actions. It controls the processing flow for videos and frames.|
+|[**changelistener.js**](processing/changelistener/changelistener.js)|Processes Cloudant change events and calls the right actions. It controls the processing flow for videos and frames.|
 
 ### OpenWhisk - Frame extraction
 
@@ -291,11 +291,11 @@ The **frame extractor** runs as a Docker action created with the [OpenWhisk Dock
 | ---- | ----------- |
 |[**Dockerfile**](processing/extractor/Dockerfile)|Docker file to build the extractor image. It pulls ffmpeg into the image together with node. It also runs npm install for both the server and client.|
 |[**extract.js**](processing/extractor/client/extract.js)|The core of the frame extractor. It downloads the video stored in Cloudant, uses ffmpeg to extract frames and video metadata, produces a thumbnail for the video. By default it produces around 15 images for a video. This can be changed by modifying the implementation of **getFps**.|
-|[**service.js**](processing/extractor/server/src/service.js)|Adapted from the OpenWhisk Docker SDK to call the extract.js node script.|
+|[**app.js**](processing/extractor/server/app.js)|Adapted from the OpenWhisk Docker SDK to call the extract.js node script.|
 
 ### OpenWhisk - Frame analysis
 
-[**analysis.js**](processing/analysis.js) holds the JavaScript code to perform the image analysis:
+[**analysis.js**](processing/analysis/analysis.js) holds the JavaScript code to perform the image analysis:
 
 1. It retrieves the image data from the Cloudant document.
 The data has been attached by the *frame extractor* as an attachment named "image.jpg".
@@ -316,9 +316,18 @@ It shows the video catalog and for each video the extracted frames.
 | File | Description |
 | ---- | ----------- |
 |[**app.js**](web/app.js)|The web app backend handles the upload of videos/images, and exposes an API to retrieve all videos, their frames, to compute the summary|
-|[**database-designs.json**](web/database-designs.json)|Design documents used by the API to expose videos and images. They are automatically loaded into the database when the web app starts for the first time.|
 |[**Angular controllers**](web/public/js)|Controllers for list of videos, individual video and standalone images|
 |[**Angular services**](web/public/js)|Services to interact with the backend API|
+
+### Shared code between OpenWhisk actions and web app
+
+These files are used by the web application and the OpenWhisk actions. They are automatically injected in the OpenWhisk actions by the [**deploy-darkvision.sh**](processing/deploy-darkvision.sh) script and during the [**build**](processing/extractor/buildAndPush.sh) of the Docker image. These scripts have dependencies on *Cloudant, async, pkgcloud* which are provided by default in OpenWhisk Node.js actions.
+
+| File | Description |
+| ---- | ----------- |
+|[**cloudantstorage.js**](web/lib/cloudantstorage.js)|Implements API on top of Cloudant to create/read/update/delete video/image metadata and to upload files|
+|[**objectstorage.js**](web/lib/objectstorage.js)|Implements the file upload operations on top of Object Storage. Used by [**cloudantstorage.js**](web/lib/cloudantstorage.js) when Object Storage is configured.|
+|[**database-designs.json**](web/lib/database-designs.json)|Design documents used by the API to expose videos and images. They are automatically loaded into the database when the web app starts for the first time.|
 
 ### iOS
 
