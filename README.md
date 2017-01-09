@@ -18,10 +18,10 @@ In addition to processing videos, Dark Vision can also processes standalone imag
 ## Overview
 
  Built using IBM Bluemix, the application uses:
-  * Watson Visual Recognition
-  * OpenWhisk
-  * Cloudant
-  * Object Storage (optional component)
+  * [Watson Visual Recognition](https://console.ng.bluemix.net/catalog/services/watson_vision_combined)
+  * [OpenWhisk](console.ng.bluemix.net/openwhisk/)
+  * [Cloudant](https://console.ng.bluemix.net/catalog/services/cloudantNoSQLDB)
+  * [Object Storage](https://console.ng.bluemix.net/catalog/services/Object-Storage) (optional component)
 
 ### Extracting frames from a video
 
@@ -306,7 +306,7 @@ The data has been attached by the *frame extractor* as an attachment named "imag
 
 The action runs asynchronously.
 
-The code is very similar to the one used in the [Vision app](https://github.com/IBM-Bluemix/openwhisk-visionapp). Main difference
+The code is very similar to the one used in the [Vision app](https://github.com/IBM-Bluemix/openwhisk-visionapp).
 
 ### Web app
 
