@@ -23,11 +23,11 @@ function usage() {
 
 function prepare() {
   echo "Preparing analysis action..."
-  (cd analysis && rm analysis.zip && zip analysis.zip analysis.js package.json)
+  (cd analysis && rm -f analysis.zip && zip analysis.zip analysis.js package.json)
   (cd ../web && zip -r ../processing/analysis/analysis.zip lib)
 
   echo "Preparing changelistener action..."
-  (cd changelistener && rm changelistener.zip && zip changelistener.zip changelistener.js package.json)
+  (cd changelistener && rm -f changelistener.zip && zip changelistener.zip changelistener.js package.json)
   (cd ../web && zip -r ../processing/changelistener/changelistener.zip lib)
 }
 
