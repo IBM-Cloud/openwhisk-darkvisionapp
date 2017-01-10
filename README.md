@@ -86,6 +86,7 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
 * IBM Bluemix account. [Sign up][bluemix_signup_url] for Bluemix, or use an existing account.
 * Docker Hub account. [Sign up](https://hub.docker.com/) for Docker Hub, or use an existing account.
 * XCode 8.0, iOS 10, Swift 3
+* Node.js >= 6.7.0
 
 ## Preparing the environment
 
