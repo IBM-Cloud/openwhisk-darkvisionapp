@@ -4,6 +4,11 @@
   "scripts": {
   },
   "dependencies": {
+    "async": "2.1.4",
+    "dotenv": "4.0.0",
+    "node-zip": "1.1.1",
+    "openwhisk": "3.2.1",
+    "yargs": "6.6.0"
   },
   "devDependencies": {
     "eslint": "3.9.1",
