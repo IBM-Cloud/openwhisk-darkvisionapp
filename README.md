@@ -18,9 +18,10 @@ In addition to processing videos, Dark Vision can also processes standalone imag
 ## Overview
 
  Built using IBM Bluemix, the application uses:
-  * Watson Visual Recognition
-  * OpenWhisk
-  * Cloudant
+  * [Watson Visual Recognition](https://console.ng.bluemix.net/catalog/services/watson_vision_combined)
+  * [OpenWhisk](console.ng.bluemix.net/openwhisk/)
+  * [Cloudant](https://console.ng.bluemix.net/catalog/services/cloudantNoSQLDB)
+  * [Object Storage](https://console.ng.bluemix.net/catalog/services/Object-Storage) (optional component)
 
 ### Extracting frames from a video
 
@@ -28,23 +29,25 @@ The user uploads a video or image using the Dark Vision web application, which s
 OpenWhisk then triggers the video extractor action. During its execution, the extractor produces frames (images)
 and stores them in Cloudant. The frames are then processed using Watson Visual Recognition and the results are stored in the same Cloudant DB. The results can be viewed using Dark Vision web application OR an iOS application.
 
+Object Storage can be used in addition to Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
+
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
     node [fontname = "helvetica"]
     rankdir=LR
     /* stores a video */
-    user -> cloudant
+    user -> storage
     /* cloudant change sent to openwhisk */
-    cloudant -> openwhisk
+    storage -> openwhisk
     /* openwhisk triggers the extractor */
     openwhisk -> extractor
     /* extractor produces image frames */
     extractor -> frames
     /* frames are stored in cloudant */
-    frames -> cloudant
+    frames -> storage
     /* styling */
     frames [label="Image Frames"]
-    cloudant [shape=circle style=filled color="%234E96DB" fontcolor=white label="Cloudant"]
+    storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
   }
 )
@@ -58,21 +61,21 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
   digraph G {
     node [fontname = "helvetica"]
     /* stores a image */
-    frame -> cloudant
+    frame -> storage
     /* cloudant change sent to openwhisk */
-    cloudant -> openwhisk
+    storage -> openwhisk
     /* openwhisk triggers the analysis */
     openwhisk -> analysis
     /* extractor produces image frames */
-    {rank=same; frame -> cloudant -> openwhisk -> analysis -> watson [style=invis] }
+    {rank=same; frame -> storage -> openwhisk -> analysis -> watson [style=invis] }
     /* analysis calls Watson */
     analysis -> watson
     /* results are stored */
-    analysis -> cloudant
+    analysis -> storage
     /* styling */
     frame [label="Image Frame"]
     analysis [label="Image Analysis"]
-    cloudant [shape=circle style=filled color="%234E96DB" fontcolor=white label="Cloudant"]
+    storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
     watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\nVisual\\nRecognition"]
   }
@@ -81,9 +84,9 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
 ## Application Requirements
 
 * IBM Bluemix account. [Sign up][bluemix_signup_url] for Bluemix, or use an existing account.
-* IBM Bluemix OpenWhisk early access. [Sign up for Bluemix OpenWhisk](https://new-console.ng.bluemix.net/openwhisk).
 * Docker Hub account. [Sign up](https://hub.docker.com/) for Docker Hub, or use an existing account.
 * XCode 8.0, iOS 10, Swift 3
+* Node.js >= 6.7.0
 
 ## Preparing the environment
 
@@ -99,6 +102,9 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
 
 ### Create the Bluemix Services
 
+***Note***: *if you have existing instances of these services, you don't need to create new instances.
+You can simply reuse the existing ones.*
+
 1. Open the IBM Bluemix console
 
 1. Create a Cloudant NoSQL DB service instance named **cloudant-for-darkvision**
@@ -107,8 +113,9 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
 
 1. Create a Watson Visual Recognition service instance named **visualrecognition-for-darkvision**
 
-***Note***: *if you have existing instances of these services, you don't need to create new instances.
-You can simply reuse the existing ones.*
+1. Optionally create a Object Storage service instance named **objectstorage-for-darkvision**
+
+  > If configured, media files will be stored in Object Storage instead of Cloudant. A container named *openwhisk-darkvision* will be automatically created.
 
 ### Deploy the web interface to upload videos and images
 
@@ -121,8 +128,9 @@ visualize the results of each frame analysis.
   cd openwhisk-darkvisionapp/web
   ```
 
-1. If in the previous section you decided to use existing services instead of creating new ones,
-open **manifest.yml** and update the Cloudant service name.
+1. If in the previous section you decided to use existing services instead of creating new ones, open **manifest.yml** and update the Cloudant service name.
+
+1. If you configured an Object Storage service, make sure to add its name to the list of services in the **manifest.yml** *services* section or to uncomment the existing **objectstorage-for-darkvision** entry.
 
 1. Push the application to Bluemix:
 
@@ -174,6 +182,8 @@ To build the extractor image, follow these steps:
 with corresponding values (usernames, passwords, urls). These properties will be injected into
 a package so that all actions can get access to the services.
 
+  > If you configured an Object Storage service, specify its properties in this file too but uncommenting the placeholder variables.
+
 1. Make sure to also update the value of ***DOCKER_EXTRACTOR_NAME*** with the name of the Docker
 image you created in the previous section.
 
@@ -195,7 +205,7 @@ image you created in the previous section.
   *--update* the artifacts if you change the action code, or simply with *--env*
   to show the environment variables set in **local.env**.
 
-**That's it!. Use the web application to upload images/videos and view the results! You can also view the results using an iOS application as shown further down this README**
+**That's it! Use the web application to upload images/videos and view the results! You can also view the results using an iOS application as shown further down this README.**
 
 
 ## Running the web application locally
@@ -214,12 +224,12 @@ image you created in the previous section.
   npm start
   ```
 
-  Note: To find the Cloudant database to connect to when running locally,
+  Note: To find the Cloudant database (and Object Storage) to connect to when running locally,
   the application uses the environment variables defined in **processing/local.env** in previous steps.
 
 1. Upload videos through the web user interface. Wait for OpenWhisk to process the videos.
-Look at the results. While OpenWhisk processes videos, the counter at the top of the
-application will evolve. These counters call the **/api/status** endpoint of the web
+Look at the results. While OpenWhisk processes videos, the counters at the top of the
+application will update. These counters call the **/api/status** endpoint of the web
 application to retrieve statistics.
 
 ### iOS application to view the results (Optional)
@@ -270,7 +280,7 @@ The web app exposes an API to list all videos and retrieve the results.
 
 | File | Description |
 | ---- | ----------- |
-|[**changelistener.js**](processing/changelistener.js)|Processes Cloudant change events and calls the right actions. It controls the processing flow for videos and frames.|
+|[**changelistener.js**](processing/changelistener/changelistener.js)|Processes Cloudant change events and calls the right actions. It controls the processing flow for videos and frames.|
 
 ### OpenWhisk - Frame extraction
 
@@ -282,11 +292,11 @@ The **frame extractor** runs as a Docker action created with the [OpenWhisk Dock
 | ---- | ----------- |
 |[**Dockerfile**](processing/extractor/Dockerfile)|Docker file to build the extractor image. It pulls ffmpeg into the image together with node. It also runs npm install for both the server and client.|
 |[**extract.js**](processing/extractor/client/extract.js)|The core of the frame extractor. It downloads the video stored in Cloudant, uses ffmpeg to extract frames and video metadata, produces a thumbnail for the video. By default it produces around 15 images for a video. This can be changed by modifying the implementation of **getFps**.|
-|[**service.js**](processing/extractor/server/src/service.js)|Adapted from the OpenWhisk Docker SDK to call the extract.js node script.|
+|[**app.js**](processing/extractor/server/app.js)|Adapted from the OpenWhisk Docker SDK to call the extract.js node script.|
 
 ### OpenWhisk - Frame analysis
 
-[**analysis.js**](processing/analysis.js) holds the JavaScript code to perform the image analysis:
+[**analysis.js**](processing/analysis/analysis.js) holds the JavaScript code to perform the image analysis:
 
 1. It retrieves the image data from the Cloudant document.
 The data has been attached by the *frame extractor* as an attachment named "image.jpg".
@@ -297,7 +307,7 @@ The data has been attached by the *frame extractor* as an attachment named "imag
 
 The action runs asynchronously.
 
-The code is very similar to the one used in the [Vision app](https://github.com/IBM-Bluemix/openwhisk-visionapp). Main difference
+The code is very similar to the one used in the [Vision app](https://github.com/IBM-Bluemix/openwhisk-visionapp).
 
 ### Web app
 
@@ -307,9 +317,18 @@ It shows the video catalog and for each video the extracted frames.
 | File | Description |
 | ---- | ----------- |
 |[**app.js**](web/app.js)|The web app backend handles the upload of videos/images, and exposes an API to retrieve all videos, their frames, to compute the summary|
-|[**database-designs.json**](web/database-designs.json)|Design documents used by the API to expose videos and images. They are automatically loaded into the database when the web app starts for the first time.|
 |[**Angular controllers**](web/public/js)|Controllers for list of videos, individual video and standalone images|
 |[**Angular services**](web/public/js)|Services to interact with the backend API|
+
+### Shared code between OpenWhisk actions and web app
+
+These files are used by the web application and the OpenWhisk actions. They are automatically injected in the OpenWhisk actions by the [**deploy-darkvision.sh**](processing/deploy-darkvision.sh) script and during the [**build**](processing/extractor/buildAndPush.sh) of the Docker image. These scripts have dependencies on *Cloudant, async, pkgcloud* which are provided by default in OpenWhisk Node.js actions.
+
+| File | Description |
+| ---- | ----------- |
+|[**cloudantstorage.js**](web/lib/cloudantstorage.js)|Implements API on top of Cloudant to create/read/update/delete video/image metadata and to upload files|
+|[**objectstorage.js**](web/lib/objectstorage.js)|Implements the file upload operations on top of Object Storage. Used by [**cloudantstorage.js**](web/lib/cloudantstorage.js) when Object Storage is configured.|
+|[**cloudant-designs.json**](web/lib/cloudant-designs.json)|Design documents used by the API to expose videos and images. They are automatically loaded into the database when the web app starts for the first time.|
 
 ### iOS
 

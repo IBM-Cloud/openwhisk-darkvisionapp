@@ -10,6 +10,10 @@
 IMAGE_NAME=$1
 echo "Using $IMAGE_NAME as the image name"
 
+# grab the common package library
+rm -rf client/lib
+cp -R ../../web/lib client
+
 # Make the docker image
 docker build -t $IMAGE_NAME .
 if [ $? -ne 0 ]; then

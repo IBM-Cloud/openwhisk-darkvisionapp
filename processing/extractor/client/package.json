@@ -7,7 +7,9 @@
     "fluent-ffmpeg": "2.1.0",
     "cloudant": "1.6.2",
     "rimraf": "2.5.4",
-    "tmp": "0.0.31"
+    "tmp": "0.0.31",
+    "request": "2.79.0",
+    "pkgcloud": "1.4.0"
   },
   "repository": {
     "type": "git",
