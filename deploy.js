@@ -72,8 +72,12 @@ if (argv.auth) {
 }
 
 // load configuration options
-WARN('Loading Dark Vision credentials from local.env');
-require('dotenv').config({ path: 'local.env' });
+if (fs.existsSync('local.env')) {
+  WARN('Loading Dark Vision credentials from local.env');
+  require('dotenv').config({ path: 'local.env' });
+} else {
+  WARN('No local.env found. Credentials will be loaded from environment variables.');
+}
 
 // load wskprops if any
 const openwhiskOptions = {
