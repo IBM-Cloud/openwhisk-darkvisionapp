@@ -48,41 +48,45 @@ require('cf-deployment-tracker-client').track();
 
 // initialize local VCAP configuration
 let vcapLocal = null;
-try {
-  require('node-env-file')('../processing/local.env');
-  vcapLocal = {
-    services: {
-      cloudantNoSQLDB: [
+if (!fs.existsSync('../local.env')) {
+  console.log('No local.env defined. VCAP_SERVICES will be used.');
+} else {
+  try {
+    require('node-env-file')('../local.env');
+    vcapLocal = {
+      services: {
+        cloudantNoSQLDB: [
+          {
+            credentials: {
+              url: 'https://' + process.env.CLOUDANT_username + ':' + process.env.CLOUDANT_password + '@' + process.env.CLOUDANT_host // eslint-disable-line prefer-template
+            },
+            label: 'cloudantNoSQLDB',
+            name: 'cloudant-for-darkvision'
+          }
+        ]
+      }
+    };
+
+    if (process.env.OS_PASSWORD) {
+      vcapLocal.services['Object-Storage'] = [
         {
           credentials: {
-            url: 'https://' + process.env.CLOUDANT_username + ':' + process.env.CLOUDANT_password + '@' + process.env.CLOUDANT_host // eslint-disable-line prefer-template
+            auth_url: process.env.OS_AUTH_URL,
+            projectId: process.env.OS_PROJECT_ID,
+            region: process.env.OS_REGION,
+            username: process.env.OS_USERNAME,
+            password: process.env.OS_PASSWORD,
+            domainId: process.env.OS_DOMAIN_ID
           },
-          label: 'cloudantNoSQLDB',
-          name: 'cloudant-for-darkvision'
+          label: 'Object-Storage',
+          name: 'objectstorage-for-darkvision'
         }
-      ]
+      ];
     }
-  };
-
-  if (process.env.OS_PASSWORD) {
-    vcapLocal.services['Object-Storage'] = [
-      {
-        credentials: {
-          auth_url: process.env.OS_AUTH_URL,
-          projectId: process.env.OS_PROJECT_ID,
-          region: process.env.OS_REGION,
-          username: process.env.OS_USERNAME,
-          password: process.env.OS_PASSWORD,
-          domainId: process.env.OS_DOMAIN_ID
-        },
-        label: 'Object-Storage',
-        name: 'objectstorage-for-darkvision'
-      }
-    ];
+    console.log('Loaded local VCAP', vcapLocal);
+  } catch (e) {
+    console.error(e);
   }
-  console.log('Loaded local VCAP', vcapLocal);
-} catch (e) {
-  console.error('local.env file not found.', e);
 }
 
 // get the app environment from Cloud Foundry, defaulting to local VCAP
