@@ -131,22 +131,22 @@ function install(ow) {
             value: `${process.env.WATSON_API_KEY}`
           }, {
             key: 'osAuthUrl',
-            value: process.env.OS_AUTH_URL
+            value: process.env.OS_AUTH_URL || ''
           }, {
             key: 'osProjectId',
-            value: process.env.OS_PROJECT_ID
+            value: process.env.OS_PROJECT_ID || ''
           }, {
             key: 'osRegion',
-            value: process.env.OS_REGION
+            value: process.env.OS_REGION || ''
           }, {
             key: 'osUsername',
-            value: process.env.OS_USERNAME
+            value: process.env.OS_USERNAME || ''
           }, {
             key: 'osPassword',
-            value: process.env.OS_PASSWORD
+            value: process.env.OS_PASSWORD || ''
           }, {
             key: 'osDomainId',
-            value: process.env.OS_DOMAIN_ID
+            value: process.env.OS_DOMAIN_ID || ''
           }]
         }
       }, callback);
