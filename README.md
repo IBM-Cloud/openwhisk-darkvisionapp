@@ -170,7 +170,7 @@ To build the extractor image, follow these steps:
 
 ### Deploy OpenWhisk Actions
 
-1. Change to the **processing** directory.
+1. Change to the **root directory of the checkout**.
 
 1. Copy the file named **template-local.env** into **local.env**
 
@@ -195,15 +195,22 @@ image you created in the previous section.
 
   This shows the packages, actions, triggers and rules currently deployed in your OpenWhisk namespace.
 
-1. Create the action, trigger and rule using the script from the **processing** directory:
+1. Get dependencies used by the deployment script
 
   ```
-  ./deploy-darkvision.sh --install
+  npm install
   ```
 
-  Note: the script can also be used to *--uninstall* the OpenWhisk artifacts to
-  *--update* the artifacts if you change the action code, or simply with *--env*
-  to show the environment variables set in **local.env**.
+  > :warning: Node.js >= 6.7.0 is required
+
+1. Create the action, trigger and rule using the script from the **root directory** directory:
+
+  ```
+  node deploy.js --install
+  ```
+
+  > The script can also be used to *--uninstall* the OpenWhisk artifacts to
+  *--update* the artifacts if you change the action code.
 
 **That's it! Use the web application to upload images/videos and view the results! You can also view the results using an iOS application as shown further down this README.**
 
@@ -225,7 +232,7 @@ image you created in the previous section.
   ```
 
   Note: To find the Cloudant database (and Object Storage) to connect to when running locally,
-  the application uses the environment variables defined in **processing/local.env** in previous steps.
+  the application uses the environment variables defined in **local.env** in previous steps.
 
 1. Upload videos through the web user interface. Wait for OpenWhisk to process the videos.
 Look at the results. While OpenWhisk processes videos, the counters at the top of the
@@ -274,7 +281,7 @@ The web app exposes an API to list all videos and retrieve the results.
 
 | File | Description |
 | ---- | ----------- |
-|[**deploy-darkvision.sh**](processing/deploy-darkvision.sh)|Helper script to install, uninstall, update the OpenWhisk trigger, actions, rules used by Dark Vision.|
+|[**deploy.js**](deploy.js)|Helper script to install, uninstall, update the OpenWhisk trigger, actions, rules used by Dark Vision.|
 
 ### OpenWhisk - Change listener
 
@@ -322,7 +329,7 @@ It shows the video catalog and for each video the extracted frames.
 
 ### Shared code between OpenWhisk actions and web app
 
-These files are used by the web application and the OpenWhisk actions. They are automatically injected in the OpenWhisk actions by the [**deploy-darkvision.sh**](processing/deploy-darkvision.sh) script and during the [**build**](processing/extractor/buildAndPush.sh) of the Docker image. These scripts have dependencies on *Cloudant, async, pkgcloud* which are provided by default in OpenWhisk Node.js actions.
+These files are used by the web application and the OpenWhisk actions. They are automatically injected in the OpenWhisk actions by the [**deploy.js**](deploy.js) script and during the [**build**](processing/extractor/buildAndPush.sh) of the Docker image. These scripts have dependencies on *Cloudant, async, pkgcloud* which are provided by default in OpenWhisk Node.js actions.
 
 | File | Description |
 | ---- | ----------- |

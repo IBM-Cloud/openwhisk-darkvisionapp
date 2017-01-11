@@ -72,8 +72,8 @@ if (argv.auth) {
 }
 
 // load configuration options
-WARN('Loading Dark Vision credentials from processing/local.env');
-require('dotenv').config({ path: 'processing/local.env' });
+WARN('Loading Dark Vision credentials from local.env');
+require('dotenv').config({ path: 'local.env' });
 
 // load wskprops if any
 const openwhiskOptions = {
