@@ -22,6 +22,9 @@ const async = require('async');
 const argv = require('yargs')
   .command('install', 'Install OpenWhisk actions')
   .command('uninstall', 'Uninstall OpenWhisk actions')
+  .command('disable', 'Disable video and image processing')
+  .command('enable', 'Enable video and image processing')
+  .command('update', 'Update action code')
   .option('apihost', {
     alias: 'a',
     describe: 'OpenWhisk API host',
@@ -43,6 +46,15 @@ const VERBOSE_LEVEL = argv.verbose;
 function WARN(...args) { VERBOSE_LEVEL >= 0 && console.log.apply(console, args); } // eslint-disable-line
 function INFO(...args) { VERBOSE_LEVEL >= 1 && console.log.apply(console, args); } // eslint-disable-line
 function DEBUG(...args) { VERBOSE_LEVEL >= 2 && console.log.apply(console, args); } // eslint-disable-line
+
+if (!argv.install &&
+  !argv.uninstall &&
+  !argv.disable &&
+  !argv.enable &&
+  !argv.update) {
+  WARN('No command specified.');
+  process.exit(1);
+}
 
 // load OpenWhisk CLI configuration if it exists
 const wskCliPropsPath = path.join(os.homedir(), '.wskprops');
@@ -75,11 +87,17 @@ if (argv.install) {
   install(openwhiskClient);
 } else if (argv.uninstall) {
   uninstall(openwhiskClient);
+} else if (argv.disable) {
+  disable(openwhiskClient);
+} else if (argv.enable) {
+  enable(openwhiskClient);
+} else if (argv.update) {
+  update(openwhiskClient);
 }
 
 function install(ow) {
   WARN('Installing artifacts...');
-  async.waterfall([
+  waterfall([
     //   wsk package create vision
     (callback) => {
       call(ow, 'package', 'create', 'vision', callback);
@@ -196,57 +214,8 @@ function install(ow) {
         }
       }, callback);
     },
-    //   wsk action create vision/analysis --kind nodejs:6 analysis/analysis.zip
-    (callback) => {
-      // (cd analysis && rm -f analysis.zip && zip analysis.zip analysis.js package.json)
-      // (cd ../web && zip -r ../processing/analysis/analysis.zip lib)
-      const actionCode = buildZip({
-        'package.json': 'processing/analysis/package.json',
-        'analysis.js': 'processing/analysis/analysis.js',
-        'lib/cloudantstorage.js': 'web/lib/cloudantstorage.js',
-        'lib/objectstorage.js': 'web/lib/objectstorage.js',
-        'lib/cloudant-designs.json': 'web/lib/cloudant-designs.json'
-      });
-      call(ow, 'action', 'create', {
-        actionName: 'vision/analysis',
-        action: {
-          exec: {
-            kind: 'nodejs:6',
-            code: actionCode,
-            binary: true
-          }
-        }
-      }, callback);
-    },
-    //   wsk action create vision-cloudant-changelistener --kind nodejs:6 changelistener/changelistener.zip\
-    //     -p cloudantUrl https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host\
-    //     -p cloudantDbName $CLOUDANT_db
-    (callback) => {
-      const actionCode = buildZip({
-        'package.json': 'processing/changelistener/package.json',
-        'changelistener.js': 'processing/changelistener/changelistener.js',
-        'lib/cloudantstorage.js': 'web/lib/cloudantstorage.js',
-        'lib/objectstorage.js': 'web/lib/objectstorage.js',
-        'lib/cloudant-designs.json': 'web/lib/cloudant-designs.json'
-      });
-      call(ow, 'action', 'create', {
-        actionName: 'vision-cloudant-changelistener',
-        action: {
-          exec: {
-            kind: 'nodejs:6',
-            code: actionCode,
-            binary: true
-          },
-          parameters: [{
-            key: 'cloudantUrl',
-            value: `https://${process.env.CLOUDANT_username}:${process.env.CLOUDANT_password}@${process.env.CLOUDANT_host}`
-          }, {
-            key: 'cloudantDbName',
-            value: process.env.CLOUDANT_db
-          }]
-        }
-      }, callback);
-    },
+    makeAnalysisTask(ow, true),
+    makeChangeListenerTask(ow, true),
     //   wsk rule create vision-rule vision-cloudant-trigger vision-cloudant-changelistener
     (callback) => {
       call(ow, 'rule', 'create', {
@@ -255,41 +224,75 @@ function install(ow) {
         trigger: 'vision-cloudant-trigger'
       }, callback);
     }
-  ], (err) => {
-    if (err) {
-      console.log('[KO]', err.message);
-    } else {
-      console.log('Done');
-    }
-  });
+  ]);
 }
+
+function makeAnalysisTask(ow, isCreate) {
+  //   wsk action create vision/analysis --kind nodejs:6 analysis/analysis.zip
+  return (callback) => {
+    // (cd analysis && rm -f analysis.zip && zip analysis.zip analysis.js package.json)
+    // (cd ../web && zip -r ../processing/analysis/analysis.zip lib)
+    const actionCode = buildZip({
+      'package.json': 'processing/analysis/package.json',
+      'analysis.js': 'processing/analysis/analysis.js',
+      'lib/cloudantstorage.js': 'web/lib/cloudantstorage.js',
+      'lib/objectstorage.js': 'web/lib/objectstorage.js',
+      'lib/cloudant-designs.json': 'web/lib/cloudant-designs.json'
+    });
+    call(ow, 'action', isCreate ? 'create' : 'update', {
+      actionName: 'vision/analysis',
+      action: {
+        exec: {
+          kind: 'nodejs:6',
+          code: actionCode,
+          binary: true
+        }
+      }
+    }, callback);
+  };
+}
+
+function makeChangeListenerTask(ow, isCreate) {
+  //   wsk action create vision-cloudant-changelistener --kind nodejs:6 changelistener/changelistener.zip\
+  //     -p cloudantUrl https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host\
+  //     -p cloudantDbName $CLOUDANT_db
+  return (callback) => {
+    const actionCode = buildZip({
+      'package.json': 'processing/changelistener/package.json',
+      'changelistener.js': 'processing/changelistener/changelistener.js',
+      'lib/cloudantstorage.js': 'web/lib/cloudantstorage.js',
+      'lib/objectstorage.js': 'web/lib/objectstorage.js',
+      'lib/cloudant-designs.json': 'web/lib/cloudant-designs.json'
+    });
+    call(ow, 'action', isCreate ? 'create' : 'update', {
+      actionName: 'vision-cloudant-changelistener',
+      action: {
+        exec: {
+          kind: 'nodejs:6',
+          code: actionCode,
+          binary: true
+        },
+        parameters: [{
+          key: 'cloudantUrl',
+          value: `https://${process.env.CLOUDANT_username}:${process.env.CLOUDANT_password}@${process.env.CLOUDANT_host}`
+        }, {
+          key: 'cloudantDbName',
+          value: process.env.CLOUDANT_db
+        }]
+      }
+    }, callback);
+  }
+}
+
 function uninstall(ow) {
   WARN('Unstalling artifacts...');
-  async.waterfall([
-    // wsk action delete vision/analysis
-    (callback) => {
-      call(ow, 'action', 'delete', 'vision/analysis', callback);
-    },
-    //   wsk action delete vision/extractor
-    (callback) => {
-      call(ow, 'action', 'delete', 'vision/extractor', callback);
-    },
-    //   wsk rule disable vision-rule
-    (callback) => {
-      call(ow, 'rule', 'disable', 'vision-rule', callback);
-    },
-    //   wsk rule delete vision-rule
-    (callback) => {
-      call(ow, 'rule', 'delete', 'vision-rule', callback);
-    },
-    //   wsk action delete vision-cloudant-changelistener
-    (callback) => {
-      call(ow, 'action', 'delete', 'vision-cloudant-changelistener', callback);
-    },
-    //   wsk trigger delete vision-cloudant-trigger
-    (callback) => {
-      call(ow, 'trigger', 'delete', 'vision-cloudant-trigger', callback);
-    },
+  waterfall([
+    callback => call(ow, 'action', 'delete', 'vision/analysis', callback),
+    callback => call(ow, 'action', 'delete', 'vision/extractor', callback),
+    callback => call(ow, 'rule', 'disable', 'vision-rule', callback),
+    callback => call(ow, 'rule', 'delete', 'vision-rule', callback),
+    callback => call(ow, 'action', 'delete', 'vision-cloudant-changelistener', callback),
+    callback => call(ow, 'trigger', 'delete', 'vision-cloudant-trigger', callback),
     (callback) => {
       call(ow, 'feed', 'delete', {
         feedName: 'vision-cloudant/changes',
@@ -300,22 +303,37 @@ function uninstall(ow) {
         }
       }, callback);
     },
-    //   echo "Removing packages..."
-    //   wsk package delete vision-cloudant
+    callback => call(ow, 'package', 'delete', 'vision-cloudant', callback),
+    callback => call(ow, 'package', 'delete', 'vision', callback)
+  ]);
+}
+
+function disable(ow) {
+  WARN('Enabling video and image processing...');
+  waterfall([
+    // wsk rule disable vision-rule
     (callback) => {
-      call(ow, 'package', 'delete', 'vision-cloudant', callback);
-    },
-    //   wsk package delete vision
-    (callback) => {
-      call(ow, 'package', 'delete', 'vision', callback);
-    },
-  ], (err) => {
-    if (err) {
-      DEBUG('Failed', err);
-    } else {
-      WARN('Done');
+      call(ow, 'rule', 'disable', 'vision-rule', callback);
     }
-  });
+  ]);
+}
+
+function enable(ow) {
+  WARN('Enabling video and image processing...');
+  waterfall([
+    // wsk rule enable vision-rule
+    (callback) => {
+      call(ow, 'rule', 'enable', 'vision-rule', callback);
+    }
+  ]);
+}
+
+function update(ow) {
+  WARN('Updating action code...');
+  waterfall([
+    makeAnalysisTask(ow, false),
+    makeChangeListenerTask(ow, false)
+  ]);
 }
 
 // call the OpenWhisk client API dynamically
@@ -335,6 +353,16 @@ function call(ow, resource, verb, callOptions, callback) {
     WARN(`${resource} ${verb} ${params[`${resource}Name`]} [KO]`, err.message);
     DEBUG(`${resource} ${verb} ${params[`${resource}Name`]} [KO]`, err);
     callback(null);
+  });
+}
+
+function waterfall(tasks) {
+  async.waterfall(tasks, (err) => {
+    if (err) {
+      DEBUG('Failed', err);
+    } else {
+      WARN('Done');
+    }
   });
 }
 
