@@ -76,7 +76,7 @@ if (fs.existsSync('local.env')) {
   WARN('Loading Dark Vision credentials from local.env');
   require('dotenv').config({ path: 'local.env' });
 } else {
-  WARN('No local.env found. Credentials will be loaded from environment variables.');
+  WARN('No local.env found. Dark Vision credentials will be loaded from environment variables.');
 }
 
 // load wskprops if any
@@ -289,7 +289,7 @@ function makeChangeListenerTask(ow, isCreate) {
 }
 
 function uninstall(ow) {
-  WARN('Unstalling artifacts...');
+  WARN('Uninstalling artifacts...');
   waterfall([
     callback => call(ow, 'action', 'delete', 'vision/analysis', callback),
     callback => call(ow, 'action', 'delete', 'vision/extractor', callback),
@@ -313,7 +313,7 @@ function uninstall(ow) {
 }
 
 function disable(ow) {
-  WARN('Enabling video and image processing...');
+  WARN('Disabling video and image processing...');
   waterfall([
     // wsk rule disable vision-rule
     (callback) => {
