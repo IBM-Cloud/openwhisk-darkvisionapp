@@ -116,9 +116,9 @@ if (appEnv.services['Object-Storage']) {
 const mediaStorage = require('./lib/cloudantstorage')(
   {
     cloudantUrl: appEnv.services.cloudantNoSQLDB[0].credentials.url,
-    cloudantDbName: 'openwhisk-darkvision',
+    cloudantDbName: process.env.CLOUDANT_db || 'openwhisk-darkvision',
     initializeDatabase: true,
-    fileStore: fileStore
+    fileStore
   });
 
 /**
