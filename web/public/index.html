@@ -44,9 +44,15 @@
     <span class="label label-default">VIDEOS</span>
     <span class="label label-success">total: {{controller.data.status.videos.count}}</span>
     <span class="label label-warning">todo: {{controller.data.status.videos.to_be_analyzed}}</span>
-    
+
     <span>&nbsp;</span>
-    
+
+    <span class="label label-default">AUDIOS</span>
+    <span class="label label-success">total: {{controller.data.status.audios.count}}</span>
+    <span class="label label-warning">todo: {{controller.data.status.audios.to_be_analyzed}}</span>
+
+    <span>&nbsp;</span>
+
     <span class="label label-default">IMAGES</span>
     <span class="label label-success">total: {{controller.data.status.images.count}}</span>
     <span class="label label-warning">todo: {{controller.data.status.images.to_be_analyzed}}</span>
@@ -65,7 +71,7 @@
   <script src="vendor/angular/angular.min.js"></script>
   <script src="vendor/angular-ui-router/release/angular-ui-router.min.js"></script>
   <script src="vendor/dropzone/dist/min/dropzone.min.js"></script>
-  
+
   <script src="js/app.js"></script>
 
   <script src="js/status.service.js"></script>
