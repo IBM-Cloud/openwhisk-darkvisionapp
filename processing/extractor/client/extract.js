@@ -147,7 +147,7 @@ async.waterfall([
         callback(err);
       });
   },
-  // extract metata
+  // extract video metata
   (callback) => {
     ffmpeg.ffprobe(inputFilename, (err, metadata) => {
       if (!err) {
@@ -168,6 +168,65 @@ async.waterfall([
       }
     });
   },
+  // extract the audio
+  (callback) => {
+    ffmpeg()
+      .input(inputFilename)
+      .outputOptions([
+        '-qscale:a',
+        '3',
+        '-acodec',
+        'vorbis',
+        '-map',
+        'a',
+        '-strict',
+        '-2'
+      ])
+      .output(`${workingDirectory.name}/audio.ogg`)
+      .on('progress', (progress) => {
+        console.log(`Exporting audio: ${Math.round(progress.percent)}% done`);
+      })
+      .on('error', (err) => {
+        console.log('Audio export', err);
+        callback(err);
+      })
+      .on('end', () => {
+        callback(null);
+      })
+      .run();
+  },
+  // create a new "audio" document
+  (callback) => {
+    const audioDocument = {
+      type: 'audio',
+      video_id: videoDocument._id
+    };
+    mediaStorage.insert(audioDocument, (err, insertedDoc) => {
+      if (err) {
+        callback(err);
+      } else {
+        audioDocument._id = insertedDoc.id;
+        audioDocument._rev = insertedDoc.rev;
+        callback(null, audioDocument);
+      }
+    });
+  },
+  // persist the audio attachment with the video
+  (audioDocument, callback) => {
+    console.log('Uploading audio...');
+    fs.createReadStream(`${workingDirectory.name}/audio.ogg`).pipe(
+      mediaStorage.attach(audioDocument, 'audio.ogg', 'audio/ogg', (attachErr, attachedDoc) => {
+        fs.unlink(`${workingDirectory.name}/audio.ogg`);
+        if (attachErr) {
+          console.log('Audio upload failed', attachErr);
+          callback(attachErr);
+        } else {
+          console.log('Audio upload completed', attachedDoc.id);
+          callback(null);
+        }
+      }
+    ));
+  },
   // split frames
   (callback) => {
     const fps = getFps(videoDocument.metadata.streams[0].duration);
@@ -181,7 +240,7 @@ async.waterfall([
       ])
       .output(`${framesDirectory}/%0d.jpg`)
       .on('progress', (progress) => {
-        console.log(`Processing: ${Math.round(progress.percent)}% done`);
+        console.log(`Processed ${progress.frames} frames`);
       })
       .on('error', (err) => {
         console.log('split frames', err);
