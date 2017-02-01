@@ -35,6 +35,17 @@
           "map": "function (doc) {\n  if (doc.type == \"video\" && !doc.metadata) {\n    emit(doc._id, { source: doc.source, title: doc.title});\n  }\n}"
         }
       }
+    },
+    {
+      "_id": "_design/audios",
+      "views": {
+        "all": {
+          "map": "function (doc) {\n  if (doc.type == \"audio\") {\n    emit(doc._id, doc.video_id);\n  }\n}"
+        },
+        "to_be_analyzed": {
+          "map": "function (doc) {\n  if (doc.type == \"audio\" && !doc.metadata) {\n    emit(doc._id, doc.video_id);\n  }\n}"
+        }
+      }
     }
   ]
 }
