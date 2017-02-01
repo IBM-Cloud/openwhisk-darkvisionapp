@@ -183,6 +183,7 @@ function CloudandStorage(options) {
   // return statistics about processed vs. unprocessed videos
   self.status = function(statusCallback/* err, stats*/) {
     const status = {
+      audios: {},
       videos: {},
       images: {}
     };
@@ -201,6 +202,23 @@ function CloudandStorage(options) {
         visionDb.view('videos', 'to_be_analyzed', (err, body) => {
           if (body) {
             status.videos.to_be_analyzed = body.total_rows;
+          }
+          callback(null);
+        });
+      },
+      (callback) => {
+        visionDb.view('audios', 'all', (err, body) => {
+          if (body) {
+            status.audios.count = body.total_rows;
+            status.audios.all = body.rows;
+          }
+          callback(null);
+        });
+      },
+      (callback) => {
+        visionDb.view('audios', 'to_be_analyzed', (err, body) => {
+          if (body) {
+            status.audios.to_be_analyzed = body.total_rows;
           }
           callback(null);
         });
@@ -317,6 +335,19 @@ function CloudandStorage(options) {
     });
   };
 
+  // get all audios
+  self.audios = function(audiosCallback/* err, audios*/) {
+    visionDb.view('audios', 'all', {
+      include_docs: true
+    }, (err, body) => {
+      if (err) {
+        audiosCallback(err);
+      } else {
+        audiosCallback(null, body.rows.map(doc => doc.doc));
+      }
+    });
+  };
+
   function removeFileStoreAttachments(doc) {
     if (fileStore && doc.attachments) {
       Object.keys(doc.attachments).forEach((key) => {
@@ -366,36 +397,38 @@ function CloudandStorage(options) {
   self.videoReset = function(videoId, resetCallback/* err, result*/) {
     // remove all analysis for the give video
     async.waterfall([
-      // get all images for this video
+      // get all related content for this video
       (callback) => {
-        console.log('Retrieving all images for', videoId);
-        visionDb.view('images', 'by_video_id', {
-          key: videoId,
-          include_docs: true
-        }, (err, body) => {
-          callback(err, body ? body.rows : null);
+        console.log('Retrieving related documents for', videoId);
+        visionDb.find({
+          selector: {
+            video_id: videoId
+          }
+        }, (err, related) => {
+          callback(err, related ? related.docs : []);
         });
       },
-      // delete the images
-      (images, callback) => {
+      // delete related medias
+      (related, callback) => {
         const toBeDeleted = {
-          docs: images.map(row => ({
-            _id: row.doc._id,
-            _rev: row.doc._rev,
+          docs: related.map(doc => ({
+            _id: doc._id,
+            _rev: doc._rev,
             _deleted: true
           }))
         };
-        console.log('Deleting', toBeDeleted.docs.length, 'images...');
 
-        // drop the attachments
-        images.forEach(image => removeFileStoreAttachments(image.doc));
+        // delete all attachments for related medias
+        related.forEach(removeFileStoreAttachments);
 
         // and the documents
         if (toBeDeleted.docs.length > 0) {
+          console.log('Deleting', toBeDeleted.docs.length, 'medias...');
           visionDb.bulk(toBeDeleted, (err) => {
             callback(err);
           });
         } else {
+          console.log('No related media to delete');
           callback(null);
         }
       },
