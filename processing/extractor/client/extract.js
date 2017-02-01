@@ -147,7 +147,7 @@ async.waterfall([
         callback(err);
       });
   },
-  // extract video metata
+  // extract video metadata
   (callback) => {
     ffmpeg.ffprobe(inputFilename, (err, metadata) => {
       if (!err) {
