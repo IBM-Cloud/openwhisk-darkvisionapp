@@ -83,21 +83,28 @@ function onDocumentChange(url, dbName, documentId, documentRev, callback) {
     }
 
     // if it is a video, it has a 'video.mp4' attachment and it has no metadata,
-    if (doc.type === 'video' && mediaStorage.isReadyToProcess(doc)) {
+    if (doc.type === 'video' && mediaStorage.hasAttachment(doc, 'video.mp4') && !doc.metadata) {
       // trigger the frame-extractor
       asyncCallAction('vision/extractor', doc, callback);
       return;
     }
 
+    // if it is a audio, it has a 'video.mp4' attachment and it has no metadata,
+    if (doc.type === 'audio' && mediaStorage.hasAttachment(doc, 'audio.ogg') && !doc.transcript) {
+      // trigger the speech to text
+      asyncCallAction('vision/speechtotext', doc, callback);
+      return;
+    }
+
     // if this is an image, with an attachment and no analysis
-    if (doc.type === 'image' && mediaStorage.isReadyToProcess(doc)) {
+    if (doc.type === 'image' && mediaStorage.hasAttachment(doc, 'image.jpg') && !doc.analysis) {
       // trigger the analysis
       asyncCallAction('vision/analysis', doc, callback);
       return;
     }
 
     // nothing to do with this change
-    console.log('[', doc._id, '] OK - ignored');
+    console.log('[', doc._id, '] OK - ignored event for doc type:', doc.type);
     callback(null, { ok: true, ignored: true });
   });
 }

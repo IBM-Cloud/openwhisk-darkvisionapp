@@ -117,37 +117,24 @@ function install(ow) {
     //     -p osPassword "$OS_PASSWORD"\
     //     -p osDomainId "$OS_DOMAIN_ID"
     (callback) => {
+      const keyAndValues = {
+        cloudantUrl: `https://${process.env.CLOUDANT_username}:${process.env.CLOUDANT_password}@${process.env.CLOUDANT_host}`,
+        cloudantDbName: process.env.CLOUDANT_db,
+        watsonApiKey: process.env.WATSON_API_KEY,
+        sttUrl: process.env.STT_URL,
+        sttUsername: process.env.STT_USERNAME,
+        sttPassword: process.env.STT_PASSWORD,
+        osAuthUrl: process.env.OS_AUTH_URL || '',
+        osProjectId: process.env.OS_PROJECT_ID || '',
+        osRegion: process.env.OS_REGION || '',
+        osUsername: process.env.OS_USERNAME || '',
+        osPassword: process.env.OS_PASSWORD || '',
+        osDomainId: process.env.OS_DOMAIN_ID || '',
+      };
       call(ow, 'package', 'update', {
         packageName: 'vision',
         package: {
-          parameters: [{
-            key: 'cloudantUrl',
-            value: `https://${process.env.CLOUDANT_username}:${process.env.CLOUDANT_password}@${process.env.CLOUDANT_host}`
-          }, {
-            key: 'cloudantDbName',
-            value: `${process.env.CLOUDANT_db}`
-          }, {
-            key: 'watsonApiKey',
-            value: `${process.env.WATSON_API_KEY}`
-          }, {
-            key: 'osAuthUrl',
-            value: process.env.OS_AUTH_URL || ''
-          }, {
-            key: 'osProjectId',
-            value: process.env.OS_PROJECT_ID || ''
-          }, {
-            key: 'osRegion',
-            value: process.env.OS_REGION || ''
-          }, {
-            key: 'osUsername',
-            value: process.env.OS_USERNAME || ''
-          }, {
-            key: 'osPassword',
-            value: process.env.OS_PASSWORD || ''
-          }, {
-            key: 'osDomainId',
-            value: process.env.OS_DOMAIN_ID || ''
-          }]
+          parameters: toParameters(keyAndValues)
         }
       }, callback);
     },
@@ -157,19 +144,15 @@ function install(ow) {
     //     -p password $CLOUDANT_password\
     //     -p host $CLOUDANT_host
     (callback) => {
+      const keyAndValues = {
+        username: process.env.CLOUDANT_username,
+        password: process.env.CLOUDANT_password,
+        host: process.env.CLOUDANT_host
+      };
       call(ow, 'package', 'create', {
         packageName: 'vision-cloudant',
         package: {
-          parameters: [{
-            key: 'username',
-            value: process.env.CLOUDANT_username
-          }, {
-            key: 'password',
-            value: process.env.CLOUDANT_password
-          }, {
-            key: 'host',
-            value: process.env.CLOUDANT_host
-          }],
+          parameters: toParameters(keyAndValues),
           binding: {
             namespace: 'whisk.system',
             name: 'cloudant'
@@ -220,6 +203,7 @@ function install(ow) {
     },
     makeAnalysisTask(ow, true),
     makeChangeListenerTask(ow, true),
+    makeSpeechToTextTask(ow, true),
     //   wsk rule create vision-rule vision-cloudant-trigger vision-cloudant-changelistener
     (callback) => {
       call(ow, 'rule', 'create', {
@@ -229,6 +213,32 @@ function install(ow) {
       }, callback);
     }
   ]);
+}
+
+function makeSpeechToTextTask(ow, isCreate) {
+  //   wsk action create vision/speechtotext --kind nodejs:6 speechtotext/speechtotext.zip
+  return (callback) => {
+    const actionCode = buildZip({
+      'package.json': 'processing/speechtotext/package.json',
+      'speechtotext.js': 'processing/speechtotext/speechtotext.js',
+      'lib/cloudantstorage.js': 'web/lib/cloudantstorage.js',
+      'lib/objectstorage.js': 'web/lib/objectstorage.js',
+      'lib/cloudant-designs.json': 'web/lib/cloudant-designs.json'
+    });
+    call(ow, 'action', isCreate ? 'create' : 'update', {
+      actionName: 'vision/speechtotext',
+      action: {
+        exec: {
+          kind: 'nodejs:6',
+          code: actionCode,
+          binary: true
+        },
+        limits: {
+          timeout: 300000
+        }
+      }
+    }, callback);
+  };
 }
 
 function makeAnalysisTask(ow, isCreate) {
@@ -285,7 +295,7 @@ function makeChangeListenerTask(ow, isCreate) {
         }]
       }
     }, callback);
-  }
+  };
 }
 
 function uninstall(ow) {
@@ -293,6 +303,7 @@ function uninstall(ow) {
   waterfall([
     callback => call(ow, 'action', 'delete', 'vision/analysis', callback),
     callback => call(ow, 'action', 'delete', 'vision/extractor', callback),
+    callback => call(ow, 'action', 'delete', 'vision/speechtotext', callback),
     callback => call(ow, 'rule', 'disable', 'vision-rule', callback),
     callback => call(ow, 'rule', 'delete', 'vision-rule', callback),
     callback => call(ow, 'action', 'delete', 'vision-cloudant-changelistener', callback),
@@ -336,7 +347,8 @@ function update(ow) {
   WARN('Updating action code...');
   waterfall([
     makeAnalysisTask(ow, false),
-    makeChangeListenerTask(ow, false)
+    makeChangeListenerTask(ow, false),
+    makeSpeechToTextTask(ow, false)
   ]);
 }
 
@@ -358,6 +370,13 @@ function call(ow, resource, verb, callOptions, callback) {
     DEBUG(`${resource} ${verb} ${params[`${resource}Name`]} [KO]`, err);
     callback(null);
   });
+}
+
+function toParameters(keyAndValues) {
+  return Object.keys(keyAndValues).map(key => ({
+    key,
+    value: keyAndValues[key]
+  }));
 }
 
 function waterfall(tasks) {

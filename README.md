@@ -19,15 +19,15 @@ In addition to processing videos, Dark Vision can also processes standalone imag
 
  Built using IBM Bluemix, the application uses:
   * [Watson Visual Recognition](https://console.ng.bluemix.net/catalog/services/watson_vision_combined)
+  * [Watson Speech to Text](https://console.ng.bluemix.net/catalog/services/speech_to_text)
   * [OpenWhisk](console.ng.bluemix.net/openwhisk/)
   * [Cloudant](https://console.ng.bluemix.net/catalog/services/cloudantNoSQLDB)
   * [Object Storage](https://console.ng.bluemix.net/catalog/services/Object-Storage) (optional component)
 
-### Extracting frames from a video
+### Extracting frames and audio from a video
 
 The user uploads a video or image using the Dark Vision web application, which stores it in a Cloudant DB. Once the video is uploaded, OpenWhisk detects the new video by listening to Cloudant changes (trigger).
-OpenWhisk then triggers the video extractor action. During its execution, the extractor produces frames (images)
-and stores them in Cloudant. The frames are then processed using Watson Visual Recognition and the results are stored in the same Cloudant DB. The results can be viewed using Dark Vision web application OR an iOS application.
+OpenWhisk then triggers the video and audio extractor action. During its execution, the extractor produces frames (images), captures the audio track and stores them in Cloudant. The frames are then processed using Watson Visual Recognition and the results are stored in the same Cloudant DB. The results can be viewed using Dark Vision web application OR an iOS application.
 
 Object Storage can be used in addition to Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
 
@@ -41,14 +41,43 @@ Object Storage can be used in addition to Cloudant. When doing so, video and ima
     storage -> openwhisk
     /* openwhisk triggers the extractor */
     openwhisk -> extractor
-    /* extractor produces image frames */
+    /* extractor produces image frames and audio */
     extractor -> frames
-    /* frames are stored in cloudant */
+    extractor -> audio
+    /* frames and audio are stored */
     frames -> storage
-    /* styling */
+    audio -> storage
+    /* styling ****/
     frames [label="Image Frames"]
+    audio [label="Audio Track"]
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
+  }
+)
+
+### Processing audio
+
+Whenever the audio track is extracted, Cloudant emits a change event and
+OpenWhisk triggers the audio analysis.
+
+![Architecture](http://g.gravizo.com/g?
+  digraph G {
+    node [fontname = "helvetica"]
+    audio -> storage
+    storage -> openwhisk
+    openwhisk -> analysis
+    /* extractor produces image frames */
+    {rank=same; frame -> storage -> openwhisk -> analysis -> watson [style=invis] }
+    /* analysis calls Watson */
+    analysis -> watson
+    /* results are stored */
+    analysis -> storage
+    /* styling ****/
+    audio [label="Audio Track"]
+    analysis [label="Audio Analysis"]
+    storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
+    openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
+    watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\Speech to Text"]
   }
 )
 
@@ -72,7 +101,7 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
     analysis -> watson
     /* results are stored */
     analysis -> storage
-    /* styling */
+    /* styling ****/
     frame [label="Image Frame"]
     analysis [label="Image Analysis"]
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
@@ -112,6 +141,8 @@ You can simply reuse the existing ones.*
 1. Open the Cloudant service dashboard and create a new database named **openwhisk-darkvision**
 
 1. Create a Watson Visual Recognition service instance named **visualrecognition-for-darkvision**
+
+1. Create a Watson Speech to Text instance named **stt-for-darkvision**
 
 1. Optionally create a Object Storage service instance named **objectstorage-for-darkvision**
 

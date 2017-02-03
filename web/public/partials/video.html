@@ -9,7 +9,7 @@
   </ol>
 
   <h2>
-    Summary
+    Summary <span class="small text-muted" ng-if="!controller.data.summary.image_keywords">Loading...</span>
     <p class="pull-right">
       <button class="btn btn-danger" ng-click="controller.resetImages()">Reset all images</button>
       <button class="btn btn-danger" ng-click="controller.reset()">Relaunch analysis</button>
@@ -17,7 +17,6 @@
   </h2>
 
   <div class="well">
-    <span ng-if="!controller.data.summary.image_keywords">Loading summary...</span>
 
     <div class="row">
       <div class="col-md-4">
@@ -51,7 +50,15 @@
       </div>
     </div>
 
+  </div>
 
+  <div ng-if="controller.data.summary.audio.transcript">
+    <h2>Transcript <span class="small text-muted">(first 4 minutes)</span></h2>
+    <div class="well">
+      <span class="transcript-sentence" ng-repeat="transcript in controller.data.summary.audio.transcript.results">
+        {{transcript.alternatives[0].transcript | formatSentence}}.
+      </span>
+    </div>
   </div>
 
   <h2>{{controller.data.images.length}} Frames <span ng-if="controller.data.notProcessed>0" class="text-muted">({{controller.data.notProcessed}})</span></h2>

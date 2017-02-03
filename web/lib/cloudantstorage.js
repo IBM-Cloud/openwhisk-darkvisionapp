@@ -393,6 +393,24 @@ function CloudandStorage(options) {
     });
   };
 
+  // get the audio of a video
+  self.videoAudio = function(videoId, callback/* err, transcript*/) {
+    visionDb.find({
+      selector: {
+        type: 'audio',
+        video_id: videoId
+      }
+    }, (err, audios) => {
+      if (err) {
+        callback(err);
+      } else if (audios.docs.length > 0) {
+        callback(null, audios.docs[0]);
+      } else {
+        callback(null, null);
+      }
+    });
+  };
+
   // reset a video
   self.videoReset = function(videoId, resetCallback/* err, result*/) {
     // remove all analysis for the give video
@@ -507,25 +525,10 @@ function CloudandStorage(options) {
     ], resetCallback);
   };
 
-  function hasAttachment(doc, attachmentName) {
+  // check if the given doc has an attachment of the given name
+  self.hasAttachment = function(doc, attachmentName) {
     return (doc.attachments && doc.attachments[attachmentName]) ||
       (doc._attachments && doc._attachments[attachmentName]);
-  }
-
-  // check if a video or image has already been processed
-  self.isReadyToProcess = function(doc) {
-    try {
-      if (doc.type === 'video') {
-        return hasAttachment(doc, 'video.mp4') && !doc.metadata;
-      } else if (doc.type === 'image') {
-        return hasAttachment(doc, 'image.jpg') && !doc.analysis;
-      } else { // eslint-disable-line no-else-return
-        return false;
-      }
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
   };
 }
 

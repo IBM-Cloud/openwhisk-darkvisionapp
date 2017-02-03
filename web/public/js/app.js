@@ -40,6 +40,14 @@
   });
 
   app
+    .filter('formatSentence', [
+      function() {
+        return function(value) {
+          var result = value.trim().replace(/%HESITATION/g, '...');
+          return result.substr(0, 1).toUpperCase() + result.substr(1);
+        }
+      }
+    ])
     .filter('formatPercent', [
       function () {
         return function (value) {

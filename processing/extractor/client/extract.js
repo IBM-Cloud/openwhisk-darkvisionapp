@@ -26,7 +26,8 @@ console.log('Payload', payload);
 const doc = payload.doc;
 
 const extractOptions = {
-  videoThumbnailSize: 640
+  videoThumbnailSize: 640,
+  speechDuration: 4 * 60 // export only the first 4 minutes of clip audio
 };
 
 function getFps(durationInSeconds) {
@@ -180,7 +181,9 @@ async.waterfall([
         '-map',
         'a',
         '-strict',
-        '-2'
+        '-2',
+        '-ss 0',
+        `-t ${extractOptions.speechDuration}`
       ])
       .output(`${workingDirectory.name}/audio.ogg`)
       .on('progress', (progress) => {

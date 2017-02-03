@@ -149,3 +149,7 @@ footer {
 .video-tags {
   text-align: center;
 }
+
+.transcript-sentence::first-letter {
+  text-transform: capitalize;
+}

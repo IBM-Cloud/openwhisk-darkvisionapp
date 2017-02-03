@@ -358,9 +358,21 @@ app.get('/api/videos/:id/summary', (req, res) => {
       });
 
       callback(null, {
-        video: video,
+        video,
         face_detection: peopleNameToOccurrences,
         image_keywords: keywordToOccurrences
+      });
+    },
+    // get the video transcript
+    (result, callback) => {
+      console.log('Retrieving transcript');
+      mediaStorage.videoAudio(result.video._id, (err, audio) => {
+        if (err) {
+          callback(err);
+        } else {
+          result.audio = audio;
+          callback(null, result);
+        }
       });
     }], (err, result) => {
     if (err) {
