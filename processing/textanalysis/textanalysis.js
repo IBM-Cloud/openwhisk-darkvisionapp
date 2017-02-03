@@ -116,11 +116,11 @@ function processTranscript(args, text, processCallback) {
       });
       alchemyLanguage.entities({ text }, (err, response) => {
         if (err) {
-          callback(err);
+          console.log('Alchemy Language entities', err);
         } else {
           analysis.entities = response.entities;
-          callback(null);
         }
+        callback(null);
       });
     },
   ], (err) => {
