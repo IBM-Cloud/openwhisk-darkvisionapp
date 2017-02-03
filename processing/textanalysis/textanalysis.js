@@ -20,9 +20,8 @@
  * It expects the following parameters as attributes of 'args'
  * - cloudantUrl: "https://username:password@host"
  * - cloudantDbName: "openwhisk-darkvision"
- * - sttUrl: "https://watson"
- * - sttUsername: 'username'
- * - sttPassword: 'password'
+ * - alchemyUrl: "https://watson"
+ * - alchemyApiKey: '123'
  * - doc: "audio document in cloudant"
  */
 function main(args) {
@@ -43,15 +42,11 @@ exports.main = main;
  * @param mainCallback(err, analysis)
  */
 function mainImpl(args, mainCallback) {
-  const fs = require('fs');
   const startTime = (new Date()).getTime();
 
   if (args.doc) {
     const audioDocumentId = args.doc._id;
-    console.log('[', audioDocumentId, '] Processing audio.ogg from document');
-
-    // use id to build a unique filename
-    const fileName = `${audioDocumentId}-audio.ogg`;
+    console.log('[', audioDocumentId, '] Processing audio transcript from document');
 
     const mediaStorage = require('./lib/cloudantstorage')({
       cloudantUrl: args.cloudantUrl,
@@ -66,39 +61,27 @@ function mainImpl(args, mainCallback) {
           callback(err, audio);
         });
       },
-      // get the audio binary
-      (audio, callback) => {
-        console.log('Retrieving audio file');
-        mediaStorage.read(audio, 'audio.ogg').pipe(fs.createWriteStream(fileName))
-          .on('finish', () => {
-            callback(null, audio);
-          })
-          .on('error', (err) => {
-            callback(err);
-          });
-      },
       // trigger the analysis on the audio file
       (audio, callback) => {
-        processAudio(args, fileName, (err, transcript) => {
-          if (err) {
-            callback(err);
-          } else {
-            callback(null, audio, transcript);
-          }
+        const fullText = audio.transcript.results.reduce((text, transcript) =>
+          `${text}${transcript.alternatives[0].transcript}. `
+        , '');
+        processTranscript(args, fullText, (err, analysis) => {
+          callback(err, audio, analysis);
         });
       },
       // write result in the db
-      (audio, transcript, callback) => {
-        audio.transcript = transcript;
+      (audio, analysis, callback) => {
+        audio.analysis = analysis;
         mediaStorage.insert(audio, (err) => {
           if (err) {
             callback(err);
           } else {
-            callback(null, transcript);
+            callback(null, analysis);
           }
         });
       }
-    ], (err, transcript) => {
+    ], (err, analysis) => {
       const durationInSeconds = ((new Date()).getTime() - startTime) / 1000;
 
       if (err) {
@@ -106,7 +89,7 @@ function mainImpl(args, mainCallback) {
         mainCallback(err);
       } else {
         console.log('[', audioDocumentId, '] OK (', durationInSeconds, 's)');
-        mainCallback(null, transcript);
+        mainCallback(null, analysis);
       }
     });
     return true;
@@ -118,31 +101,29 @@ function mainImpl(args, mainCallback) {
 }
 
 /**
- * Prepares and analyzes the audio.
- * processCallback = function(err, transcript);
+ * Sends the transcript to different text processing service
  */
-function processAudio(args, fileName, processCallback) {
-  const SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
-  const stt = new SpeechToTextV1({
-    username: args.sttUsername,
-    password: args.sttPassword
+function processTranscript(args, text, processCallback) {
+  const async = require('async');
+  const analysis = {
+  };
+  async.parallel([
+    // get result from AlchemyLanguage
+    (callback) => {
+      const AlchemyLanguageV1 = require('watson-developer-cloud/alchemy-language/v1');
+      const alchemyLanguage = new AlchemyLanguageV1({
+        api_key: args.alchemyApiKey
+      });
+      alchemyLanguage.entities({ text }, (err, response) => {
+        if (err) {
+          callback(err);
+        } else {
+          analysis.entities = response.entities;
+          callback(null);
+        }
+      });
+    },
+  ], (err) => {
+    processCallback(err, analysis);
   });
-  const fs = require('fs');
-
-  console.log('Calling Speech to Text...');
-  try {
-    stt.recognize({
-      audio: fs.createReadStream(fileName),
-      content_type: 'audio/ogg;codecs=opus',
-      timestamps: true,
-      word_alternatives_threshold: 0.9,
-      continuous: true,
-      smart_formatting: true
-    }, (err, transcript) => {
-      processCallback(err, transcript);
-    });
-  } catch (error) {
-    console.log(error);
-    processCallback(error);
-  }
 }

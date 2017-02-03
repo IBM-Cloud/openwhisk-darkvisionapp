@@ -89,10 +89,17 @@ function onDocumentChange(url, dbName, documentId, documentRev, callback) {
       return;
     }
 
-    // if it is a audio, it has a 'video.mp4' attachment and it has no metadata,
+    // if it is a audio, it has a 'audio.ogg' attachment and it has no metadata,
     if (doc.type === 'audio' && mediaStorage.hasAttachment(doc, 'audio.ogg') && !doc.transcript) {
       // trigger the speech to text
       asyncCallAction('vision/speechtotext', doc, callback);
+      return;
+    }
+
+    // if it is a audio, it has a transcript and no analysis
+    if (doc.type === 'audio' && doc.transcript && !doc.analysis) {
+      // trigger the analysis of the text
+      asyncCallAction('vision/textanalysis', doc, callback);
       return;
     }
 

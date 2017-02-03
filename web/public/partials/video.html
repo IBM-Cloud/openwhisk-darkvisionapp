@@ -61,6 +61,15 @@
     </div>
   </div>
 
+  <div ng-if="controller.data.summary.audio.analysis.entities">
+    <h2>Entities</h2>
+    <div class="well">
+      <div ng-repeat="entity in controller.data.summary.audio.analysis.entities">
+        {{entity.type}} - {{entity.text}}
+      </div>
+    </div>
+  </div>
+
   <h2>{{controller.data.images.length}} Frames <span ng-if="controller.data.notProcessed>0" class="text-muted">({{controller.data.notProcessed}})</span></h2>
   <div>
     <ng-include ng-repeat="image in controller.data.images" src="'/partials/image.html'"></ng-include>

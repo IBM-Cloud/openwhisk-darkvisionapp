@@ -124,6 +124,8 @@ function install(ow) {
         sttUrl: process.env.STT_URL,
         sttUsername: process.env.STT_USERNAME,
         sttPassword: process.env.STT_PASSWORD,
+        alchemyUrl: process.env.ALCHEMY_URL,
+        alchemyApiKey: process.env.ALCHEMY_API_KEY,
         osAuthUrl: process.env.OS_AUTH_URL || '',
         osProjectId: process.env.OS_PROJECT_ID || '',
         osRegion: process.env.OS_REGION || '',
@@ -201,9 +203,10 @@ function install(ow) {
         }
       }, callback);
     },
-    makeAnalysisTask(ow, true),
     makeChangeListenerTask(ow, true),
-    makeSpeechToTextTask(ow, true),
+    makeActionTask(ow, 'textanalysis', true),
+    makeActionTask(ow, 'analysis', true),
+    makeActionTask(ow, 'speechtotext', true),
     //   wsk rule create vision-rule vision-cloudant-trigger vision-cloudant-changelistener
     (callback) => {
       call(ow, 'rule', 'create', {
@@ -215,18 +218,20 @@ function install(ow) {
   ]);
 }
 
-function makeSpeechToTextTask(ow, isCreate) {
+function makeActionTask(ow, actionName, isCreate) {
   //   wsk action create vision/speechtotext --kind nodejs:6 speechtotext/speechtotext.zip
   return (callback) => {
-    const actionCode = buildZip({
-      'package.json': 'processing/speechtotext/package.json',
-      'speechtotext.js': 'processing/speechtotext/speechtotext.js',
+    const files = {
+      'package.json': `processing/${actionName}/package.json`,
       'lib/cloudantstorage.js': 'web/lib/cloudantstorage.js',
       'lib/objectstorage.js': 'web/lib/objectstorage.js',
       'lib/cloudant-designs.json': 'web/lib/cloudant-designs.json'
-    });
+    };
+    files[`${actionName}.js`] = `processing/${actionName}/${actionName}.js`;
+    const actionCode = buildZip(files);
+
     call(ow, 'action', isCreate ? 'create' : 'update', {
-      actionName: 'vision/speechtotext',
+      actionName: `vision/${actionName}`,
       action: {
         exec: {
           kind: 'nodejs:6',
@@ -235,31 +240,6 @@ function makeSpeechToTextTask(ow, isCreate) {
         },
         limits: {
           timeout: 300000
-        }
-      }
-    }, callback);
-  };
-}
-
-function makeAnalysisTask(ow, isCreate) {
-  //   wsk action create vision/analysis --kind nodejs:6 analysis/analysis.zip
-  return (callback) => {
-    // (cd analysis && rm -f analysis.zip && zip analysis.zip analysis.js package.json)
-    // (cd ../web && zip -r ../processing/analysis/analysis.zip lib)
-    const actionCode = buildZip({
-      'package.json': 'processing/analysis/package.json',
-      'analysis.js': 'processing/analysis/analysis.js',
-      'lib/cloudantstorage.js': 'web/lib/cloudantstorage.js',
-      'lib/objectstorage.js': 'web/lib/objectstorage.js',
-      'lib/cloudant-designs.json': 'web/lib/cloudant-designs.json'
-    });
-    call(ow, 'action', isCreate ? 'create' : 'update', {
-      actionName: 'vision/analysis',
-      action: {
-        exec: {
-          kind: 'nodejs:6',
-          code: actionCode,
-          binary: true
         }
       }
     }, callback);
@@ -304,6 +284,7 @@ function uninstall(ow) {
     callback => call(ow, 'action', 'delete', 'vision/analysis', callback),
     callback => call(ow, 'action', 'delete', 'vision/extractor', callback),
     callback => call(ow, 'action', 'delete', 'vision/speechtotext', callback),
+    callback => call(ow, 'action', 'delete', 'vision/textanalysis', callback),
     callback => call(ow, 'rule', 'disable', 'vision-rule', callback),
     callback => call(ow, 'rule', 'delete', 'vision-rule', callback),
     callback => call(ow, 'action', 'delete', 'vision-cloudant-changelistener', callback),
@@ -346,9 +327,10 @@ function enable(ow) {
 function update(ow) {
   WARN('Updating action code...');
   waterfall([
-    makeAnalysisTask(ow, false),
     makeChangeListenerTask(ow, false),
-    makeSpeechToTextTask(ow, false)
+    makeActionTask(ow, 'textanalysis', false),
+    makeActionTask(ow, 'analysis', false),
+    makeActionTask(ow, 'speechtotext', false),
   ]);
 }
 

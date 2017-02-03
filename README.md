@@ -77,7 +77,7 @@ OpenWhisk triggers the audio analysis.
     analysis [label="Audio Analysis"]
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
-    watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\Speech to Text"]
+    watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\nSpeech to Text"]
   }
 )
 
