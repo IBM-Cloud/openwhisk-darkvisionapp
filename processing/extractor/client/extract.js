@@ -202,7 +202,8 @@ async.waterfall([
   (callback) => {
     const audioDocument = {
       type: 'audio',
-      video_id: videoDocument._id
+      video_id: videoDocument._id,
+      language_model: videoDocument.language_model
     };
     mediaStorage.insert(audioDocument, (err, insertedDoc) => {
       if (err) {

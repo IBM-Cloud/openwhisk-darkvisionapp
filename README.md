@@ -334,7 +334,7 @@ The **frame extractor** runs as a Docker action created with the [OpenWhisk Dock
 | File | Description |
 | ---- | ----------- |
 |[**Dockerfile**](processing/extractor/Dockerfile)|Docker file to build the extractor image. It pulls ffmpeg into the image together with node. It also runs npm install for both the server and client.|
-|[**extract.js**](processing/extractor/client/extract.js)|The core of the frame extractor. It downloads the video stored in Cloudant, uses ffmpeg to extract frames and video metadata, produces a thumbnail for the video. By default it produces around 15 images for a video. This can be changed by modifying the implementation of **getFps**.|
+|[**extract.js**](processing/extractor/client/extract.js)|The core of the frame extractor. It downloads the video stored in Cloudant, uses ffmpeg to extract frames and video metadata, produces a thumbnail for the video. By default it produces around 15 images for a video. This can be changed by modifying the implementation of **getFps**. First 3 min of audio is also exported.|
 |[**app.js**](processing/extractor/server/app.js)|Adapted from the OpenWhisk Docker SDK to call the extract.js node script.|
 
 ### OpenWhisk - Frame analysis
@@ -351,6 +351,13 @@ The data has been attached by the *frame extractor* as an attachment named "imag
 The action runs asynchronously.
 
 The code is very similar to the one used in the [Vision app](https://github.com/IBM-Bluemix/openwhisk-visionapp).
+
+### OpenWhisk - Audio analysis
+
+| File | Description |
+| ---- | ----------- |
+|[**speechtotext.js**](processing/speechtotext/speechtotext.js)|Uses Speech to Text to transcript the audio.|
+|[**textanalysis.js**](processing/textanalysis/textanalysis.js)|Calls AlchemyAPI on the transcript.|
 
 ### Web app
 

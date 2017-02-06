@@ -79,7 +79,7 @@ function mainImpl(args, mainCallback) {
       },
       // trigger the analysis on the audio file
       (audio, callback) => {
-        processAudio(args, fileName, (err, transcript) => {
+        processAudio(args, audio, fileName, (err, transcript) => {
           if (err) {
             callback(err);
           } else {
@@ -121,7 +121,7 @@ function mainImpl(args, mainCallback) {
  * Prepares and analyzes the audio.
  * processCallback = function(err, transcript);
  */
-function processAudio(args, fileName, processCallback) {
+function processAudio(args, audio, fileName, processCallback) {
   const SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
   const stt = new SpeechToTextV1({
     username: args.sttUsername,
@@ -129,7 +129,7 @@ function processAudio(args, fileName, processCallback) {
   });
   const fs = require('fs');
 
-  console.log('Calling Speech to Text...');
+  console.log(`Calling Speech to Text with ${audio.language_model || 'default'} model...`);
   try {
     stt.recognize({
       audio: fs.createReadStream(fileName),
@@ -137,7 +137,8 @@ function processAudio(args, fileName, processCallback) {
       timestamps: true,
       word_alternatives_threshold: 0.9,
       continuous: true,
-      smart_formatting: true
+      smart_formatting: true,
+      model: audio.language_model || undefined
     }, (err, transcript) => {
       processCallback(err, transcript);
     });
