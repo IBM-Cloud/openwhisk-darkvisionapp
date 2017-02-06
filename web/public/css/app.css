@@ -153,3 +153,7 @@ footer {
 .transcript-sentence::first-letter {
   text-transform: capitalize;
 }
+
+span.label a {
+  color: white !important;
+}

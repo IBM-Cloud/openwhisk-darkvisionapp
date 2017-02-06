@@ -20,6 +20,7 @@ In addition to processing videos, Dark Vision can also processes standalone imag
  Built using IBM Bluemix, the application uses:
   * [Watson Visual Recognition](https://console.ng.bluemix.net/catalog/services/watson_vision_combined)
   * [Watson Speech to Text](https://console.ng.bluemix.net/catalog/services/speech_to_text)
+  * [AlchemyAPI](https://console.ng.bluemix.net/catalog/services/alchemy_api)
   * [OpenWhisk](console.ng.bluemix.net/openwhisk/)
   * [Cloudant](https://console.ng.bluemix.net/catalog/services/cloudantNoSQLDB)
   * [Object Storage](https://console.ng.bluemix.net/catalog/services/Object-Storage) (optional component)
@@ -27,9 +28,9 @@ In addition to processing videos, Dark Vision can also processes standalone imag
 ### Extracting frames and audio from a video
 
 The user uploads a video or image using the Dark Vision web application, which stores it in a Cloudant DB. Once the video is uploaded, OpenWhisk detects the new video by listening to Cloudant changes (trigger).
-OpenWhisk then triggers the video and audio extractor action. During its execution, the extractor produces frames (images), captures the audio track and stores them in Cloudant. The frames are then processed using Watson Visual Recognition and the results are stored in the same Cloudant DB. The results can be viewed using Dark Vision web application OR an iOS application.
+OpenWhisk then triggers the video and audio extractor action. During its execution, the extractor produces frames (images), captures the audio track and stores them in Cloudant. The frames are then processed using Watson Visual Recognition, the audio with Watson Speech to Text and AlchemyAPI. The results are stored in the same Cloudant DB. They can be viewed using Dark Vision web application OR an iOS application.
 
-Object Storage can be used in addition to Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
+Object Storage can complement Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
 
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
@@ -70,6 +71,7 @@ OpenWhisk triggers the audio analysis.
     {rank=same; frame -> storage -> openwhisk -> analysis -> watson [style=invis] }
     /* analysis calls Watson */
     analysis -> watson
+    analysis -> alchemyapi
     /* results are stored */
     analysis -> storage
     /* styling ****/
@@ -78,6 +80,7 @@ OpenWhisk triggers the audio analysis.
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
     watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\nSpeech to Text"]
+    alchemyapi [shape=circle style=filled color="%234E96DB" fontcolor=white label="AlchemyAPI"]
   }
 )
 
@@ -144,6 +147,8 @@ You can simply reuse the existing ones.*
 
 1. Create a Watson Speech to Text instance named **stt-for-darkvision**
 
+1. Create a AlchemyAPI instance named **alchemy-for-darkvision**
+
 1. Optionally create a Object Storage service instance named **objectstorage-for-darkvision**
 
   > If configured, media files will be stored in Object Storage instead of Cloudant. A container named *openwhisk-darkvision* will be automatically created.
@@ -180,7 +185,7 @@ By default, anyone can upload/delete/reset videos and images. You can restrict a
 
 ### Build the Frame Extractor Docker image
 
-Extracting frames from a video is achieved with ffmpeg. ffmpeg is not available to an OpenWhisk
+Extracting frames and audio from a video is achieved with ffmpeg. ffmpeg is not available to an OpenWhisk
 action written in JavaScript or Swift. Fortunately OpenWhisk allows to write an action as a Docker
 image and can retrieve this image from Docker Hub.
 

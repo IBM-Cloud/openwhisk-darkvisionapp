@@ -107,18 +107,43 @@ function processTranscript(args, text, processCallback) {
   const async = require('async');
   const analysis = {
   };
+  const AlchemyLanguageV1 = require('watson-developer-cloud/alchemy-language/v1');
+  const alchemyLanguage = new AlchemyLanguageV1({
+    api_key: args.alchemyApiKey
+  });
   async.parallel([
-    // get result from AlchemyLanguage
+    // entities
     (callback) => {
-      const AlchemyLanguageV1 = require('watson-developer-cloud/alchemy-language/v1');
-      const alchemyLanguage = new AlchemyLanguageV1({
-        api_key: args.alchemyApiKey
-      });
       alchemyLanguage.entities({ text }, (err, response) => {
         if (err) {
           console.log('Alchemy Language entities', err);
         } else {
           analysis.entities = response.entities;
+        }
+        callback(null);
+      });
+    },
+    // concepts
+    (callback) => {
+      alchemyLanguage.concepts({
+        text,
+        knowledgeGraph: 1
+      }, (err, response) => {
+        if (err) {
+          console.log('Alchemy Language concepts', err);
+        } else {
+          analysis.concepts = response.concepts;
+        }
+        callback(null);
+      });
+    },
+    // document emotion
+    (callback) => {
+      alchemyLanguage.emotion({ text }, (err, response) => {
+        if (err) {
+          console.log('Alchemy Language emotion', err);
+        } else {
+          analysis.docEmotions = response.docEmotions;
         }
         callback(null);
       });
