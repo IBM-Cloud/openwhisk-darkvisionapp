@@ -36,6 +36,11 @@ a.navbar-brand {
 .navbar-default .navbar-brand, .navbar-default .navbar-nav>li>a {
 }
 
+.subtitle {
+  font-weight: normal;
+  margin-left: 5px;
+}
+
 .status {
   background-color: rgb(248, 248, 248);
   color: #888;
@@ -109,6 +114,10 @@ footer {
   display: inline-table;
   margin-right: 5px;
   margin-bottom: 5px;
+}
+
+.entry-tag span {
+  white-space: normal !important;
 }
 
 .entry-actions {
