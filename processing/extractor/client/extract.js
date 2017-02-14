@@ -182,8 +182,12 @@ async.waterfall([
         'a',
         '-strict',
         '-2',
+        // get only first n seconds
         '-ss 0',
-        `-t ${extractOptions.speechDuration}`
+        `-t ${extractOptions.speechDuration}`,
+        // force dual channel audio as vorbis encoder only supports 2 channels
+        '-ac',
+        '2'
       ])
       .output(`${workingDirectory.name}/audio.ogg`)
       .on('progress', (progress) => {
