@@ -193,14 +193,14 @@ To build the extractor image, follow these steps:
 
 1. Change to the ***processing/extractor*** directory.
 
-1. Ensure your Docker environment works and that you have logged in Docker hub.
+1. Ensure your Docker environment works and that you have logged in Docker hub. To login use `docker login`.
 
 1. Run
 
   ```
   ./buildAndPush.sh youruserid/yourimagename
   ```
-  Note: On some systems this command needs to be run with `sudo`.
+  > Note: On some systems this command needs to be run with `sudo`.
 
 1. After a while, your image will be available in Docker Hub, ready for OpenWhisk.
 
