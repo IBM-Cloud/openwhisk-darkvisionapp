@@ -51,16 +51,6 @@
   </div>
 
   <div class="row">
-    <div class="col-md-8">
-      <div ng-if="controller.data.summary.audio.transcript">
-        <h2>Transcript <span class="small text-muted">(first 4 minutes)</span></h2>
-        <div class="well">
-          <span class="transcript-sentence" ng-repeat="transcript in controller.data.summary.audio.transcript.results">
-            {{transcript.alternatives[0].transcript | formatSentence}}.
-          </span>
-        </div>
-      </div>
-    </div>
     <div class="col-md-4">
       <div ng-if="controller.data.summary.audio.analysis.entities">
         <h2>Entities</h2>
@@ -73,7 +63,8 @@
           </ul>
         </div>
       </div>
-
+    </div>
+    <div class="col-md-4">
       <div ng-if="controller.data.summary.audio.analysis.concepts">
         <h2>Concepts</h3>
         <div class="well">
@@ -84,7 +75,8 @@
           </ul>
         </div>
       </div>
-
+    </div>
+    <div class="col-md-4">
       <div ng-if="controller.data.summary.audio.analysis.docEmotions">
         <h2>Emotion Analysis</h2>
         <div class="well">
@@ -93,6 +85,22 @@
               <span class="label label-info">{{key}} {{value | formatPercent}}%</span>
             </li>
           </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div ng-if="controller.data.summary.audio.transcript">
+        <h2>
+          Transcript <span class="small text-muted">(first 4 minutes)</span>
+          <button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#transcript" aria-expanded="false" aria-controls="transcript">show/hide</button>
+        </h2>
+        <div id="transcript" class="well collapse">
+          <span class="transcript-sentence" ng-repeat="transcript in controller.data.summary.audio.transcript.results">
+            {{transcript.alternatives[0].transcript | formatSentence}}.
+          </span>
         </div>
       </div>
     </div>
