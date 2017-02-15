@@ -1,0 +1,13 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - cd processing/extractor
+  - docker build -t l2fprod/darkvision-extractor-master .
+
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push l2fprod/darkvision-extractor-master;
+    fi
