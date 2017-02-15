@@ -114,11 +114,11 @@ Click *Deploy to Bluemix* to start the Bluemix DevOps wizard:
 
   > :warning: Dark Vision is made of two main components: the web application to upload media and view results and the OpenWhisk actions to process the media. OpenWhisk in Bluemix is currently only available in the US South region. If you decide to deploy the web application in another region than US South, make sure to create a space with the same name in the US South region too. The OpenWhisk actions will be deployed to this space in the US South region.
 
-1. Click **Create**
+1. Click **Create**.
 
-1. Select the Delivery Pipeline named **darkvision**
+1. Select the Delivery Pipeline named **darkvision**.
 
-1. Wait for the Deploy stage to complete.
+1. Wait for the Deploy job to complete.
 
 1. Access the Dark Vision app when it's ready and start uploading videos and images!
 
