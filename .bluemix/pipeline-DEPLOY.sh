@@ -49,7 +49,14 @@ fi
 echo 'Deploying web application...'
 cd web
 if ! cf app $CF_APP; then
-  cf push $CF_APP --hostname $CF_APP
+  cf push $CF_APP --hostname $CF_APP --no-start
+  if [ -z ${ADMIN_USERNAME+x} ]; then
+    echo 'No admin username configured'
+  else
+    cf set-env $CF_APP ADMIN_USERNAME "${ADMIN_USERNAME}"
+    cf set-env $CF_APP ADMIN_PASSWORD "${ADMIN_PASSWORD}"
+  fi
+  cf start $CF_APP
 else
   OLD_CF_APP=${CF_APP}-OLD-$(date +"%s")
   rollback() {
@@ -64,7 +71,14 @@ else
   set -e
   trap rollback ERR
   cf rename $CF_APP $OLD_CF_APP
-  cf push $CF_APP --hostname $CF_APP
+  cf push $CF_APP --hostname $CF_APP --no-start
+  if [ -z ${ADMIN_USERNAME+x} ]; then
+    echo 'No admin username configured'
+  else
+    cf set-env $CF_APP ADMIN_USERNAME "${ADMIN_USERNAME}"
+    cf set-env $CF_APP ADMIN_PASSWORD "${ADMIN_PASSWORD}"
+  fi
+  cf start $CF_APP
   cf delete $OLD_CF_APP -f
 fi
 
