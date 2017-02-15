@@ -30,6 +30,7 @@ darkvision-build:
       REGION_ID: "{{deploy.parameters.darkvision-region}}"
       ADMIN_USERNAME: "{{deploy.parameters.darkvision-admin-username}}"
       ADMIN_PASSWORD: "{{deploy.parameters.darkvision-admin-password}}"
+      WATSON_API_KEY: "{{deploy.parameters.darkvision-watson-api-key}}"
      execute: true
     services: ["darkvision-repo"]
   hidden: [form, description]
@@ -43,3 +44,4 @@ deploy:
     darkvision-app-name: "{{name}}"
     darkvision-admin-username: ""
     darkvision-admin-password: ""
+    darkvision-watson-api-key: ""

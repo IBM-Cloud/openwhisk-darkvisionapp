@@ -37,13 +37,15 @@ echo 'Creating '$CLOUDANT_db' database...'
 # ignore "database already exists error"
 curl -s -X PUT "https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host/$CLOUDANT_db"
 
-# Create Watson Visual Recognition service
-echo 'Creating Watson Visual Recognition service...'
-cf create-service watson_vision_combined free visualrecognition-for-darkvision
-cf create-service-key visualrecognition-for-darkvision for-darkvision
+# Create Watson Visual Recognition service unless WATSON_API_KEY is defined in the service
+if [ -z ${WATSON_API_KEY+x} ]; then
+  echo 'Creating Watson Visual Recognition service...'
+  cf create-service watson_vision_combined free visualrecognition-for-darkvision
+  cf create-service-key visualrecognition-for-darkvision for-darkvision
 
-VISUAL_RECOGNITION_CREDENTIALS=`cf service-key visualrecognition-for-darkvision for-darkvision | tail -n +2`
-export WATSON_API_KEY=`echo $VISUAL_RECOGNITION_CREDENTIALS | jq -r .api_key`
+  VISUAL_RECOGNITION_CREDENTIALS=`cf service-key visualrecognition-for-darkvision for-darkvision | tail -n +2`
+  export WATSON_API_KEY=`echo $VISUAL_RECOGNITION_CREDENTIALS | jq -r .api_key`
+fi
 
 # Docker image should be set by the pipeline, use a default if not set
 if [ -z ${DOCKER_EXTRACTOR_NAME+x} ]; then

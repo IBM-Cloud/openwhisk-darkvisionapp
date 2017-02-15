@@ -18,6 +18,8 @@ stages:
     value: "l2fprod/darkvision-extractor-master"
   - name: OPENWHISK_API_HOST
     value: "openwhisk.ng.bluemix.net"
+  - name: WATSON_API_KEY
+    value: ${WATSON_API_KEY}
   jobs:
   - name: Deploy
     type: deployer

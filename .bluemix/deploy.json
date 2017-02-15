@@ -28,12 +28,48 @@
     "darkvision-admin-password": {
       "description": "The admin password",
       "type": "string"
+    },
+    "darkvision-watson-api-key": {
+      "description": "An existing Visual Recognition API key. Leave it empty to have the toolchain create a new service instance automatically.",
+      "type": "string"
     }
   },
   "required": ["darkvision-region", "darkvision-organization", "darkvision-space", "darkvision-app-name"],
   "form": [{
       "type": "validator",
       "url": "/devops/setup/bm-helper/helper.html"
+    },
+    {
+      "type": "table",
+      "columnCount": 3,
+      "widths": ["33%", "33%", "33%"],
+      "items": [
+        {
+          "type": "label",
+          "title": "Region"
+        },
+        {
+          "type": "label",
+          "title": "Organization"
+        },
+        {
+          "type": "label",
+          "title": "Space"
+        },
+        {
+          "type": "select",
+          "key": "darkvision-region"
+        },
+        {
+          "type": "select",
+          "key": "darkvision-organization"
+        },
+        {
+          "type": "select",
+          "key": "darkvision-space",
+          "readonly": false
+        }
+      ]
     },
     {
       "type": "text",
@@ -54,43 +90,10 @@
       "key": "darkvision-admin-password"
     },
     {
-      "type": "table",
-      "columnCount": 4,
-      "widths": ["15%", "28%", "28%", "28%"],
-      "items": [{
-          "type": "label",
-          "title": ""
-        },
-        {
-          "type": "label",
-          "title": "Region"
-        },
-        {
-          "type": "label",
-          "title": "Organization"
-        },
-        {
-          "type": "label",
-          "title": "Space"
-        },
-        {
-          "type": "label",
-          "title": "Deployment Target"
-        },
-        {
-          "type": "select",
-          "key": "darkvision-region"
-        },
-        {
-          "type": "select",
-          "key": "darkvision-organization"
-        },
-        {
-          "type": "select",
-          "key": "darkvision-space",
-          "readonly": false
-        }
-      ]
+      "type": "text",
+      "readonly": false,
+      "title": "Watson Visual Recognition API key (leave it empty to provision a new service)",
+      "key": "darkvision-watson-api-key"
     }
   ]
 }
