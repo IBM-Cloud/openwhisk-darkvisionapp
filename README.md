@@ -1,5 +1,7 @@
 # Dark Vision - Discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
 
+[![Build Status](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp) ![Bluemix Deployments](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/badge.svg)
+
 Dark Vision processes videos to discover dark data. By analyzing video frames with
 IBM Watson Visual Recognition, Dark Vision builds a summary
 with a set of tags and famous people or building detected in the video. Use this
@@ -87,6 +89,36 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
 * Docker Hub account. [Sign up](https://hub.docker.com/) for Docker Hub, or use an existing account.
 * XCode 8.0, iOS 10, Swift 3
 * Node.js >= 6.7.0
+
+## Deploying Dark Vision in Bluemix
+
+Dark Vision comes with a default toolchain you can use to deploy the solution with few clicks. If you want to deploy it manually, you can skip this section.
+
+Click *Deploy to Bluemix* to start the Bluemix DevOps wizard:
+
+[![Deploy to Bluemix](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/button.svg)](https://console.ng.bluemix.net/devops/setup/deploy/?repository=https%3A//github.com/IBM-Bluemix/openwhisk-darkvisionapp/)
+
+1. Select the **GitHub** box.
+
+1. Set a name for your GitHub repository.
+
+1. Decide whether you want to fork/clone the Dark Vision repository.
+
+1. Select the **Delivery Pipeline** box.
+
+1. Set the name of the Dark Vision web application. Pick a unique name to avoid conflicts.
+
+1. Optionally set the admin username and password for the application. When set, the application will prompt for this username and password when uploading videos/images, when resetting a video or an image. If the username and password are not defined, any visitor can upload videos/images for processing.
+
+1. Select the region, organization and space where you want to deploy the web application.
+
+  > :warning: Dark Vision is made of two main components: the web application to upload media and view results and the OpenWhisk actions to process the media. OpenWhisk in Bluemix is currently only available in the US South region. If you decide to deploy the web application in another region, make sure to create a space with the same name in the US South region. The OpenWhisk actions will be deployed to this space in the US South region.
+
+1. Click **Create**
+
+1. Wait for the Delivery Pipeline to deploy the application.
+
+1. Access the Dark Vision app when it's ready and start uploading videos and images!
 
 ## Preparing the environment
 
