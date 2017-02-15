@@ -6,6 +6,9 @@ before_install:
   - cd processing/extractor
   - docker build -t l2fprod/darkvision-extractor-master .
 
+script:
+  - echo "Build complete!"
+
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
