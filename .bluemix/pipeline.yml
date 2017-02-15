@@ -1,0 +1,31 @@
+---
+stages:
+- name: DEPLOY
+  inputs:
+  - type: git
+    branch: master
+    service: ${REPO}
+  triggers:
+  - type: commit
+  properties:
+  - name: CLOUDANT_db
+    value: "openwhisk-darkvision"
+  - name: ADMIN_USERNAME
+    value: ${ADMIN_USERNAME}
+  - name: ADMIN_PASSWORD
+    value: ${ADMIN_PASSWORD}
+  - name: DOCKER_EXTRACTOR_NAME
+    value: "l2fprod/darkvision-extractor-master"
+  - name: OPENWHISK_API_HOST
+    value: "openwhisk.ng.bluemix.net"
+  jobs:
+  - name: Deploy
+    type: deployer
+    target:
+      region_id: ${REGION_ID}
+      organization: ${ORG_NAME}
+      space: ${SPACE_NAME}
+      application: ${CF_APP_NAME}
+    script: |-
+      #!/bin/bash
+      ./.bluemix/pipeline-DEPLOY.sh
