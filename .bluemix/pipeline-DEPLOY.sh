@@ -1,6 +1,9 @@
 #!/bin/bash
 
+################################################################
 # Install dependencies
+################################################################
+
 echo 'Installing dependencies...'
 sudo apt-get -qq update
 sudo apt-get -qq install jq
@@ -10,6 +13,10 @@ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | b
 . ~/.nvm/nvm.sh
 nvm install 6.9.1
 npm install
+
+################################################################
+# Create services
+################################################################
 
 # Create Cloudant service
 echo 'Creating Cloudant service...'
@@ -25,7 +32,6 @@ if [ -z ${CLOUDANT_db+x} ]; then
   echo 'CLOUDANT_db was not set in the pipeline. Using default value.'
   export CLOUDANT_db=openwhisk-darkvision
 fi
-
 
 echo 'Creating '$CLOUDANT_db' database...'
 # ignore "database already exists error"
@@ -44,6 +50,35 @@ if [ -z ${DOCKER_EXTRACTOR_NAME+x} ]; then
   echo 'DOCKER_EXTRACTOR_NAME was not set in the pipeline. Using default value.'
   export DOCKER_EXTRACTOR_NAME=l2fprod/darkvision-extractor-master
 fi
+
+################################################################
+# OpenWhisk artifacts
+################################################################
+
+echo 'Deploying OpenWhisk artifacts...'
+
+# Retrieve the OpenWhisk authorization key
+CF_ACCESS_TOKEN=`cat ~/.cf/config.json | jq -r .AccessToken | awk '{print $2}'`
+
+# Docker image should be set by the pipeline, use a default if not set
+if [ -z ${OPENWHISK_API_HOST+x} ]; then
+  echo 'OPENWHISK_API_HOST was not set in the pipeline. Using default value.'
+  export OPENWHISK_API_HOST=openwhisk.ng.bluemix.net
+fi
+OPENWHISK_KEYS=`curl -XPOST -k -d "{ \"accessToken\" : \"$CF_ACCESS_TOKEN\", \"refreshToken\" : \"$CF_ACCESS_TOKEN\" }" \
+  -H 'Content-Type:application/json' https://$OPENWHISK_API_HOST/bluemix/v2/authenticate`
+
+SPACE_KEY=`echo $OPENWHISK_KEYS | jq -r '.namespaces[] | select(.name == "'$CF_ORG'_'$CF_SPACE'") | .key'`
+SPACE_UUID=`echo $OPENWHISK_KEYS | jq -r '.namespaces[] | select(.name == "'$CF_ORG'_'$CF_SPACE'") | .uuid'`
+OPENWHISK_AUTH=$SPACE_UUID:$SPACE_KEY
+
+# Deploy the actions
+node deploy.js --apihost $OPENWHISK_API_HOST --auth $OPENWHISK_AUTH --uninstall
+node deploy.js --apihost $OPENWHISK_API_HOST --auth $OPENWHISK_AUTH --install
+
+################################################################
+# And the web app
+################################################################
 
 # Push app
 echo 'Deploying web application...'
@@ -81,26 +116,3 @@ else
   cf start $CF_APP
   cf delete $OLD_CF_APP -f
 fi
-
-# Now move back to root folder to deploy OpenWhisk actions
-echo 'Deploying OpenWhisk artifacts...'
-cd ..
-
-# Retrieve the OpenWhisk authorization key
-CF_ACCESS_TOKEN=`cat ~/.cf/config.json | jq -r .AccessToken | awk '{print $2}'`
-
-# Docker image should be set by the pipeline, use a default if not set
-if [ -z ${OPENWHISK_API_HOST+x} ]; then
-  echo 'OPENWHISK_API_HOST was not set in the pipeline. Using default value.'
-  export OPENWHISK_API_HOST=openwhisk.ng.bluemix.net
-fi
-OPENWHISK_KEYS=`curl -XPOST -k -d "{ \"accessToken\" : \"$CF_ACCESS_TOKEN\", \"refreshToken\" : \"$CF_ACCESS_TOKEN\" }" \
-  -H 'Content-Type:application/json' https://$OPENWHISK_API_HOST/bluemix/v2/authenticate`
-
-SPACE_KEY=`echo $OPENWHISK_KEYS | jq -r '.namespaces[] | select(.name == "'$CF_ORG'_'$CF_SPACE'") | .key'`
-SPACE_UUID=`echo $OPENWHISK_KEYS | jq -r '.namespaces[] | select(.name == "'$CF_ORG'_'$CF_SPACE'") | .uuid'`
-OPENWHISK_AUTH=$SPACE_UUID:$SPACE_KEY
-
-# Deploy the actions
-node deploy.js --apihost $OPENWHISK_API_HOST --auth $OPENWHISK_AUTH --uninstall
-node deploy.js --apihost $OPENWHISK_API_HOST --auth $OPENWHISK_AUTH --install
