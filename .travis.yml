@@ -4,6 +4,8 @@ services:
 
 before_install:
   - cd processing/extractor
+  - rm -rf client/lib
+  - cp -R ../../web/lib client
   - docker build -t l2fprod/darkvision-extractor-master .
 
 script:
