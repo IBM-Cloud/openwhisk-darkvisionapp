@@ -96,7 +96,7 @@ Dark Vision comes with a default toolchain you can use to deploy the solution wi
 
 Click *Deploy to Bluemix* to start the Bluemix DevOps wizard:
 
-[![Deploy to Bluemix](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/button.svg)](https://console.ng.bluemix.net/devops/setup/deploy/?repository=https%3A//github.com/IBM-Bluemix/openwhisk-darkvisionapp/)
+[![Deploy to Bluemix](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/button.svg)](https://console.ng.bluemix.net/devops/setup/deploy/?repository=https%3A//github.com/IBM-Bluemix/openwhisk-darkvisionapp)
 
 1. Select the **GitHub** box.
 
