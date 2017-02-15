@@ -11,7 +11,7 @@ darkvision-repo:
   parameters:
     repo_name: "openwhisk-darkvisionapp"
     repo_url: https://github.com/IBM-Bluemix/openwhisk-darkvisionapp
-    type: clone
+    type: fork
     has_issues: true
 
 # Pipelines
