@@ -114,7 +114,7 @@ Click *Deploy to Bluemix* to start the Bluemix DevOps wizard:
 
 1. Optionally set the admin username and password for the application. When set, the application will prompt for this username and password when uploading videos/images, when resetting a video or an image. If the username and password are not defined, any visitor can upload videos/images for processing.
 
-1. If you already have a Watson Visual Recognition service instance you want to reuse, retrieve its API key from the credentials and set its value in the form.
+1. If you already have a Watson Visual Recognition service instance you want to reuse, retrieve its API key from the credentials and set its value in the form. If you leave it empty, the pipeline will create a new service instance automatically.
 
 1. Click **Create**.
 
