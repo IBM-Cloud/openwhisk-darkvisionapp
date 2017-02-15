@@ -20,7 +20,12 @@ CLOUDANT_CREDENTIALS=`cf service-key cloudant-for-darkvision for-darkvision | ta
 export CLOUDANT_username=`echo $CLOUDANT_CREDENTIALS | jq -r .username`
 export CLOUDANT_password=`echo $CLOUDANT_CREDENTIALS | jq -r .password`
 export CLOUDANT_host=`echo $CLOUDANT_CREDENTIALS | jq -r .host`
-export CLOUDANT_db=openwhisk-darkvision
+# Cloudant database should be set by the pipeline, use a default if not set
+if [ -z ${CLOUDANT_db+x} ]; then
+  echo 'CLOUDANT_db was not set in the pipeline. Using default value.'
+  export CLOUDANT_db=openwhisk-darkvision
+fi
+
 
 echo 'Creating '$CLOUDANT_db' database...'
 # ignore "database already exists error"
@@ -34,8 +39,11 @@ cf create-service-key visualrecognition-for-darkvision for-darkvision
 VISUAL_RECOGNITION_CREDENTIALS=`cf service-key visualrecognition-for-darkvision for-darkvision | tail -n +2`
 export WATSON_API_KEY=`echo $VISUAL_RECOGNITION_CREDENTIALS | jq -r .api_key`
 
-# Set the Docker image to use
-export DOCKER_EXTRACTOR_NAME=l2fprod/darkvision-extractor-master
+# Docker image should be set by the pipeline, use a default if not set
+if [ -z ${DOCKER_EXTRACTOR_NAME+x} ]; then
+  echo 'DOCKER_EXTRACTOR_NAME was not set in the pipeline. Using default value.'
+  export DOCKER_EXTRACTOR_NAME=l2fprod/darkvision-extractor-master
+fi
 
 # Push app
 echo 'Deploying web application...'
@@ -66,7 +74,12 @@ cd ..
 
 # Retrieve the OpenWhisk authorization key
 CF_ACCESS_TOKEN=`cat ~/.cf/config.json | jq -r .AccessToken | awk '{print $2}'`
-OPENWHISK_API_HOST=openwhisk.ng.bluemix.net
+
+# Docker image should be set by the pipeline, use a default if not set
+if [ -z ${OPENWHISK_API_HOST+x} ]; then
+  echo 'OPENWHISK_API_HOST was not set in the pipeline. Using default value.'
+  export OPENWHISK_API_HOST=openwhisk.ng.bluemix.net
+fi
 OPENWHISK_KEYS=`curl -XPOST -k -d "{ \"accessToken\" : \"$CF_ACCESS_TOKEN\", \"refreshToken\" : \"$CF_ACCESS_TOKEN\" }" \
   -H 'Content-Type:application/json' https://$OPENWHISK_API_HOST/bluemix/v2/authenticate`
 
