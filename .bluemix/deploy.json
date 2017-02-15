@@ -25,7 +25,7 @@
       "description": "The admin username",
       "type": "string"
     },
-    "darkvision-app-password": {
+    "darkvision-admin-password": {
       "description": "The admin password",
       "type": "string"
     }
