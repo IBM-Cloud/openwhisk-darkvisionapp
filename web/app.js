@@ -118,7 +118,7 @@ const mediaStorage = require('./lib/cloudantstorage')(
     cloudantUrl: appEnv.services.cloudantNoSQLDB[0].credentials.url,
     cloudantDbName: 'openwhisk-darkvision',
     initializeDatabase: true,
-    fileStore: fileStore
+    fileStore
   });
 
 /**
@@ -358,7 +358,7 @@ app.get('/api/videos/:id/summary', (req, res) => {
       });
 
       callback(null, {
-        video: video,
+        video,
         face_detection: peopleNameToOccurrences,
         image_keywords: keywordToOccurrences
       });
@@ -399,13 +399,8 @@ app.get('/api/videos/:id/images', (req, res) => {
       });
     } else {
       // get the images document and sort them on the frame_number
-      images.sort((image1, image2) => {
-        if (image1.frame_number) {
-          return image1.frame_number - image2.frame_number;
-        } else {
-          return 0;
-        }
-      });
+      images.sort((image1, image2) =>
+        (image1.frame_number ? image1.frame_number - image2.frame_number : 0));
       res.send(images);
     }
   });
