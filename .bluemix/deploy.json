@@ -18,7 +18,7 @@
       "type": "string"
     },
     "darkvision-app-name": {
-      "description": "The name of the web user interface.",
+      "description": "The name of the web application.",
       "type": "string"
     },
     "darkvision-admin-username": {
@@ -44,7 +44,7 @@
     {
       "type": "text",
       "readonly": false,
-      "title": "Admin username. Used to prevent anonymous uploads. Leave empty to allow uploads from any visitor.",
+      "title": "Admin username (used to prevent anonymous uploads, leave empty to allow uploads from any visitor)",
       "key": "darkvision-admin-username"
     },
     {
