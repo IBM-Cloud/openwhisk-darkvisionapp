@@ -1,78 +1,96 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "OpenWhisk Dark Vision",
-    "description": "",
-    "longDescription": "The Delivery Pipeline automates the continuous deployment of OpenWhisk Dark Vision including its web user interface and the OpenWhisk artifacts.",
-    "type": "object",
-    "properties": {
-        "darkvision-region": {
-            "description": "The bluemix region",
-            "type": "string"
-        },
-        "darkvision-organization": {
-            "description": "The bluemix org",
-            "type": "string"
-        },
-       "darkvision-space": {
-            "description": "The bluemix space",
-            "type": "string"
-        },
-       "darkvision-app-name": {
-            "description": "The name of the web user interface.",
-            "type": "string"
-        }
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "OpenWhisk Dark Vision",
+  "description": "",
+  "longDescription": "The Delivery Pipeline automates the continuous deployment of OpenWhisk Dark Vision including its web user interface and the OpenWhisk artifacts.",
+  "type": "object",
+  "properties": {
+    "darkvision-region": {
+      "description": "The bluemix region",
+      "type": "string"
     },
-    "required": ["darkvision-region", "darkvision-organization", "darkvision-space", "darkvision-app-name"],
-    "form": [
-       {
-          "type": "validator",
-          "url": "/devops/setup/bm-helper/helper.html"
-       },
-        {
-          "type": "text",
-          "readonly": false,
-          "title": "App name",
-          "key": "darkvision-app-name"
+    "darkvision-organization": {
+      "description": "The bluemix org",
+      "type": "string"
+    },
+    "darkvision-space": {
+      "description": "The bluemix space",
+      "type": "string"
+    },
+    "darkvision-app-name": {
+      "description": "The name of the web user interface.",
+      "type": "string"
+    },
+    "darkvision-admin-username": {
+      "description": "The admin username",
+      "type": "string"
+    },
+    "darkvision-app-password": {
+      "description": "The admin password",
+      "type": "string"
+    }
+  },
+  "required": ["darkvision-region", "darkvision-organization", "darkvision-space", "darkvision-app-name"],
+  "form": [{
+      "type": "validator",
+      "url": "/devops/setup/bm-helper/helper.html"
+    },
+    {
+      "type": "text",
+      "readonly": false,
+      "title": "App name",
+      "key": "darkvision-app-name"
+    },
+    {
+      "type": "text",
+      "readonly": false,
+      "title": "Admin username. Used to prevent anonymous uploads. Leave empty to allow uploads from any visitor.",
+      "key": "darkvision-admin-username"
+    },
+    {
+      "type": "text",
+      "readonly": false,
+      "title": "Admin password",
+      "key": "darkvision-admin-password"
+    },
+    {
+      "type": "table",
+      "columnCount": 4,
+      "widths": ["15%", "28%", "28%", "28%"],
+      "items": [{
+          "type": "label",
+          "title": ""
         },
         {
-            "type": "table",
-            "columnCount": 4,
-            "widths": ["15%", "28%", "28%", "28%"],
-            "items": [
-                {
-                  "type": "label",
-                  "title": ""
-                },
-                {
-                  "type": "label",
-                  "title": "Region"
-                },
-                {
-                  "type": "label",
-                  "title": "Organization"
-                },
-                {
-                  "type": "label",
-                  "title": "Space"
-                },
-                {
-                  "type": "label",
-                  "title": "Deployment Target"
-                },
-                {
-                  "type": "select",
-                  "key": "darkvision-region"
-                },
-                {
-                  "type": "select",
-                  "key": "darkvision-organization"
-                },
-                {
-                  "type": "select",
-                  "key": "darkvision-space",
-                  "readonly": false
-                }
-            ]
+          "type": "label",
+          "title": "Region"
+        },
+        {
+          "type": "label",
+          "title": "Organization"
+        },
+        {
+          "type": "label",
+          "title": "Space"
+        },
+        {
+          "type": "label",
+          "title": "Deployment Target"
+        },
+        {
+          "type": "select",
+          "key": "darkvision-region"
+        },
+        {
+          "type": "select",
+          "key": "darkvision-organization"
+        },
+        {
+          "type": "select",
+          "key": "darkvision-space",
+          "readonly": false
         }
-    ]
+      ]
+    }
+  ]
 }
