@@ -100,9 +100,9 @@ Click *Deploy to Bluemix* to start the Bluemix DevOps wizard:
 
 1. Select the **GitHub** box.
 
-1. Set a name for your GitHub repository.
-
 1. Decide whether you want to fork/clone the Dark Vision repository.
+
+1. If you decide to Clone, set a name for your GitHub repository.
 
 1. Select the **Delivery Pipeline** box.
 
