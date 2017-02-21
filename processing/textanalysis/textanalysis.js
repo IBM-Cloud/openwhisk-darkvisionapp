@@ -20,7 +20,6 @@
  * It expects the following parameters as attributes of 'args'
  * - cloudantUrl: "https://username:password@host"
  * - cloudantDbName: "openwhisk-darkvision"
- * - alchemyUrl: "https://watson"
  * - alchemyApiKey: '123'
  * - doc: "audio document in cloudant"
  */
