@@ -3,14 +3,16 @@
 ################################################################
 # Install dependencies
 ################################################################
-
 echo 'Installing dependencies...'
 sudo apt-get -qq update 1>/dev/null
 sudo apt-get -qq install jq 1>/dev/null
+sudo apt-get -qq install figlet 1>/dev/null
+
+figlet 'Node.js'
 
 echo 'Installing nvm (Node.js Version Manager)...'
 npm config delete prefix
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash 1>/dev/null
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash > /dev/null 2>&1
 . ~/.nvm/nvm.sh
 
 echo 'Installing Node.js 6.9.1...'
@@ -20,6 +22,7 @@ npm install --progress false --loglevel error 1>/dev/null
 ################################################################
 # Create services
 ################################################################
+figlet 'Services'
 
 # Create Cloudant service
 echo 'Creating Cloudant service...'
@@ -48,6 +51,8 @@ if [ -z ${WATSON_API_KEY+x} ]; then
 
   VISUAL_RECOGNITION_CREDENTIALS=`cf service-key visualrecognition-for-darkvision for-darkvision | tail -n +2`
   export WATSON_API_KEY=`echo $VISUAL_RECOGNITION_CREDENTIALS | jq -r .api_key`
+else
+  echo 'Using configured API key for Watson Visual Recognition service'
 fi
 
 # Create AlchemyAPI service unless ALCHEMY_API_KEY is defined in the service
@@ -58,6 +63,8 @@ if [ -z ${ALCHEMY_API_KEY+x} ]; then
 
   ALCHEMY_CREDENTIALS=`cf service-key alchemy-for-darkvision for-darkvision | tail -n +2`
   export ALCHEMY_API_KEY=`echo $ALCHEMY_CREDENTIALS | jq -r .api_key`
+else
+  echo 'Using configured API key for AlchemyAPI service'
 fi
 
 # Create Watson Speech to Text service
@@ -79,6 +86,7 @@ fi
 ################################################################
 # OpenWhisk artifacts
 ################################################################
+figlet 'OpenWhisk'
 
 echo 'Deploying OpenWhisk artifacts...'
 
@@ -114,6 +122,7 @@ curl -X POST -u "${STT_USERNAME}:${STT_PASSWORD}" --data "{}" "${STT_REGISTER_CA
 ################################################################
 # And the web app
 ################################################################
+figlet 'Web app'
 
 # Push app
 echo 'Deploying web application...'
