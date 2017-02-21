@@ -60,19 +60,6 @@ export STT_USERNAME=`echo $STT_CREDENTIALS | jq -r .username`
 export STT_PASSWORD=`echo $STT_CREDENTIALS | jq -r .password`
 export STT_URL=`echo $STT_CREDENTIALS | jq -r .url`
 
-echo 'Cloud Foundry target is '$CF_TARGET_URL
-domain=".mybluemix.net"
-case "${CF_TARGET_URL}" in
-  https://api.eu-gb.bluemix.net)
-    domain=".eu-gb.mybluemix.net"
-  ;;
-  https://api.au-syd.bluemix.net)
-  domain=".au-syd.mybluemix.net"
-  ;;
-esac
-export STT_CALLBACK_URL=https://$CF_APP$domain/api/stt/results
-echo 'Speech to text callback URL is set to '$STT_CALLBACK_URL
-
 # Docker image should be set by the pipeline, use a default if not set
 if [ -z ${DOCKER_EXTRACTOR_NAME+x} ]; then
   echo 'DOCKER_EXTRACTOR_NAME was not set in the pipeline. Using default value.'
@@ -100,16 +87,23 @@ SPACE_KEY=`echo $OPENWHISK_KEYS | jq -r '.namespaces[] | select(.name == "'$CF_O
 SPACE_UUID=`echo $OPENWHISK_KEYS | jq -r '.namespaces[] | select(.name == "'$CF_ORG'_'$CF_SPACE'") | .uuid'`
 OPENWHISK_AUTH=$SPACE_UUID:$SPACE_KEY
 
+export STT_CALLBACK_URL=https://$OPENWHISK_API_HOST/api/v1/experimental/web/${CF_ORG}_${CF_SPACE}/vision/speechtotext.http
+echo 'Speech to Text OpenWhisk action is accessible at '$STT_CALLBACK_URL
+
 # Deploy the actions
 node deploy.js --apihost $OPENWHISK_API_HOST --auth $OPENWHISK_AUTH --uninstall
 node deploy.js --apihost $OPENWHISK_API_HOST --auth $OPENWHISK_AUTH --install
 
 ################################################################
+# Register the Speech to Text callback URL
+################################################################
+STT_REGISTER_CALLBACK=$STT_URL'/api/v1/register_callback?callback_url='$STT_CALLBACK_URL'&user_secret='$STT_CALLBACK_SECRET
+echo 'Registering Speech to Text callback URL with '$STT_REGISTER_CALLBACK
+curl -X POST -u "${STT_USERNAME}:${STT_PASSWORD}" --data "{}" "${STT_REGISTER_CALLBACK}"
+
+################################################################
 # And the web app
 ################################################################
-
-export OPENWHISK_STT_CALLBACK=https://$OPENWHISK_API_HOST/api/v1/experimental/web/${CF_ORG}_${CF_SPACE}/vision/speechtotext.http
-echo 'Speech to Text OpenWhisk action is accessible at '$OPENWHISK_STT_CALLBACK
 
 # Push app
 echo 'Deploying web application...'
@@ -121,7 +115,6 @@ if ! cf app $CF_APP; then
   else
     cf set-env $CF_APP ADMIN_USERNAME "${ADMIN_USERNAME}"
     cf set-env $CF_APP ADMIN_PASSWORD "${ADMIN_PASSWORD}"
-    cf set-env $CF_APP OPENWHISK_STT_CALLBACK "${OPENWHISK_STT_CALLBACK}"
   fi
   cf start $CF_APP
 else
@@ -144,15 +137,7 @@ else
   else
     cf set-env $CF_APP ADMIN_USERNAME "${ADMIN_USERNAME}"
     cf set-env $CF_APP ADMIN_PASSWORD "${ADMIN_PASSWORD}"
-    cf set-env $CF_APP OPENWHISK_STT_CALLBACK "${OPENWHISK_STT_CALLBACK}"
   fi
   cf start $CF_APP
   cf delete $OLD_CF_APP -f
 fi
-
-################################################################
-# Register the Speech to Text callback URL
-################################################################
-STT_REGISTER_CALLBACK=$STT_URL'/api/v1/register_callback?callback_url='$STT_CALLBACK_URL'&user_secret='$STT_CALLBACK_SECRET
-echo 'Registering Speech to Text callback URL with '$STT_REGISTER_CALLBACK
-curl -X POST -u "${STT_USERNAME}:${STT_PASSWORD}" --data "{}" "${STT_REGISTER_CALLBACK}"
