@@ -10,9 +10,9 @@ sudo apt-get -qq install jq
 
 npm config delete prefix
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash
-. ~/.nvm/nvm.sh
-nvm install 6.9.1
-npm install
+. ~/.nvm/nvm.sh 1>/dev/null
+nvm install 6.9.1 1>/dev/null
+npm install --progress false --loglevel error 1>/dev/null
 
 ################################################################
 # Create services
@@ -150,6 +150,6 @@ fi
 ################################################################
 # Register the Speech to Text callback URL
 ################################################################
-echo 'Registering Speech to Text callback URL...'
-curl -X POST -u "$STT_USERNAME":"$STT_PASSWORD" --data "{}" \
-  "$STT_URL/api/v1/register_callback?callback_url=$STT_CALLBACK_URL&user_secret=$STT_CALLBACK_SECRET"
+STT_REGISTER_CALLBACK=$STT_URL/api/v1/register_callback?callback_url=$STT_CALLBACK_URL&user_secret=$STT_CALLBACK_SECRET
+echo 'Registering Speech to Text callback URL with '$STT_REGISTER_CALLBACK
+curl -X POST -u $STT_USERNAME:$STT_PASSWORD --data "{}" "${STT_REGISTER_CALLBACK}"
