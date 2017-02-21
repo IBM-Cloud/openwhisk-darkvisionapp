@@ -17,8 +17,10 @@ const cfenv = require('cfenv');
 const fs = require('fs');
 const async = require('async');
 const auth = require('http-auth');
+const bodyParser = require('body-parser');
 
 const app = express();
+app.use(bodyParser.json());
 const upload = multer({
   dest: 'uploads/'
 });
@@ -522,6 +524,50 @@ app.get('/api/status', (req, res) => {
       res.send(500);
     } else {
       res.send(status);
+    }
+  });
+});
+
+/**
+ * Handles the challenge request from Speech To Text
+ */
+app.get('/api/stt/results', (req, res) => {
+  const request = require('request');
+  request({
+    method: 'GET',
+    url: `${process.env.OPENWHISK_STT_CALLBACK}?challenge_string=${encodeURIComponent(req.query.challenge_string)}`,
+    headers: {
+      'X-Callback-Signature': req.header('X-Callback-Signature')
+    }
+  }, (err, response, body) => {
+    if (err) {
+      console.log(err);
+      res.send(500);
+    } else {
+      res.send(body);
+    }
+  });
+});
+
+/**
+ * Receives results from Watson Speech To Test
+ */
+app.post('/api/stt/results', (req, res) => {
+  console.log('Received results', req.headers, req.body);
+  const request = require('request');
+  request({
+    method: 'POST',
+    url: process.env.OPENWHISK_STT_CALLBACK,
+    headers: {
+      'X-Callback-Signature': req.header('X-Callback-Signature')
+    },
+    json: req.body
+  }, (err, response, body) => {
+    if (err) {
+      console.log(err);
+      res.send(500);
+    } else {
+      res.send(body);
     }
   });
 });

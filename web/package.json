@@ -10,6 +10,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "async": "2.1.4",
+    "body-parser": "1.16.1",
     "bower": "1.8.0",
     "cf-deployment-tracker-client": "^0.x",
     "cfenv": "1.0.3",
@@ -18,8 +19,8 @@
     "http-auth": "3.1.1",
     "multer": "1.2.1",
     "node-env-file": "0.1.8",
-    "request": "2.79.0",
-    "pkgcloud": "1.4.0"
+    "pkgcloud": "1.4.0",
+    "request": "2.79.0"
   },
   "repository": {
     "type": "git",
