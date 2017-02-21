@@ -10,7 +10,6 @@
   "license": "Apache-2.0",
   "dependencies": {
     "async": "2.1.4",
-    "body-parser": "1.16.1",
     "bower": "1.8.0",
     "cf-deployment-tracker-client": "^0.x",
     "cfenv": "1.0.3",
