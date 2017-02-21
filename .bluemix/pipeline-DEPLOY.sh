@@ -105,7 +105,7 @@ node deploy.js --apihost $OPENWHISK_API_HOST --auth $OPENWHISK_AUTH --install
 # And the web app
 ################################################################
 
-export OPENWHISK_STT_CALLBACK=https://$OPENWHISK_API_HOST/api/v1/experimental/web/$CF_ORG_$CF_SPACE/vision/speechtotext.http
+export OPENWHISK_STT_CALLBACK=https://$OPENWHISK_API_HOST/api/v1/experimental/web/${CF_ORG}_${CF_SPACE}/vision/speechtotext.http
 echo 'Speech to Text OpenWhisk action is accessible at '$OPENWHISK_STT_CALLBACK
 
 # Push app
