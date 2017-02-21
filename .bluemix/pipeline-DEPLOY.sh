@@ -5,12 +5,12 @@
 ################################################################
 
 echo 'Installing dependencies...'
-sudo apt-get -qq update
-sudo apt-get -qq install jq
+sudo apt-get -qq update 1>/dev/null
+sudo apt-get -qq install jq 1>/dev/null
 
 echo 'Installing nvm (Node.js Version Manager)...'
 npm config delete prefix
-(curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash) 1>/dev/null
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash 1>/dev/null
 . ~/.nvm/nvm.sh
 
 echo 'Installing Node.js 6.9.1...'
