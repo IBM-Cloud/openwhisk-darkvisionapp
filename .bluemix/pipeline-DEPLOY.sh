@@ -57,6 +57,7 @@ export STT_USERNAME=`echo $STT_CREDENTIALS | jq -r .username`
 export STT_PASSWORD=`echo $STT_CREDENTIALS | jq -r .password`
 export STT_URL=`echo $STT_CREDENTIALS | jq -r .url`
 
+echo 'Cloud Foundry target is '$CF_TARGET_URL
 domain=".mybluemix.net"
 case "${CF_TARGET_URL}" in
   https://api.eu-gb.bluemix.net)
