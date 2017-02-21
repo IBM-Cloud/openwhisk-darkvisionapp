@@ -50,6 +50,16 @@ if [ -z ${WATSON_API_KEY+x} ]; then
   export WATSON_API_KEY=`echo $VISUAL_RECOGNITION_CREDENTIALS | jq -r .api_key`
 fi
 
+# Create AlchemyAPI service unless ALCHEMY_API_KEY is defined in the service
+if [ -z ${ALCHEMY_API_KEY+x} ]; then
+  echo 'Creating AlchemyAPI service...'
+  cf create-service alchemy_api free alchemy-for-darkvision
+  cf create-service-key alchemy-for-darkvision for-darkvision
+
+  ALCHEMY_CREDENTIALS=`cf service-key alchemy-for-darkvision for-darkvision | tail -n +2`
+  export ALCHEMY_API_KEY=`echo $ALCHEMY_CREDENTIALS | jq -r .api_key`
+fi
+
 # Create Watson Speech to Text service
 echo 'Creating Watson Speech to Text...'
 cf create-service speech_to_text standard speechtotext-for-darkvision

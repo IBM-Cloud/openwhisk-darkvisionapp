@@ -20,6 +20,8 @@ stages:
     value: "openwhisk.ng.bluemix.net"
   - name: WATSON_API_KEY
     value: ${WATSON_API_KEY}
+  - name: ALCHEMY_API_KEY
+    value: ${ALCHEMY_API_KEY}
   - name: STT_CALLBACK_SECRET
     value: ASecret{{name}}4Dv
   jobs:

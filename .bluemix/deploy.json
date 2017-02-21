@@ -32,6 +32,10 @@
     "darkvision-watson-api-key": {
       "description": "An existing Visual Recognition API key. Leave it empty to have the toolchain create a new service instance automatically.",
       "type": "string"
+    },
+    "darkvision-alchemy-api-key": {
+      "description": "An existing AlchemyAPI key. Leave it empty to have the toolchain create a new service instance automatically.",
+      "type": "string"
     }
   },
   "required": ["darkvision-region", "darkvision-organization", "darkvision-space", "darkvision-app-name"],
@@ -94,6 +98,12 @@
       "readonly": false,
       "title": "Watson Visual Recognition API key (leave it empty to provision a new service)",
       "key": "darkvision-watson-api-key"
+    },
+    {
+      "type": "text",
+      "readonly": false,
+      "title": "AlchemyAPI API key (leave it empty to provision a new service)",
+      "key": "darkvision-alchemy-api-key"
     }
   ]
 }

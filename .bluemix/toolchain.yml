@@ -31,6 +31,7 @@ darkvision-build:
       ADMIN_USERNAME: "{{deploy.parameters.darkvision-admin-username}}"
       ADMIN_PASSWORD: "{{deploy.parameters.darkvision-admin-password}}"
       WATSON_API_KEY: "{{deploy.parameters.darkvision-watson-api-key}}"
+      ALCHEMY_API_KEY: "{{deploy.parameters.darkvision-alchemy-api-key}}"
      execute: true
     services: ["darkvision-repo"]
   hidden: [form, description]
@@ -45,3 +46,4 @@ deploy:
     darkvision-admin-username: ""
     darkvision-admin-password: ""
     darkvision-watson-api-key: ""
+    darkvision-alchemy-api-key: ""
