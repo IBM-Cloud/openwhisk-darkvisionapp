@@ -47,6 +47,28 @@ if [ -z ${WATSON_API_KEY+x} ]; then
   export WATSON_API_KEY=`echo $VISUAL_RECOGNITION_CREDENTIALS | jq -r .api_key`
 fi
 
+# Create Watson Speech to Text service
+echo 'Creating Watson Speech to Text...'
+cf create-service speech_to_text standard speechtotext-for-darkvision
+cf create-service-key speechtotext-for-darkvision for-darkvision
+
+STT_CREDENTIALS=`cf service-key speechtotext-for-darkvision for-darkvision | tail -n +2`
+export STT_USERNAME=`echo $STT_CREDENTIALS | jq -r .username`
+export STT_PASSWORD=`echo $STT_CREDENTIALS | jq -r .password`
+export STT_URL=`echo $STT_CREDENTIALS | jq -r .url`
+
+domain=".mybluemix.net"
+case "${CF_TARGET_URL}" in
+  https://api.eu-gb.bluemix.net)
+    domain=".eu-gb.mybluemix.net"
+  ;;
+  https://api.au-syd.bluemix.net)
+  domain=".au-syd.mybluemix.net"
+  ;;
+esac
+export STT_CALLBACK_URL=https://$CF_APP$domain/api/stt/results
+echo 'Speech to text callback URL is set to '$STT_CALLBACK_URL
+
 # Docker image should be set by the pipeline, use a default if not set
 if [ -z ${DOCKER_EXTRACTOR_NAME+x} ]; then
   echo 'DOCKER_EXTRACTOR_NAME was not set in the pipeline. Using default value.'
@@ -82,6 +104,9 @@ node deploy.js --apihost $OPENWHISK_API_HOST --auth $OPENWHISK_AUTH --install
 # And the web app
 ################################################################
 
+export OPENWHISK_STT_CALLBACK=https://$OPENWHISK_API_HOST/api/v1/experimental/web/$CF_ORG_$CF_SPACE/vision/speechtotext.http
+echo 'Speech to Text OpenWhisk action is accessible at '$OPENWHISK_STT_CALLBACK
+
 # Push app
 echo 'Deploying web application...'
 cd web
@@ -92,6 +117,7 @@ if ! cf app $CF_APP; then
   else
     cf set-env $CF_APP ADMIN_USERNAME "${ADMIN_USERNAME}"
     cf set-env $CF_APP ADMIN_PASSWORD "${ADMIN_PASSWORD}"
+    cf set-env $CF_APP OPENWHISK_STT_CALLBACK "${OPENWHISK_STT_CALLBACK}"
   fi
   cf start $CF_APP
 else
@@ -114,7 +140,15 @@ else
   else
     cf set-env $CF_APP ADMIN_USERNAME "${ADMIN_USERNAME}"
     cf set-env $CF_APP ADMIN_PASSWORD "${ADMIN_PASSWORD}"
+    cf set-env $CF_APP OPENWHISK_STT_CALLBACK "${OPENWHISK_STT_CALLBACK}"
   fi
   cf start $CF_APP
   cf delete $OLD_CF_APP -f
 fi
+
+################################################################
+# Register the Speech to Text callback URL
+################################################################
+echo 'Registering Speech to Text callback URL...'
+curl -X POST -u "$STT_USERNAME":"$STT_PASSWORD" --data "{}" \
+  "$STT_URL/api/v1/register_callback?callback_url=$STT_CALLBACK_URL&user_secret=$STT_CALLBACK_SECRET"
