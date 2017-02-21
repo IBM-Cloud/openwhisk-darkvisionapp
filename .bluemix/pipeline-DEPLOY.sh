@@ -87,7 +87,7 @@ SPACE_KEY=`echo $OPENWHISK_KEYS | jq -r '.namespaces[] | select(.name == "'$CF_O
 SPACE_UUID=`echo $OPENWHISK_KEYS | jq -r '.namespaces[] | select(.name == "'$CF_ORG'_'$CF_SPACE'") | .uuid'`
 OPENWHISK_AUTH=$SPACE_UUID:$SPACE_KEY
 
-export STT_CALLBACK_URL=https://$OPENWHISK_API_HOST/api/v1/experimental/web/${CF_ORG}_${CF_SPACE}/vision/speechtotext.http
+export STT_CALLBACK_URL=https://${OPENWHISK_API_HOST}/api/v1/experimental/web/${CF_ORG}_${CF_SPACE}/vision/speechtotext.http
 echo 'Speech to Text OpenWhisk action is accessible at '$STT_CALLBACK_URL
 
 # Deploy the actions
@@ -97,9 +97,9 @@ node deploy.js --apihost $OPENWHISK_API_HOST --auth $OPENWHISK_AUTH --install
 ################################################################
 # Register the Speech to Text callback URL
 ################################################################
-STT_REGISTER_CALLBACK=$STT_URL'/api/v1/register_callback?callback_url='$STT_CALLBACK_URL'&user_secret='$STT_CALLBACK_SECRET
+STT_REGISTER_CALLBACK=$STT_URL'/v1/register_callback?callback_url='$STT_CALLBACK_URL'&user_secret='$STT_CALLBACK_SECRET
 echo 'Registering Speech to Text callback URL with '$STT_REGISTER_CALLBACK
-curl -v -X POST -u "${STT_USERNAME}:${STT_PASSWORD}" --data "{}" "${STT_REGISTER_CALLBACK}"
+curl -X POST -u "${STT_USERNAME}:${STT_PASSWORD}" --data "{}" "${STT_REGISTER_CALLBACK}"
 
 ################################################################
 # And the web app
