@@ -124,6 +124,8 @@ function install(ow) {
         sttUrl: process.env.STT_URL,
         sttUsername: process.env.STT_USERNAME,
         sttPassword: process.env.STT_PASSWORD,
+        sttCallbackSecret: process.env.STT_CALLBACK_SECRET,
+        sttCallbackUrl: process.env.STT_CALLBACK_URL,
         alchemyUrl: process.env.ALCHEMY_URL,
         alchemyApiKey: process.env.ALCHEMY_API_KEY,
         osAuthUrl: process.env.OS_AUTH_URL || '',
@@ -206,7 +208,7 @@ function install(ow) {
     makeChangeListenerTask(ow, true),
     makeActionTask(ow, 'textanalysis', true),
     makeActionTask(ow, 'analysis', true),
-    makeActionTask(ow, 'speechtotext', true),
+    makeSpeechToTextTask(ow, true),
     //   wsk rule create vision-rule vision-cloudant-trigger vision-cloudant-changelistener
     (callback) => {
       call(ow, 'rule', 'create', {
@@ -218,7 +220,16 @@ function install(ow) {
   ]);
 }
 
-function makeActionTask(ow, actionName, isCreate) {
+function makeSpeechToTextTask(ow, isCreate) {
+  return makeActionTask(ow, 'speechtotext', isCreate, {
+    annotations: [{
+      key: 'web-export',
+      value: true
+    }]
+  });
+}
+
+function makeActionTask(ow, actionName, isCreate, options = {}) {
   //   wsk action create vision/speechtotext --kind nodejs:6 speechtotext/speechtotext.zip
   return (callback) => {
     const files = {
@@ -240,7 +251,8 @@ function makeActionTask(ow, actionName, isCreate) {
         },
         limits: {
           timeout: 300000
-        }
+        },
+        annotations: options.annotations || []
       }
     }, callback);
   };
@@ -330,7 +342,7 @@ function update(ow) {
     makeChangeListenerTask(ow, false),
     makeActionTask(ow, 'textanalysis', false),
     makeActionTask(ow, 'analysis', false),
-    makeActionTask(ow, 'speechtotext', false),
+    makeSpeechToTextTask(ow, false),
   ]);
 }
 
