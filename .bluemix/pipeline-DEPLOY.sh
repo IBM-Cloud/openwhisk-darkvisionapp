@@ -8,9 +8,12 @@ echo 'Installing dependencies...'
 sudo apt-get -qq update
 sudo apt-get -qq install jq
 
+echo 'Installing nvm (Node.js Version Manager)...'
 npm config delete prefix
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash
-. ~/.nvm/nvm.sh 1>/dev/null
+(curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash) 1>/dev/null
+. ~/.nvm/nvm.sh
+
+echo 'Installing Node.js 6.9.1...'
 nvm install 6.9.1 1>/dev/null
 npm install --progress false --loglevel error 1>/dev/null
 
@@ -150,6 +153,6 @@ fi
 ################################################################
 # Register the Speech to Text callback URL
 ################################################################
-STT_REGISTER_CALLBACK=$STT_URL/api/v1/register_callback?callback_url=$STT_CALLBACK_URL&user_secret=$STT_CALLBACK_SECRET
+STT_REGISTER_CALLBACK=$STT_URL'/api/v1/register_callback?callback_url='$STT_CALLBACK_URL'&user_secret='$STT_CALLBACK_SECRET
 echo 'Registering Speech to Text callback URL with '$STT_REGISTER_CALLBACK
-curl -X POST -u $STT_USERNAME:$STT_PASSWORD --data "{}" "${STT_REGISTER_CALLBACK}"
+curl -X POST -u "${STT_USERNAME}:${STT_PASSWORD}" --data "{}" "${STT_REGISTER_CALLBACK}"
