@@ -138,6 +138,7 @@ if ! cf app $CF_APP; then
   if [ -z ${ADMIN_USERNAME+x} ]; then
     echo 'No admin username configured'
   else
+    cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"
     cf set-env $CF_APP ADMIN_USERNAME "${ADMIN_USERNAME}"
     cf set-env $CF_APP ADMIN_PASSWORD "${ADMIN_PASSWORD}"
   fi
@@ -155,16 +156,19 @@ else
   }
   set -e
   trap rollback ERR
-  figlet -f small 'Deploy new'
+  figlet -f small 'Deploy new version'
   cf rename $CF_APP $OLD_CF_APP
   cf push $CF_APP --hostname $CF_APP --no-start
   if [ -z ${ADMIN_USERNAME+x} ]; then
     echo 'No admin username configured'
   else
+    cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"
     cf set-env $CF_APP ADMIN_USERNAME "${ADMIN_USERNAME}"
     cf set-env $CF_APP ADMIN_PASSWORD "${ADMIN_PASSWORD}"
   fi
   cf start $CF_APP
-  figlet -f small 'Remove old'
+  figlet -f small 'Remove old version'
   cf delete $OLD_CF_APP -f
 fi
+
+figlet -f slant 'Job done!'
