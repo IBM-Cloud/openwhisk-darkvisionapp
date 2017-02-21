@@ -1,0 +1,47 @@
+---
+name: "OpenWhisk Dark Vision"
+description: "Deploy your own OpenWhisk Dark Vision environment."
+required:
+ - deploy
+ - darkvision-repo
+
+# Github repos
+darkvision-repo:
+  service_id: githubpublic
+  parameters:
+    repo_name: "openwhisk-darkvisionapp"
+    repo_url: https://github.com/IBM-Bluemix/openwhisk-darkvisionapp
+    type: fork
+    has_issues: true
+
+# Pipelines
+darkvision-build:
+  service_id: pipeline
+  parameters:
+    name: "darkvision"
+    ui-pipeline: true
+    configuration:
+     content: $file(pipeline.yml)
+     env:
+      REPO: "darkvision-repo"
+      CF_APP_NAME: "{{deploy.parameters.darkvision-app-name}}"
+      SPACE_NAME: "{{deploy.parameters.darkvision-space}}"
+      ORG_NAME: "{{deploy.parameters.darkvision-organization}}"
+      REGION_ID: "{{deploy.parameters.darkvision-region}}"
+      ADMIN_USERNAME: "{{deploy.parameters.darkvision-admin-username}}"
+      ADMIN_PASSWORD: "{{deploy.parameters.darkvision-admin-password}}"
+      WATSON_API_KEY: "{{deploy.parameters.darkvision-watson-api-key}}"
+     execute: true
+    services: ["darkvision-repo"]
+  hidden: [form, description]
+
+#Deployment
+deploy:
+  schema:
+    $ref: deploy.json
+  service-category: pipeline
+  parameters:
+    darkvision-app-name: "{{name}}"
+    darkvision-admin-username: ""
+    darkvision-admin-password: ""
+    darkvision-watson-api-key: ""

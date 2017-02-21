@@ -1,0 +1,19 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - cd processing/extractor
+  - rm -rf client/lib
+  - cp -R ../../web/lib client
+  - docker build -t l2fprod/darkvision-extractor-master .
+
+script:
+  - echo "Build complete!"
+
+after_success:
+  - echo "Current branch is ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+  - if [ "${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}" == "master" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push l2fprod/darkvision-extractor-master;
+    fi

@@ -1,4 +1,8 @@
 
+## 2017-02-15
+
+  * A new toolchain to deploy Dark Vision in two steps! Head over to the README for details.
+
 ## 2017-01-11
 
   * No more *deploy-darkvision.sh*. It has been replaced by **deploy.js** in the root folder. The goal is to support deployment of the actions from Windows too. It was a bit too challenging to maintain shell scripts and Windows commands so instead Dark Vision relies on a node script. Node.js version 6.7.0 minimum is required.
