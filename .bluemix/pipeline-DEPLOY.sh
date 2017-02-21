@@ -25,6 +25,7 @@ npm install --progress false --loglevel error 1>/dev/null
 figlet 'Services'
 
 # Create Cloudant service
+figlet -f small 'Cloudant'
 echo 'Creating Cloudant service...'
 cf create-service cloudantNoSQLDB Lite cloudant-for-darkvision
 cf create-service-key cloudant-for-darkvision for-darkvision
@@ -44,6 +45,7 @@ echo 'Creating '$CLOUDANT_db' database...'
 curl -s -X PUT "https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host/$CLOUDANT_db"
 
 # Create Watson Visual Recognition service unless WATSON_API_KEY is defined in the service
+figlet -f small 'Visual Recognition'
 if [ -z ${WATSON_API_KEY+x} ]; then
   echo 'Creating Watson Visual Recognition service...'
   cf create-service watson_vision_combined free visualrecognition-for-darkvision
@@ -56,6 +58,7 @@ else
 fi
 
 # Create AlchemyAPI service unless ALCHEMY_API_KEY is defined in the service
+figlet -f small 'AlchemyAPI'
 if [ -z ${ALCHEMY_API_KEY+x} ]; then
   echo 'Creating AlchemyAPI service...'
   cf create-service alchemy_api free alchemy-for-darkvision
@@ -68,6 +71,7 @@ else
 fi
 
 # Create Watson Speech to Text service
+figlet -f small 'Speech to Text'
 echo 'Creating Watson Speech to Text...'
 cf create-service speech_to_text standard speechtotext-for-darkvision
 cf create-service-key speechtotext-for-darkvision for-darkvision
@@ -109,7 +113,9 @@ export STT_CALLBACK_URL=https://${OPENWHISK_API_HOST}/api/v1/experimental/web/${
 echo 'Speech to Text OpenWhisk action is accessible at '$STT_CALLBACK_URL
 
 # Deploy the actions
+figlet -f small 'Uninstall'
 node deploy.js --apihost $OPENWHISK_API_HOST --auth $OPENWHISK_AUTH --uninstall
+figlet -f small 'Install'
 node deploy.js --apihost $OPENWHISK_API_HOST --auth $OPENWHISK_AUTH --install
 
 ################################################################
@@ -149,6 +155,7 @@ else
   }
   set -e
   trap rollback ERR
+  figlet -f small 'Deploy new'
   cf rename $CF_APP $OLD_CF_APP
   cf push $CF_APP --hostname $CF_APP --no-start
   if [ -z ${ADMIN_USERNAME+x} ]; then
@@ -158,5 +165,6 @@ else
     cf set-env $CF_APP ADMIN_PASSWORD "${ADMIN_PASSWORD}"
   fi
   cf start $CF_APP
+  figlet -f small 'Remove old'
   cf delete $OLD_CF_APP -f
 fi
