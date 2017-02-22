@@ -26,6 +26,6 @@
     "url": "https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/"
   },
   "engines": {
-    "node": ">=6.7.0"
+    "node": ">=6.9.1"
   }
 }

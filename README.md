@@ -63,25 +63,47 @@ Object Storage can complement Cloudant. When doing so, video and image medadata 
 Whenever the audio track is extracted, Cloudant emits a change event and
 OpenWhisk triggers the audio analysis.
 
+#### Get a transcript of the audio
+
+Extracting the transcript of an audio track may take more than 5 minutes. OpenWhisk actions have a 5 minutes limit so waiting in the action for the audio processing to complete may not work all the time. Fortunately the Speech to Text service has a very nice [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods). So instead of waiting for Speech to Text to process the audio, Dark Vision sends the audio file to Speech to Text and Speech to Text will notify Dark Vision when it is done.
+
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
     node [fontname = "helvetica"]
-    audio -> storage
-    storage -> openwhisk
-    openwhisk -> analysis
-    /* extractor produces image frames */
-    {rank=same; frame -> storage -> openwhisk -> analysis -> watson [style=invis] }
-    /* analysis calls Watson */
-    analysis -> watson
-    analysis -> alchemyapi
-    /* results are stored */
-    analysis -> storage
-    /* styling ****/
+    audio -> storage [label="1"]
+    storage -> openwhisk [label="2"]
+    openwhisk -> speechtotext [label="3"]
+    speechtotext -> watson [label="4 - Start Recognition"]
+    watson -> speechtotext [label="5 - Receive transcript"]
+    speechtotext -> storage [label="6 - Store transcript"]
     audio [label="Audio Track"]
-    analysis [label="Audio Analysis"]
+    {rank=same; audio -> storage -> openwhisk -> speechtotext -> watson [style=invis] }
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
+    speechtotext [label="speechtotext"]
     watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\nSpeech to Text"]
+  }
+)
+
+#### Analyze the transcript
+
+Once the transcript is stored, the text analysis is triggered.
+
+![Architecture](http://g.gravizo.com/g?
+  digraph G {
+    node [fontname = "helvetica"]
+    transcript -> storage [label="1"]
+    storage -> openwhisk [label="2"]
+    openwhisk -> textanalysis [label="3"]
+    textanalysis -> alchemyapi [label="4"]
+    textanalysis -> storage [label="5"]
+    /* extractor produces image frames */
+    {rank=same; transcript -> storage -> openwhisk -> textanalysis -> alchemyapi [style=invis] }
+    /* styling ****/
+    transcript [label="Transcript"]
+    textanalysis [label="textanalysis"]
+    storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
+    openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
     alchemyapi [shape=circle style=filled color="%234E96DB" fontcolor=white label="AlchemyAPI"]
   }
 )
@@ -95,20 +117,20 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
   digraph G {
     node [fontname = "helvetica"]
     /* stores a image */
-    frame -> storage
+    frame -> storage [label="1"]
     /* cloudant change sent to openwhisk */
-    storage -> openwhisk
+    storage -> openwhisk [label="2"]
     /* openwhisk triggers the analysis */
-    openwhisk -> analysis
+    openwhisk -> analysis [label="3"]
     /* extractor produces image frames */
     {rank=same; frame -> storage -> openwhisk -> analysis -> watson [style=invis] }
     /* analysis calls Watson */
-    analysis -> watson
+    analysis -> watson [label="4"]
     /* results are stored */
-    analysis -> storage
+    analysis -> storage [label="5"]
     /* styling ****/
     frame [label="Image Frame"]
-    analysis [label="Image Analysis"]
+    analysis [label="analysis"]
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
     watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\nVisual\\nRecognition"]
@@ -120,9 +142,9 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
 * IBM Bluemix account. [Sign up][bluemix_signup_url] for Bluemix, or use an existing account.
 * Docker Hub account. [Sign up](https://hub.docker.com/) for Docker Hub, or use an existing account.
 * XCode 8.0, iOS 10, Swift 3
-* Node.js >= 6.7.0
+* Node.js >= 6.9.1
 
-## Deploying Dark Vision in Bluemix
+## Deploying Dark Vision automatically in Bluemix
 
 Dark Vision comes with a default toolchain you can use to deploy the solution with few clicks. If you want to deploy it manually, you can skip this section.
 
