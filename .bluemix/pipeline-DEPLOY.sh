@@ -26,7 +26,6 @@ figlet 'Services'
 
 # Create Cloudant service
 figlet -f small 'Cloudant'
-echo 'Creating Cloudant service...'
 cf create-service cloudantNoSQLDB Lite cloudant-for-darkvision
 cf create-service-key cloudant-for-darkvision for-darkvision
 
@@ -47,7 +46,6 @@ curl -s -X PUT "https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host/$CL
 # Create Watson Visual Recognition service unless WATSON_API_KEY is defined in the service
 figlet -f small 'Visual Recognition'
 if [ -z ${WATSON_API_KEY+x} ]; then
-  echo 'Creating Watson Visual Recognition service...'
   cf create-service watson_vision_combined free visualrecognition-for-darkvision
   cf create-service-key visualrecognition-for-darkvision for-darkvision
 
@@ -60,7 +58,6 @@ fi
 # Create AlchemyAPI service unless ALCHEMY_API_KEY is defined in the service
 figlet -f small 'AlchemyAPI'
 if [ -z ${ALCHEMY_API_KEY+x} ]; then
-  echo 'Creating AlchemyAPI service...'
   cf create-service alchemy_api free alchemy-for-darkvision
   cf create-service-key alchemy-for-darkvision for-darkvision
 
@@ -72,7 +69,6 @@ fi
 
 # Create Watson Speech to Text service
 figlet -f small 'Speech to Text'
-echo 'Creating Watson Speech to Text...'
 cf create-service speech_to_text standard speechtotext-for-darkvision
 cf create-service-key speechtotext-for-darkvision for-darkvision
 
@@ -92,7 +88,7 @@ fi
 ################################################################
 figlet 'OpenWhisk'
 
-echo 'Deploying OpenWhisk artifacts...'
+echo 'Retrieving OpenWhisk authorization key...'
 
 # Retrieve the OpenWhisk authorization key
 CF_ACCESS_TOKEN=`cat ~/.cf/config.json | jq -r .AccessToken | awk '{print $2}'`
@@ -121,6 +117,7 @@ node deploy.js --apihost $OPENWHISK_API_HOST --auth $OPENWHISK_AUTH --install
 ################################################################
 # Register the Speech to Text callback URL
 ################################################################
+figlet -f small 'Callback'
 STT_REGISTER_CALLBACK=$STT_URL'/v1/register_callback?callback_url='$STT_CALLBACK_URL'&user_secret='$STT_CALLBACK_SECRET
 echo 'Registering Speech to Text callback URL with '$STT_REGISTER_CALLBACK
 curl -X POST -u "${STT_USERNAME}:${STT_PASSWORD}" --data "{}" "${STT_REGISTER_CALLBACK}"
@@ -131,7 +128,6 @@ curl -X POST -u "${STT_USERNAME}:${STT_PASSWORD}" --data "{}" "${STT_REGISTER_CA
 figlet 'Web app'
 
 # Push app
-echo 'Deploying web application...'
 cd web
 if ! cf app $CF_APP; then
   cf push $CF_APP --hostname $CF_APP --no-start
