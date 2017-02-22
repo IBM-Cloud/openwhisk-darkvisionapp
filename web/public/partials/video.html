@@ -94,12 +94,19 @@
     <div class="col-md-12">
       <div ng-if="controller.data.summary.audio.transcript">
         <h2>
-          Transcript <span class="small text-muted">(first 15 minutes)</span>
+          Transcript <span class="small text-muted">(15 minutes max)</span>
           <button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#transcript" aria-expanded="false" aria-controls="transcript">show/hide</button>
         </h2>
         <div id="transcript" class="well collapse">
-          <span class="transcript-sentence" ng-repeat="transcript in controller.data.summary.audio.transcript.results">
-            {{transcript.alternatives[0].transcript | formatSentence}}.
+          <span ng-repeat="transcript in allTranscripts = controller.data.summary.audio.transcript.results">
+            <span class="transcript-timestamp small text-muted">
+              {{transcript.alternatives[0].timestamps[0][1] | formatSeconds }}
+            </span>
+            <span class="transcript-sentence">
+              {{transcript.alternatives[0].transcript | formatSentence}}.
+            </span>
+            <!-- add a paragraph break when there is some time before the next sentences. -->
+            <span class="transcript-break" ng-if="allTranscripts[$index + 1].alternatives[0].timestamps[0][1] - transcript.alternatives[0].timestamps[transcript.alternatives[0].timestamps.length - 1][2] > 1" />
           </span>
         </div>
       </div>

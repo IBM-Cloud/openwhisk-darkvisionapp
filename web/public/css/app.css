@@ -159,6 +159,11 @@ footer {
   text-align: center;
 }
 
+.transcript-break {
+  display: block;
+  margin-top: 10px;
+}
+
 .transcript-sentence::first-letter {
   text-transform: capitalize;
 }
