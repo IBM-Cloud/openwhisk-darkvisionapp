@@ -118,9 +118,7 @@ node deploy.js --apihost $OPENWHISK_API_HOST --auth $OPENWHISK_AUTH --install
 # Register the Speech to Text callback URL
 ################################################################
 figlet -f small 'Callback'
-STT_REGISTER_CALLBACK=$STT_URL'/v1/register_callback?callback_url='$STT_CALLBACK_URL'&user_secret='$STT_CALLBACK_SECRET
-echo 'Registering Speech to Text callback URL with '$STT_REGISTER_CALLBACK
-curl -X POST -u "${STT_USERNAME}:${STT_PASSWORD}" --data "{}" "${STT_REGISTER_CALLBACK}"
+node deploy.js --apihost $OPENWHISK_API_HOST --auth $OPENWHISK_AUTH --register_callback
 
 ################################################################
 # And the web app

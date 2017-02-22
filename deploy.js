@@ -18,6 +18,7 @@ const fs = require('fs');
 const path = require('path');
 const openwhisk = require('openwhisk');
 const async = require('async');
+const request = require('request');
 
 const argv = require('yargs')
   .command('install', 'Install OpenWhisk actions')
@@ -25,6 +26,7 @@ const argv = require('yargs')
   .command('disable', 'Disable video and image processing')
   .command('enable', 'Enable video and image processing')
   .command('update', 'Update action code')
+  .command('register_callback', 'Register the Speech to Text action as callback')
   .option('apihost', {
     alias: 'a',
     describe: 'OpenWhisk API host',
@@ -51,7 +53,8 @@ if (!argv.install &&
   !argv.uninstall &&
   !argv.disable &&
   !argv.enable &&
-  !argv.update) {
+  !argv.update &&
+  !argv.register_callback) {
   WARN('No command specified.');
   process.exit(1);
 }
@@ -97,6 +100,29 @@ if (argv.install) {
   enable(openwhiskClient);
 } else if (argv.update) {
   update(openwhiskClient);
+} else if (argv.register_callback) {
+  registerCallback();
+}
+
+function registerCallback() {
+  WARN('Registering Speech to Text callback...');
+  waterfall([
+    (callback) => {
+      request({
+        method: 'POST',
+        auth: {
+          username: process.env.STT_USERNAME,
+          password: process.env.STT_PASSWORD,
+        },
+        url: `${process.env.STT_URL}/v1/register_callback?callback_url=${process.env.STT_CALLBACK_URL}&user_secret=${process.env.STT_CALLBACK_SECRET}`
+      }, (err, response, body) => {
+        if (!err) {
+          WARN(body);
+        }
+        callback(err);
+      });
+    }
+  ]);
 }
 
 function install(ow) {
