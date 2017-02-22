@@ -76,10 +76,10 @@ if (argv.auth) {
 
 // load configuration options
 if (fs.existsSync('local.env')) {
-  WARN('Loading Dark Vision credentials from local.env');
+  WARN('Loading Dark Vision configuration from local.env');
   require('dotenv').config({ path: 'local.env' });
 } else {
-  WARN('No local.env found. Dark Vision credentials will be loaded from environment variables.');
+  WARN('No local.env found. Dark Vision configuration will be loaded from environment variables.');
 }
 
 // load wskprops if any
