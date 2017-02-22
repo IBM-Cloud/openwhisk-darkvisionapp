@@ -1,8 +1,6 @@
 # Deploy Dark Vision manually in Bluemix
 
-## Preparing the environment
-
-### Get the code
+## Get the code
 
 * Clone the app to your local environment from your terminal using the following command:
 
@@ -12,7 +10,7 @@
 
 * or Download and extract the source code from [this archive](https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/archive/master.zip)
 
-### Create the Bluemix Services
+## Create the Bluemix Services
 
 ***Note***: *if you have existing instances of these services, you don't need to create new instances.
 You can simply reuse the existing ones.*
@@ -33,7 +31,7 @@ You can simply reuse the existing ones.*
 
   > If configured, media files will be stored in Object Storage instead of Cloudant. A container named *openwhisk-darkvision* will be automatically created.
 
-### Deploy the web interface to upload videos and images
+## Deploy the web interface to upload videos and images
 
 This simple web user interface is used to upload the videos or images and
 visualize the results of each frame analysis.
@@ -54,7 +52,7 @@ visualize the results of each frame analysis.
   cf push
   ```
 
-#### Protecting the upload, delete and reset actions (optional)
+### Protecting the upload, delete and reset actions (optional)
 
 By default, anyone can upload/delete/reset videos and images. You can restrict access to these actions by defining the environment variables *ADMIN_USERNAME* and *ADMIN_PASSWORD* on your application. This can be done in the Bluemix console or with the command line:
 
@@ -63,7 +61,7 @@ By default, anyone can upload/delete/reset videos and images. You can restrict a
   cf set-env openwhisk-darkvision ADMIN_PASSWORD aNotTooSimplePassword
   ```
 
-### Build the Frame Extractor Docker image
+## Build the Frame Extractor Docker image
 
 Extracting frames and audio from a video is achieved with ffmpeg. ffmpeg is not available to an OpenWhisk action written in JavaScript or Swift. Fortunately OpenWhisk allows to write an action as a Docker image and can retrieve this image from Docker Hub.
 
@@ -82,7 +80,7 @@ To build the extractor image, follow these steps:
 
 1. After a while, your image will be available in Docker Hub, ready for OpenWhisk.
 
-### Deploy OpenWhisk Actions
+## Deploy OpenWhisk Actions
 
 1. Change to the **root directory of the checkout**.
 

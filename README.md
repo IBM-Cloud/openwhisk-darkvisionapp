@@ -180,9 +180,9 @@ Click *Deploy to Bluemix* to start the Bluemix DevOps wizard:
 
 ## Deploying Dark Vision manually in Bluemix
 
-The automatic approach should be the best option for most users as it does everything for you automatically [sic]. But if you want to go through all the steps manually or if you want to run the web application locally we've got your covered. Follow [these instructions](./DEPLOY_MANUALLY.md).
+The automatic approach should be the best option for most users as it does everything for you automatically. But if you want to go through all the steps manually or if you want to run the web application locally we've got your covered. Follow [these instructions](./DEPLOY_MANUALLY.md).
 
-### iOS application to view the results (Optional)
+## iOS application to view the results (Optional)
 
 The iOS application is a client to the API exposed by the web application
 to view the results of the analysis of videos. It is an optional piece.
@@ -198,7 +198,7 @@ The web app exposes an API to list all videos and retrieve the results.
 
 1. Save the file
 
-## Running the iOS application in the simulator
+### Running the iOS application in the simulator
 
 1. Start the application from XCode with *iPad Air 2* as the target
 
