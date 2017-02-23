@@ -55,7 +55,10 @@
       <div ng-if="controller.data.summary.audio.analysis.entities">
         <h2>Entities</h2>
         <div class="well">
-          <ul class="entry-taglist">
+          <span ng-if="controller.data.summary.audio.analysis.entities.length === 0">
+            No entity found
+          </span>
+          <ul class="entry-taglist" ng-if="controller.data.summary.audio.analysis.entities.length > 0">
             <li ng-repeat="entity in controller.data.summary.audio.analysis.entities" class="entry-tag">
               <span ng-if="entity.disambiguated.dbpedia" class="label label-info"><a href="{{entity.disambiguated.dbpedia}}">{{entity.text}} ({{entity.type}}) {{entity.relevance | formatPercent}}% <i class="fa fa-external-link"></i></a></span>
               <span ng-if="!entity.disambiguated.dbpedia" class="label label-info">{{entity.text}} ({{entity.type}}) {{entity.relevance | formatPercent}}%</span>
@@ -68,7 +71,10 @@
       <div ng-if="controller.data.summary.audio.analysis.concepts">
         <h2>Concepts</h3>
         <div class="well">
-          <ul class="entry-taglist">
+          <span ng-if="controller.data.summary.audio.analysis.concepts.length === 0">
+            No concept found
+          </span>
+          <ul class="entry-taglist" ng-if="controller.data.summary.audio.analysis.concepts.length > 0">
             <li ng-repeat="concept in controller.data.summary.audio.analysis.concepts" class="entry-tag">
               <span class="label label-info"><a href="{{concept.dbpedia}}">{{concept.text}} {{concept.relevance | formatPercent}}% <i class="fa fa-external-link"></i></a></span>
             </li>
