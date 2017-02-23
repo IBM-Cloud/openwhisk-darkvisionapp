@@ -9,7 +9,7 @@ stages:
   - type: commit
   properties:
   - name: CLOUDANT_db
-    value: "openwhisk-darkvision"
+    value: ${CLOUDANT_db}
   - name: ADMIN_USERNAME
     value: ${ADMIN_USERNAME}
   - name: ADMIN_PASSWORD

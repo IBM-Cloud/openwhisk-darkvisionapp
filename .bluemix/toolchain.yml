@@ -32,6 +32,7 @@ darkvision-build:
       ADMIN_PASSWORD: "{{deploy.parameters.darkvision-admin-password}}"
       WATSON_API_KEY: "{{deploy.parameters.darkvision-watson-api-key}}"
       ALCHEMY_API_KEY: "{{deploy.parameters.darkvision-alchemy-api-key}}"
+      CLOUDANT_db: "{{deploy.parameters.darkvision-cloudant-db}}"
      execute: true
     services: ["darkvision-repo"]
   hidden: [form, description]
@@ -47,3 +48,4 @@ deploy:
     darkvision-admin-password: ""
     darkvision-watson-api-key: ""
     darkvision-alchemy-api-key: ""
+    darkvision-cloudant-db: "openwhisk-darkvision"
