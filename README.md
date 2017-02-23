@@ -263,7 +263,7 @@ The code is very similar to the one used in the [Vision app](https://github.com/
 
 | File | Description |
 | ---- | ----------- |
-|[**speechtotext.js**](processing/speechtotext/speechtotext.js)|Uses Speech to Text to transcript the audio.|
+|[**speechtotext.js**](processing/speechtotext/speechtotext.js)|Uses Speech to Text to transcript the audio. It acts as the callback server for the [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods) of Speech to Text service.|
 |[**textanalysis.js**](processing/textanalysis/textanalysis.js)|Calls AlchemyAPI on the transcript.|
 
 ### Web app
