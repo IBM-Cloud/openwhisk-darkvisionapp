@@ -11,9 +11,9 @@
     "public/vendor"
   ],
   "dependencies": {
-    "bootstrap": "~3.3.6",
-    "dropzone": "~4.2.0",
-    "angular": "~1.4.9",
-    "angular-ui-router": "~0.2.15"
+    "bootstrap": "3.3.6",
+    "dropzone": "4.2.0",
+    "angular": "1.4.9",
+    "angular-ui-router": "0.2.15"
   }
 }
