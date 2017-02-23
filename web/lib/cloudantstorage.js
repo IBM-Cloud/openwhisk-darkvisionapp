@@ -176,7 +176,7 @@ function CloudandStorage(options) {
     } else if (fileStore) {
       return fileStore.read(`${docOrId}-${attachmentName}`);
     } else { // eslint-disable-line no-else-return
-      return visionDb.attachment.get(docOrId._id || docOrId, attachmentName);
+      return uploadDb.attachment.get(docOrId._id || docOrId, attachmentName);
     }
   };
 
