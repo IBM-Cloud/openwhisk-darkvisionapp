@@ -19,6 +19,13 @@ const ffmpeg = require('fluent-ffmpeg');
 const tmp = require('tmp');
 const rimraf = require('rimraf');
 
+// Show some info about the docker action
+try {
+  console.log('Docker action built on:', require('./build.json').date);
+} catch (err) {
+  console.log('No build.json file found', err);
+}
+
 // argv[2] is expected to be the payload JSON object as a string
 const payload = JSON.parse(process.argv[2]);
 
@@ -139,8 +146,8 @@ async.waterfall([
       .pipe(videoStream)
       .on('finish', () => {
         videoStream.end();
-        console.log('write complete');
-        callback(null);
+         console.log('write complete');
+         callback(null);
       })
       .on('error', (err) => {
         videoStream.end();
