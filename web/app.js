@@ -225,7 +225,9 @@ app.get('/api/videos/:id/summary', (req, res) => {
     minimumKeywordOccurrence: 1,
     minimumKeywordScore: 0.60,
     minimumKeywordScoreOccurrence: 1,
-    maximumKeywordCount: 5
+    maximumKeywordCount: 5,
+    minimumEntityScore: 0.55,
+    minimumConceptScore: 0.55
   };
 
   async.waterfall([
@@ -370,6 +372,14 @@ app.get('/api/videos/:id/summary', (req, res) => {
         if (err) {
           callback(err);
         } else {
+          if (audio && audio.analysis && audio.analysis.entities) {
+            audio.analysis.entities = audio.analysis.entities
+              .filter(entity => entity.relevance > options.minimumEntityScore);
+          }
+          if (audio && audio.analysis && audio.analysis.concepts) {
+            audio.analysis.concepts = audio.analysis.concepts
+              .filter(entity => entity.relevance > options.minimumConceptScore);
+          }
           result.audio = audio;
           callback(null, result);
         }
