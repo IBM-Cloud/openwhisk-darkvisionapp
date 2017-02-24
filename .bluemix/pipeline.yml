@@ -3,7 +3,7 @@ stages:
 - name: DEPLOY
   inputs:
   - type: git
-    branch: master
+    branch: audio
     service: ${REPO}
   triggers:
   - type: commit
@@ -15,7 +15,7 @@ stages:
   - name: ADMIN_PASSWORD
     value: ${ADMIN_PASSWORD}
   - name: DOCKER_EXTRACTOR_NAME
-    value: "l2fprod/darkvision-extractor-master"
+    value: "l2fprod/darkvision-extractor-audio"
   - name: OPENWHISK_API_HOST
     value: "openwhisk.ng.bluemix.net"
   - name: WATSON_API_KEY
