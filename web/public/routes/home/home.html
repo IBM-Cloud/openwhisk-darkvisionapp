@@ -24,7 +24,7 @@
       Video Uploads ({{controller.data.videos.length}})
     </h3>
 
-    <div layout="row" layout-align="space-around center" layout-wrap>
+    <div layout="row" layout-align="space-between center" layout-wrap>
       <div ng-repeat="video in controller.data.videos" class="video-box">
         <div ng-if="!video.metadata" class="video-box-image">
           This video has not yet been processed.
