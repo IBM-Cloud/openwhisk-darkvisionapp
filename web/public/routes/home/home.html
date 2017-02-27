@@ -57,10 +57,10 @@
           <div flex="initial" class="image-box-image">
             <div class="entry-thumbnail-container" style="position: relative;">
               <div ng-if="face.face_location.left>0" ng-repeat="face in image.analysis.face_detection" class="face-overlay-box" style="position: absolute;
-                          top: {{face.face_location.top*controller.resizeFactor(image)}}px;
-                          left: {{face.face_location.left*controller.resizeFactor(image)}}px;
-                          width: {{face.face_location.width*controller.resizeFactor(image)}}px;
-                          height: {{face.face_location.height*controller.resizeFactor(image)}}px;"><span class="face-overlay-text">{{$index+1}}</span></div>
+                          top: {{controller.facePositionAsPercent(face.face_location, image).top}}%;
+                          left: {{controller.facePositionAsPercent(face.face_location, image).left}}%;
+                          width: {{controller.facePositionAsPercent(face.face_location, image).width}}%;
+                          height: {{controller.facePositionAsPercent(face.face_location, image).height}}%;"><span class="face-overlay-text">{{$index+1}}</span></div>
               <img ng-src="/images/image/{{image._id}}.jpg" class="image-thumbnail" />
             </div>
           </div>
@@ -80,10 +80,12 @@
             <span ng-if="image.analysis.face_detection.length == 0">No face detected</span>
             <ul class="entry-taglist">
               <li ng-if="face.face_location.left>0" ng-repeat="face in image.analysis.face_detection" class="entry-tag">
+                <span class="tag">
                 <span class="face-overlay-text">{{$index+1}}</span>
-                <span ng-if="face.identity" class="label label-info">{{face.identity.name}} {{face.identity.score | formatPercent}}%</span>
+                  <span ng-if="face.identity">{{face.identity.name}} {{face.identity.score | formatPercent}}%</span>
                 <span ng-if="face.identity">&nbsp;</span>
-                <span class="tag">{{face.gender.gender}} {{face.age.min}}-{{face.age.max}} {{face.age.score | formatPercent}}%</span>
+                  <span>{{face.gender.gender}} {{face.age.min}}-{{face.age.max}} {{face.age.score | formatPercent}}%</span>
+                </span>
               </li>
             </ul>
           </div>

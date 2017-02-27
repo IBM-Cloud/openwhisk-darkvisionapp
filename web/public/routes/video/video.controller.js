@@ -26,15 +26,12 @@
     controller.data.videoId = $stateParams.videoId;
 
     controller.facePositionAsPercent = function(faceLocation, image){
-      console.log(faceLocation);
-      const result = {
+      return {
         top: (100 * faceLocation.top / image.analysis.size.height).toFixed(2),
         left: (100 * faceLocation.left / image.analysis.size.width).toFixed(2),
         width: (100 * faceLocation.width / image.analysis.size.width).toFixed(2),
         height: (100 * faceLocation.height / image.analysis.size.height).toFixed(2),
       };
-      console.log(result);
-      return result;
     }
 
     controller.selectVideo = function() {
