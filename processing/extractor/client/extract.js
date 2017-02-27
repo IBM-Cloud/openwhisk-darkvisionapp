@@ -281,7 +281,7 @@ async.waterfall([
             createdAt: new Date(),
             video_id: videoDocument._id,
             frame_number: parseInt(file, 10),
-            frame_timecode: parseInt(file, 10) * timeBetweenFrame
+            frame_timecode: (parseInt(file, 10) - 1) * timeBetweenFrame
           };
           createDocument(frameDocument, 'image.jpg', 'image/jpeg', `${framesDirectory}/${file}`, uploadCallback);
         });
