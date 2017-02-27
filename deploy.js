@@ -250,6 +250,10 @@ function makeSpeechToTextTask(ow, isCreate) {
     annotations: [{
       key: 'web-export',
       value: true
+    },
+    {
+      key: 'final',
+      value: true
     }]
   });
 }

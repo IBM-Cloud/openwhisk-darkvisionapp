@@ -12,12 +12,15 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 (function () {
-  function VideosController($location, VideosService, $stateParams) {
-    console.info("Initializing VideosController");
+  function HomeController($location, VideosService, ImagesService) {
+    console.info("Initializing HomeController");
     var controller = this;
 
     controller.data = {
-      videos: []
+      videos: [],
+      images: [],
+      showVideos: true,
+      showImages: true,
     };
 
     controller.reload = function () {
@@ -27,21 +30,39 @@
         });
         controller.data.videos = videos;
       });
+      ImagesService.all().then(function (images) {
+        controller.data.images = images;
+      });
     };
-    
-    $("#uploadVideoZone").dropzone({
-      parallelUploads: 1,
-      uploadMultiple: false,
-      acceptedFiles: "video/*",
-      dictDefaultMessage: "Drop Videos here to upload"
-    }).on("success", function (file, responseText) {
-      controller.reload();
-    });
-    
+
+    controller.resizeFactor = function (image) {
+      var width = image.analysis.size.width;
+      var height = image.analysis.size.height;
+
+      var factor = 1;
+      if (width > 300) {
+        factor = 300 / width;
+      }
+      if (height > 200) {
+        factor = 200 / height;
+      }
+
+      return factor;
+    };
+
+    // $("#uploadVideoZone").dropzone({
+    //   parallelUploads: 1,
+    //   uploadMultiple: false,
+    //   acceptedFiles: "video/*",
+    //   dictDefaultMessage: "Drop Videos here to upload"
+    // }).on("success", function (file, responseText) {
+    //   controller.reload();
+    // });
+
     controller.reload();
   }
 
   angular.module('app')
-    .controller('VideosController', ['$location', 'VideosService', '$stateParams', VideosController]);
+    .controller('HomeController', ['$location', 'VideosService', 'ImagesService', HomeController]);
 
 }());

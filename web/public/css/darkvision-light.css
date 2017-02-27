@@ -1,0 +1,122 @@
+body, html {
+  background: white;
+  color: black;
+}
+
+a {
+  color: black;
+}
+
+header md-toolbar {
+  background-color: #ebebeb !important;
+}
+
+.title {
+  color: black;
+}
+
+.subtitle {
+  color: rgb(110, 110, 110);
+}
+
+.theme-light {
+  visibility: hidden;
+}
+
+
+button.md-button {
+  color: black;
+}
+
+h3 {
+  border-bottom-color: #ebebeb;
+}
+
+md-toolbar md-icon {
+  fill: black !important;
+}
+
+spinner {
+  background-color: #ebebeb;
+}
+
+label.md-button {
+  color: black;
+}
+
+md-icon {
+  color: black !important;
+}
+
+md-progress-circular path {
+  stroke: black !important;
+}
+
+md-progress-linear .md-container {
+  background-color: #ebebeb;
+}
+
+md-progress-linear .md-container .md-bar {
+  background-color: #E77A4D;
+}
+
+footer {
+  background-color: #ebebeb !important;
+}
+
+footer md-toolbar {
+  background-color: #ffffff !important;
+}
+
+md-tabs .md-tab {
+  color: black;
+}
+
+md-tabs .md-tab.md-active {
+  color: #E77A4D;
+}
+
+md-tabs .md-tab .md-ripple-container {
+  color: white;
+}
+
+md-tabs md-ink-bar {
+  color: #E77A4D;
+  background-color: #E77A4D;
+}
+
+.button-group[disabled] {
+  background-color: black !important;
+  color: white !important;
+}
+
+.video-box, .image-box {
+  border-color: #ebebeb;
+}
+
+.box-border {
+  border-color: #ebebeb;
+}
+
+.video-box-tag {
+  background-color: black;
+  color: white;
+}
+
+.face-overlay-box {
+  border-color: yellow !important;
+}
+
+.face-overlay-text {
+  color: black;
+  background-color: yellow;
+}
+
+.tag, .tag a, .tag a md-icon {
+  background-color: black;
+  color: white !important;
+}
+
+.selected-frame {
+  background-color: #efefef;
+}

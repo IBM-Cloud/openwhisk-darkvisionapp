@@ -10,81 +10,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OpenWhisk Dark Vision</title>
 
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="vendor/dropzone/dist/min/dropzone.min.css">
-  <link href="css/app.css" rel="stylesheet">
+  <link rel="stylesheet" href="vendor/angular-material/angular-material.min.css">
+  <link rel="stylesheet" href="css/darkvision.css">
+  <link rel="stylesheet" href="css/darkvision-light.css" id="theme">
 </head>
 
-<body>
-
-  <nav class="navbar navbar-transparent">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" ui-sref="videos()">OpenWhisk Dark Vision
-          <span class="subtitle text-muted small hidden-xs">watch - listen - discover</span>
-        </a>
+<body layout="row" ng-controller="MainController">
+  <div layout="column" layout-fill>
+  <header>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <md-icon md-svg-src="images/favico.svg"></md-icon>
+        <a ui-sref="home()">
+        <span class="title md-title">
+          OpenWhisk Dark Vision
+        </span>
+      </a>
+        <span class="subtitle" hide-xs>
+          watch - listen - discover
+        </span>
+        <span flex></span>
+        <div>
+          <input ng-disabled="uploader.isUploading" class="ng-hide" nv-file-select id="fileUpload" uploader="uploader" type="file" />
+          <label ng-disabled="uploader.isUploading" for="fileUpload" class="md-button md-raised">
+            Upload
+            <md-icon ng-if="!uploader.isUploading" md-font-library="material-icons">backup</md-icon>
+            <md-progress-circular ng-if="uploader.isUploading && uploader.progress < 100" md-diameter="22" md-mode="determinate" value="{{uploader.progress}}"></md-progress-circular>
+            <md-progress-circular ng-if="uploader.isUploading && uploader.progress === 100" md-diameter="22" md-mode="indeterminate" value="{{uploader.progress}}"></md-progress-circular>
+          </label>
+        </div>
+        <md-button class="md-icon-button" ng-click="toggleLight();">
+          <md-icon md-svg-src="images/lightbulb.svg"></md-icon>
+        </md-button>
+        <md-button class="md-icon-button" href="https://github.com/IBM-Bluemix/openwhisk-darkvisionapp">
+          <md-icon md-svg-src="images/github-circle.svg"></md-icon>
+        </md-button>
+        <md-button class="md-icon-button" href="https://www.youtube.com/watch?v=1teIMpkI_Sg&feature=youtu.be">
+          <md-icon md-font-library="material-icons">info_outline</md-icon>
+        </md-button>
+        <md-button class="md-icon-button" href="https://twitter.com/l2fprod">
+          <md-icon class="twitter-icon" md-svg-src="images/twitter.svg"></md-icon>
+        </md-button>
       </div>
-      <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav navbar-right">
-          <li><a ui-sref="videos()">Videos</a></li>
-          <li><a ui-sref="images()">Images</a></li>
-          <li><a href="https://github.com/IBM-Bluemix/openwhisk-darkvisionapp">Source Code</a></li>
-          <li><a href="https://www.youtube.com/watch?v=1teIMpkI_Sg&feature=youtu.be">About</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+    </md-toolbar>
+  </header>
+  <spinner>
+    <md-progress-linear class="loadingProgress" id="loadingProgress" md-mode="indeterminate"></md-progress-linear>
+  </spinner>
 
-  <div class="status" ng-controller="StatusController as controller">
-    <span class="label label-default">VIDEOS</span>
-    <span class="label label-success">total: {{controller.data.status.videos.count}}</span>
-    <span class="label label-warning">todo: {{controller.data.status.videos.to_be_analyzed}}</span>
-
-    <span>&nbsp;</span>
-
-    <span class="label label-default">AUDIOS</span>
-    <span class="label label-success">total: {{controller.data.status.audios.count}}</span>
-    <span class="label label-warning">todo: {{controller.data.status.audios.to_be_analyzed}}</span>
-
-    <span>&nbsp;</span>
-
-    <span class="label label-default">IMAGES</span>
-    <span class="label label-success">total: {{controller.data.status.images.count}}</span>
-    <span class="label label-warning">todo: {{controller.data.status.images.to_be_analyzed}}</span>
-
+  <div class="container" ui-view flex>
   </div>
 
-  <div ui-view></div>
-
   <footer>
-    <p class="text-center">made by <a href="https://twitter.com/l2fprod">fred</a> with <a href="https://new-console.ng.bluemix.net/openwhisk">IBM Bluemix OpenWhisk</a> - source code on <a href="https://github.com/IBM-Bluemix/openwhisk-darkvisionapp">Github</a>
-</p>
+    made by <a href="https://twitter.com/l2fprod">fred</a> with <a href="https://new-console.ng.bluemix.net/openwhisk">IBM Bluemix OpenWhisk</a> - source code on <a href="https://github.com/IBM-Bluemix/openwhisk-darkvisionapp">Github</a>
   </footer>
 
-  <script src="vendor/jquery/dist/jquery.min.js"></script>
-  <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
   <script src="vendor/angular/angular.min.js"></script>
+  <script src="vendor/angular-animate/angular-animate.min.js"></script>
+  <script src="vendor/angular-aria/angular-aria.min.js"></script>
+  <script src="vendor/angular-messages/angular-messages.min.js"></script>
   <script src="vendor/angular-ui-router/release/angular-ui-router.min.js"></script>
-  <script src="vendor/dropzone/dist/min/dropzone.min.js"></script>
+  <script src="vendor/angular-css/angular-css.min.js"></script>
+  <script src="vendor/angular-material/angular-material.min.js"></script>
+  <script src="vendor/angular-file-upload/dist/angular-file-upload.min.js"></script>
 
   <script src="js/app.js"></script>
 
-  <script src="js/status.service.js"></script>
-  <script src="js/status.controller.js"></script>
+  <!-- <script src="js/status.service.js"></script>
+  <script src="js/status.controller.js"></script> -->
 
   <script src="js/images.service.js"></script>
-  <script src="js/images.controller.js"></script>
-
   <script src="js/videos.service.js"></script>
-  <script src="js/videos.controller.js"></script>
-  <script src="js/video.controller.js"></script>
+
+  <script src="routes/home/home.controller.js"></script>
+  <script src="routes/video/video.controller.js"></script>
 </body>
 
 </html>

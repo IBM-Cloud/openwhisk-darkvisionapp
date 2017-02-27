@@ -18,9 +18,9 @@
     return {
       status: function () {
         var deferred = $q.defer();
-        $http.get("/api/status").success(function (data) {
+        $http.get("/api/status").then(response => response.data).then(function (data) {
           deferred.resolve(data);
-        }).error(function () {
+        }).catch(function () {
           deferred.reject();
         });
         return deferred.promise;

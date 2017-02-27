@@ -322,21 +322,10 @@ app.get('/api/videos/:id/summary', (req, res) => {
           }
         });
 
-        let result = [];
+        const result = [];
         Object.keys(occurrences).forEach((property) => {
-          result.push({
-            occurrences: occurrences[property]
-          });
+          result.push(occurrences[property][0]);
         });
-
-        result.sort((oneOccurrence, anotherOccurrence) =>
-          accessor.score(anotherOccurrence.occurrences[0]) -
-            accessor.score(oneOccurrence.occurrences[0])
-        );
-
-        if (accessor.maximumOccurrenceCount && result.length > accessor.maximumOccurrenceCount) {
-          result = result.slice(0, accessor.maximumOccurrenceCount);
-        }
 
         return result;
       }
@@ -465,28 +454,26 @@ app.get('/api/videos/:id/reset-images', checkForAuthentication, (req, res) => {
 // Protects the upload zone with login and password if they are configured
 app.use('/upload', checkForAuthentication);
 
-/**
- * Uploads one video
- */
-app.post('/upload/video', upload.single('file'), (req, res) => {
-  const videoDocument = {
-    type: 'video',
-    source: req.file.originalname,
-    title: req.file.originalname,
-    createdAt: new Date()
-  };
-  uploadDocument(videoDocument, 'video.mp4', req, res);
-});
-
-/**
- * Uploads one image
- */
-app.post('/upload/image', upload.single('file'), (req, res) => {
-  const frameDocument = {
-    type: 'image',
-    createdAt: new Date()
-  };
-  uploadDocument(frameDocument, 'image.jpg', req, res);
+app.post('/upload', upload.single('file'), (req, res) => {
+  if (!req.file || !req.file.mimetype) {
+    res.status(500).send({ error: 'no file or mimetype' });
+  } else if (req.file.mimetype.startsWith('video/')) {
+    const videoDocument = {
+      type: 'video',
+      source: req.file.originalname,
+      title: req.file.originalname,
+      createdAt: new Date()
+    };
+    uploadDocument(videoDocument, 'video.mp4', req, res);
+  } else if (req.file.mimetype.startsWith('image/')) {
+    const frameDocument = {
+      type: 'image',
+      createdAt: new Date()
+    };
+    uploadDocument(frameDocument, 'image.jpg', req, res);
+  } else {
+    res.status(500).send({ error: `unknown mimetype ${req.file.mimetype}` });
+  }
 });
 
 function uploadDocument(doc, attachmentName, req, res) {

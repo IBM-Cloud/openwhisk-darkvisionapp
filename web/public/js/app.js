@@ -12,31 +12,51 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 (function () {
+  // listen for request sent over XHR and automatically show/hide spinner
+  angular.module('ngLoadingSpinner', [])
+    .directive('spinner', ['$http', function ($http) {
+      return {
+        link: function (scope, elm, attrs) {
+          scope.isLoading = function () {
+            return $http.pendingRequests.length > 0;
+          };
+          scope.$watch(scope.isLoading, function (loading) {
+            if (loading) {
+              document.getElementById('loadingProgress').style.visibility = "visible";
+            } else {
+              document.getElementById('loadingProgress').style.visibility = "hidden";
+            }
+          });
+        }
+      };
+    }]);
+
   // angular app initialization
-  var app = angular.module('app', ['ui.router']);
+  var app = angular.module('app', [
+    'ngMaterial',
+    'ngLoadingSpinner',
+    'ui.router',
+    'angularCSS',
+    'angularFileUpload',
+  ]);
 
   app.config(function ($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.otherwise("/videos");
+    $urlRouterProvider.otherwise("/");
 
     $stateProvider
-      .state('videos', {
-        url: '/videos',
-        templateUrl: 'partials/videos.html'
+      .state('home', {
+        url: '/',
+        templateUrl: 'routes/home/home.html',
+        css: 'routes/home/home.css'
       });
 
     $stateProvider
       .state('video', {
         url: '/videos/:videoId',
-        templateUrl: 'partials/video.html'
+        templateUrl: 'routes/video/video.html',
+        css: 'routes/video/video.css',
       });
-
-    $stateProvider
-      .state('images', {
-        url: '/images',
-        templateUrl: 'partials/images.html'
-      });
-
   });
 
   app
@@ -60,9 +80,26 @@
         return function (value) {
           var date = new Date(null);
           date.setSeconds(value);
-          return date.toISOString().substr(11, 8);
+          return date.toISOString().substr(14, 5);
         }
     }
     ]);
+
+  app.controller('MainController', ['$scope', '$state', 'FileUploader', function($scope, $state, FileUploader) {
+    var controller = this;
+
+    $scope.lightTheme = true;
+    $scope.toggleLight = function() {
+      $scope.lightTheme = !$scope.lightTheme;
+      var theme = $scope.lightTheme ? 'css/darkvision-light.css': 'css/darkvision-dark.css'
+      document.getElementById("theme").href=theme;
+    };
+
+    $scope.uploader = new FileUploader({
+      url: '/upload',
+      alias: 'file',
+      autoUpload: true,
+    });
+  }]);
 
 }());

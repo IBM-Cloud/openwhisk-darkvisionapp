@@ -1,0 +1,118 @@
+.video-container {
+  overflow: hidden;
+}
+
+.video-details {
+  padding-top: 20px;
+  padding-right: 40px;
+  overflow: auto;
+  padding-bottom: 40px;
+}
+
+.video-thumbnail {
+  width: 100%
+}
+
+.video-box-title {
+  margin-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid;
+}
+
+.video-title {
+  margin-right: 15px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.video-box-tags {
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.video-overview {
+  margin-top: 15px;
+  font-size: 20px;
+}
+
+.transcript {
+  border: 1px solid;
+  padding: 20px;
+}
+
+.transcript-break {
+  display: block;
+  margin-top: 10px;
+}
+
+.transcript-sentence::first-letter {
+  text-transform: capitalize;
+}
+
+.video-navigator {
+  padding-top: 20px;
+  border-left: 1px solid;
+  min-width: 340px;
+}
+
+.video-frames {
+  overflow: auto;
+  padding-bottom: 20px;
+}
+
+.video-frame {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.video-frame-timeline {
+  position: absolute;
+  left: 50%;
+  top: -85px;
+  height: 200px;
+  border-left: 1px solid;
+}
+
+.first {
+  top: 10px;
+}
+
+.last {
+  height: 95px;
+}
+
+.video-frame-timecode {
+  position: relative;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.video-overview-box {
+  border-bottom: 1px solid;
+  padding-bottom: 20px;
+  margin-left: 20px;
+  outline: none;
+  cursor: pointer;
+}
+
+.video-overview-thumbnail {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.video-overview-title {
+  width: 300px;
+}
+
+.video-frame-thumbnail {
+  width: 300px;
+  height: 170px;
+  cursor: pointer;
+  outline: none;
+}
