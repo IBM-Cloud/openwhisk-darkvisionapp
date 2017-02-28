@@ -268,13 +268,14 @@ The code is very similar to the one used in the [Vision app](https://github.com/
 ### Web app
 
 The web application allows to upload videos (and images).
-It shows the video catalog and for each video the extracted frames.
+It shows the video and image catalog and for each video the extracted frames.
 
 | File | Description |
 | ---- | ----------- |
 |[**app.js**](web/app.js)|The web app backend handles the upload of videos/images, and exposes an API to retrieve all videos, their frames, to compute the summary|
-|[**Angular controllers**](web/public/js)|Controllers for list of videos, individual video and standalone images|
-|[**Angular services**](web/public/js)|Services to interact with the backend API|
+|[**Services**](web/public/js)|Services used by controllers|
+|[**Home page**](web/public/routes/home)|Controller and view for the home page|
+|[**Video page**](web/public/routes/video)|Controller and view for the video detail page|
 
 ### Shared code between OpenWhisk actions and web app
 
