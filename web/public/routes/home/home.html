@@ -26,19 +26,19 @@
 
     <div layout="row" layout-align="space-between center" layout-wrap>
       <div ng-repeat="video in controller.data.videos" class="video-box">
-        <div ng-if="!video.metadata" class="video-box-image">
-          This video has not yet been processed.
-        </div>
-        <a ng-if="video.metadata" ui-sref="video({ videoId: video._id })">
-        <div ng-if="video.metadata" class="video-box-image" style="background-image: url(/images/thumbnail/{{video._id}}.jpg);">
-          <div class="video-box-tags" ng-repeat="stream in video.metadata.streams">
-            <div ng-if="stream.codec_type == 'video'" class="text-muted">
-              <span class="video-box-tag">{{stream.width}}x{{stream.height}}</span>
-              <span class="video-box-tag">{{stream.duration | formatSeconds }}</span>
+        <a ui-sref="video({ videoId: video._id })">
+          <div ng-if="!video.metadata" class="video-box-image">
+            This video has not yet been processed.
+          </div>
+          <div ng-if="video.metadata" class="video-box-image" style="background-image: url(/images/thumbnail/{{video._id}}.jpg);">
+            <div class="video-box-tags" ng-repeat="stream in video.metadata.streams">
+              <div ng-if="stream.codec_type == 'video'" class="text-muted">
+                <span class="video-box-tag">{{stream.width}}x{{stream.height}}</span>
+                <span class="video-box-tag">{{stream.duration | formatSeconds }}</span>
+              </div>
             </div>
           </div>
-        </div>
-      </a>
+        </a>
         <div class="video-box-title">
           {{video.title}}
         </div>
@@ -81,9 +81,9 @@
             <ul class="entry-taglist">
               <li ng-if="face.face_location.left>0" ng-repeat="face in image.analysis.face_detection" class="entry-tag">
                 <span class="tag">
-                <span class="face-overlay-text">{{$index+1}}</span>
+                  <span class="face-overlay-text">{{$index+1}}</span>
                   <span ng-if="face.identity">{{face.identity.name}} {{face.identity.score | formatPercent}}%</span>
-                <span ng-if="face.identity">&nbsp;</span>
+                  <span ng-if="face.identity">&nbsp;</span>
                   <span>{{face.gender.gender}} {{face.age.min}}-{{face.age.max}} {{face.age.score | formatPercent}}%</span>
                 </span>
               </li>
