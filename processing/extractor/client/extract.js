@@ -146,8 +146,8 @@ async.waterfall([
       .pipe(videoStream)
       .on('finish', () => {
         videoStream.end();
-         console.log('write complete');
-         callback(null);
+        console.log('write complete');
+        callback(null);
       })
       .on('error', (err) => {
         videoStream.end();
