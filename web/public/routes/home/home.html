@@ -1,14 +1,17 @@
 <div class="home" ng-controller="HomeController as controller" layout="column">
 
+  {{ filteredVideos = (controller.data.videos | filter:global.search); "" }}
+  {{ filteredImages = (controller.data.images | filter:global.search); "" }}
+
   <div layout="row">
     <h2 ng-if="controller.data.showVideos && controller.data.showImages">
-      All Uploads ({{controller.data.videos.length + controller.data.images.length}})
+      All Uploads ({{filteredVideos.length + filteredImages.length}})
     </h2>
     <h2 ng-if="controller.data.showVideos && !controller.data.showImages">
-      Videos ({{controller.data.videos.length}})
+      Videos ({{filteredVideos.length}})
     </h2>
     <h2 ng-if="!controller.data.showVideos && controller.data.showImages">
-      Images ({{controller.data.images.length}})
+      Images ({{filteredImages.length}})
     </h2>
     <div flex></div>
     <div>
@@ -21,11 +24,11 @@
 
   <div flex="auto" ng-if="controller.data.showVideos">
     <h3 ng-if="controller.data.showImages">
-      Video Uploads ({{controller.data.videos.length}})
+      Video Uploads ({{filteredVideos.length}})
     </h3>
 
     <div layout="row" layout-align="space-between center" layout-wrap>
-      <div ng-repeat="video in controller.data.videos" class="video-box">
+      <div ng-repeat="video in filteredVideos" class="video-box">
         <a ui-sref="video({ videoId: video._id })">
           <div ng-if="!video.metadata" class="video-box-image">
             This video has not yet been processed.
@@ -48,11 +51,11 @@
 
   <div flex="auto" ng-if="controller.data.showImages">
     <h3 ng-if="controller.data.showVideos">
-      Image Uploads ({{controller.data.images.length}})
+      Image Uploads ({{filteredImages.length}})
     </h3>
 
     <div>
-      <div ng-repeat="image in controller.data.images">
+      <div ng-repeat="image in filteredImages">
         <div id="image-{{image._id}}" layout="row" class="image-box">
           <div flex="initial" class="image-box-image">
             <div class="entry-thumbnail-container" style="position: relative;">

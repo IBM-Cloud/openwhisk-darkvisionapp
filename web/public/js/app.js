@@ -85,9 +85,13 @@
     }
     ]);
 
-  app.controller('MainController', ['$scope', '$state', 'FileUploader', function($scope, $state, FileUploader) {
+  app.controller('MainController', ['$scope', '$rootScope', '$state', 'FileUploader', function($scope, $rootScope, $state, FileUploader) {
     var controller = this;
 
+    $rootScope.global = {
+      search: ''
+    };
+    
     $scope.lightTheme = true;
     $scope.toggleLight = function() {
       $scope.lightTheme = !$scope.lightTheme;

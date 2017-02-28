@@ -29,7 +29,7 @@
         <span class="subtitle" hide-xs>
           watch - listen - discover
         </span>
-        <span flex></span>
+        <input flex id="search" ng-model="global.search" type="search" placeholder="filter videos, images" autofocus>
         <div>
           <input ng-disabled="uploader.isUploading" class="ng-hide" nv-file-select id="fileUpload" uploader="uploader" type="file" />
           <label ng-disabled="uploader.isUploading" for="fileUpload" class="md-button md-raised">

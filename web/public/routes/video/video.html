@@ -3,6 +3,8 @@
 -->
 <div class="video-container" ng-controller="VideoController as controller" layout="row" layout-fill  ng-cloak>
 
+  {{ filteredImages = (controller.data.images | filter:global.search); "" }}
+
   <div class="video-details" flex>
     <div>
       <div class="entry-thumbnail-container" style="position: relative;">
@@ -150,10 +152,10 @@
       </div>
     </div>
     <div flex class="video-frames">
-      <div ng-class="{ 'selected-frame': image===controller.data.selected }" class="video-frame" ng-repeat="image in controller.data.images" layout="row" layout-align="center center">
+      <div ng-class="{ 'selected-frame': image===controller.data.selected }" class="video-frame" ng-repeat="image in filteredImages" layout="row" layout-align="center center">
         <div class="video-frame-timecode">
           <span class="tag">{{image.frame_timecode | formatSeconds }}</span>
-          <div ng-class="{first: $index===0, last: $index===controller.data.images.length-1}" class="video-frame-timeline border-box"></div>
+          <div ng-class="{first: $index===0, last: $index===filteredImages.length-1}" class="video-frame-timeline border-box"></div>
         </div>
         <div ng-click="controller.selectImage(image);" class="video-frame-thumbnail image-cover" style="background-image: url(/images/image/{{image._id}}.jpg);">
         </div>
