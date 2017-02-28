@@ -3,8 +3,7 @@
 [![Build Status](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp) ![Bluemix Deployments](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/badge.svg)
 
 Dark Vision processes videos to discover dark data. By analyzing video frames, audio transcripts with
-IBM Watson Visual Recognition and AlchemyAPI, Dark Vision builds a summary
-with a set of tags and famous people or building detected in the video. Use this
+IBM Watson Visual Recognition and Natural Language Understanding, Dark Vision builds a summary with a set of tags and famous people or building detected in the video. Use this
 summary to enhance video search and categorization.
 
   <img src="xdocs/dv-video-summary.png" width="200"/>
@@ -20,9 +19,9 @@ In addition to processing videos, Dark Vision can also processes standalone imag
 ## Overview
 
  Built using IBM Bluemix, the application uses:
-  * [Watson Visual Recognition](https://console.ng.bluemix.net/catalog/services/watson_vision_combined)
-  * [Watson Speech to Text](https://console.ng.bluemix.net/catalog/services/speech_to_text)
-  * [AlchemyAPI](https://console.ng.bluemix.net/catalog/services/alchemy_api)
+  * [Visual Recognition](https://console.ng.bluemix.net/catalog/services/watson_vision_combined)
+  * [Speech to Text](https://console.ng.bluemix.net/catalog/services/speech_to_text)
+  * [Natural Language Understanding](https://console.ng.bluemix.net/catalog/services/natural-language-understanding)
   * [OpenWhisk](console.ng.bluemix.net/openwhisk/)
   * [Cloudant](https://console.ng.bluemix.net/catalog/services/cloudantNoSQLDB)
   * [Object Storage](https://console.ng.bluemix.net/catalog/services/Object-Storage) (optional component)
@@ -30,7 +29,7 @@ In addition to processing videos, Dark Vision can also processes standalone imag
 ### Extracting frames and audio from a video
 
 The user uploads a video or image using the Dark Vision web application, which stores it in a Cloudant DB. Once the video is uploaded, OpenWhisk detects the new video by listening to Cloudant changes (trigger).
-OpenWhisk then triggers the video and audio extractor action. During its execution, the extractor produces frames (images), captures the audio track and stores them in Cloudant. The frames are then processed using Watson Visual Recognition, the audio with Watson Speech to Text and AlchemyAPI. The results are stored in the same Cloudant DB. They can be viewed using Dark Vision web application OR an iOS application.
+OpenWhisk then triggers the video and audio extractor action. During its execution, the extractor produces frames (images), captures the audio track and stores them in Cloudant. The frames are then processed using Watson Visual Recognition, the audio with Watson Speech to Text and Natural Language Understanding. The results are stored in the same Cloudant DB. They can be viewed using Dark Vision web application OR an iOS application.
 
 Object Storage can complement Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
 
@@ -124,16 +123,16 @@ Once the transcript is stored, the text analysis is triggered to detect concepts
     transcript -> storage [label="1"]
     storage -> openwhisk [label="2"]
     openwhisk -> textanalysis [label="3"]
-    textanalysis -> alchemyapi [label="4"]
+    textanalysis -> nlu [label="4"]
     textanalysis -> storage [label="5"]
     /* extractor produces image frames */
-    {rank=same; transcript -> storage -> openwhisk -> textanalysis -> alchemyapi [style=invis] }
+    {rank=same; transcript -> storage -> openwhisk -> textanalysis -> nlu [style=invis] }
     /* styling ****/
     transcript [label="Transcript"]
     textanalysis [label="textanalysis"]
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
-    alchemyapi [shape=circle style=filled color="%234E96DB" fontcolor=white label="AlchemyAPI"]
+    nlu [shape=circle style=filled color="%234E96DB" fontcolor=white label="Natural\\nLanguage\\nUnderstanding"]
   }
 )
 
@@ -168,7 +167,7 @@ Click *Deploy to Bluemix* to start the Bluemix DevOps wizard:
 
 1. Optionally set the admin username and password for the application. When set, the application will prompt for this username and password when uploading videos/images, when resetting a video or an image. If the username and password are not defined, any visitor can upload videos/images for processing.
 
-1. If you already have Watson Visual Recognition or AlchemyAPI service instances you want to reuse, retrieve their API keys from the credentials and set the value in the form. If you leave the field empty, the pipeline will create new service instances automatically.
+1. If you already have Watson Visual Recognition or Natural Language Understanding service instances you want to reuse, retrieve their API keys from the credentials and set the value in the form. If you leave the field empty, the pipeline will create new service instances automatically.
 
 1. Click **Create**.
 
@@ -264,7 +263,7 @@ The code is very similar to the one used in the [Vision app](https://github.com/
 | File | Description |
 | ---- | ----------- |
 |[**speechtotext.js**](processing/speechtotext/speechtotext.js)|Uses Speech to Text to transcript the audio. It acts as the callback server for the [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods) of Speech to Text service.|
-|[**textanalysis.js**](processing/textanalysis/textanalysis.js)|Calls AlchemyAPI on the transcript.|
+|[**textanalysis.js**](processing/textanalysis/textanalysis.js)|Calls Natural Language Understanding on the transcript.|
 
 ### Web app
 

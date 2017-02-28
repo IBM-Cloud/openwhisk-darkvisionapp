@@ -25,7 +25,7 @@ You can simply reuse the existing ones.*
 
 1. Create a Watson Speech to Text instance named **stt-for-darkvision**
 
-1. Create a AlchemyAPI instance named **alchemy-for-darkvision**
+1. Create a Natural Language Understanding instance named **nlu-for-darkvision**
 
 1. Optionally create a Object Storage service instance named **objectstorage-for-darkvision**
 

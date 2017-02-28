@@ -55,18 +55,6 @@ else
   echo 'Using configured API key for Watson Visual Recognition service'
 fi
 
-# Create AlchemyAPI service unless ALCHEMY_API_KEY is defined in the service
-figlet -f small 'AlchemyAPI'
-if [ -z ${ALCHEMY_API_KEY+x} ]; then
-  cf create-service alchemy_api free alchemy-for-darkvision
-  cf create-service-key alchemy-for-darkvision for-darkvision
-
-  ALCHEMY_CREDENTIALS=`cf service-key alchemy-for-darkvision for-darkvision | tail -n +2`
-  export ALCHEMY_API_KEY=`echo $ALCHEMY_CREDENTIALS | jq -r .api_key`
-else
-  echo 'Using configured API key for AlchemyAPI service'
-fi
-
 # Create Watson Speech to Text service
 figlet -f small 'Speech to Text'
 cf create-service speech_to_text standard speechtotext-for-darkvision
@@ -76,6 +64,16 @@ STT_CREDENTIALS=`cf service-key speechtotext-for-darkvision for-darkvision | tai
 export STT_USERNAME=`echo $STT_CREDENTIALS | jq -r .username`
 export STT_PASSWORD=`echo $STT_CREDENTIALS | jq -r .password`
 export STT_URL=`echo $STT_CREDENTIALS | jq -r .url`
+
+# Create Watson Natural Language Understanding
+figlet -f small 'Natural Language Understanding'
+cf create-service natural-language-understanding free nlu-for-darkvision
+cf create-service-key nlu-for-darkvision for-darkvision
+
+NLU_CREDENTIALS=`cf service-key nlu-for-darkvision for-darkvision | tail -n +2`
+export NLU_USERNAME=`echo $NLU_CREDENTIALS | jq -r .username`
+export NLU_PASSWORD=`echo $NLU_CREDENTIALS | jq -r .password`
+export NLU_URL=`echo $NLU_CREDENTIALS | jq -r .url`
 
 # Docker image should be set by the pipeline, use a default if not set
 if [ -z ${DOCKER_EXTRACTOR_NAME+x} ]; then
