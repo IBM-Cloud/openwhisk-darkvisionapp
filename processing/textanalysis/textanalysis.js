@@ -20,7 +20,6 @@
  * It expects the following parameters as attributes of 'args'
  * - cloudantUrl: "https://username:password@host"
  * - cloudantDbName: "openwhisk-darkvision"
- * - alchemyApiKey: '123'
  * - doc: "audio document in cloudant"
  */
 function main(args) {
@@ -106,43 +105,36 @@ function processTranscript(args, text, processCallback) {
   const async = require('async');
   const analysis = {
   };
-  const AlchemyLanguageV1 = require('watson-developer-cloud/alchemy-language/v1');
-  const alchemyLanguage = new AlchemyLanguageV1({
-    api_key: args.alchemyApiKey
-  });
   async.parallel([
-    // entities
+    // nlu
     (callback) => {
-      alchemyLanguage.entities({ text }, (err, response) => {
+      const request = require('request');
+      request({
+        url: `${args.nluUrl}/v1/analyze?version=2017-02-27`,
+        method: 'POST',
+        json: true,
+        body: {
+          text,
+          features: {
+            // categories: { },
+            concepts: { },
+            emotion: { },
+            entities: {
+              sentiment: true
+            },
+            keywords: { },
+            // relations: { },
+          }
+        },
+        auth: {
+          username: args.nluUsername,
+          password: args.nluPassword
+        },
+      }, (err, response, body) => {
         if (err) {
-          console.log('Alchemy Language entities', err);
+          console.log('Natural Language Understanding', err);
         } else {
-          analysis.entities = response.entities;
-        }
-        callback(null);
-      });
-    },
-    // concepts
-    (callback) => {
-      alchemyLanguage.concepts({
-        text,
-        knowledgeGraph: 1
-      }, (err, response) => {
-        if (err) {
-          console.log('Alchemy Language concepts', err);
-        } else {
-          analysis.concepts = response.concepts;
-        }
-        callback(null);
-      });
-    },
-    // document emotion
-    (callback) => {
-      alchemyLanguage.emotion({ text }, (err, response) => {
-        if (err) {
-          console.log('Alchemy Language emotion', err);
-        } else {
-          analysis.docEmotions = response.docEmotions;
+          analysis.nlu = body;
         }
         callback(null);
       });

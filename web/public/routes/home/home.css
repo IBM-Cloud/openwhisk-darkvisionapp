@@ -30,13 +30,15 @@
 .video-box {
   width: 380px;
   height: 270px;
-  margin: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   padding: 10px;
   border: 1px solid;
 }
 
 .image-box {
-  margin: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   padding: 10px;
   border: 1px solid;
 }

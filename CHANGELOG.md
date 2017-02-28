@@ -1,7 +1,7 @@
 
 ## 2017-02-22
 
-  * Dark Vision now processes audio from videos too (currently in audio branch). It uses Watson Speech to Text to extract the audio track. Then the audio is processed by AlchemyAPI to extract concepts, entities, emotion. You can try it with the [automated deployment wizard](https://console.ng.bluemix.net/devops/setup/deploy/?repository=https%3A//github.com/IBM-Bluemix/openwhisk-darkvisionapp&branch=audio).
+  * Dark Vision now processes audio from videos too (currently in audio branch). It uses Watson Speech to Text to extract the audio track. Then the audio is processed by Natural Language Understanding to extract concepts, entities, emotion. You can try it with the [automated deployment wizard](https://console.ng.bluemix.net/devops/setup/deploy/?repository=https%3A//github.com/IBM-Bluemix/openwhisk-darkvisionapp&branch=audio).
 
 ## 2017-02-15
 

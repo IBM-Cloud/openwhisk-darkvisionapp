@@ -35,29 +35,14 @@
       });
     };
 
-    controller.resizeFactor = function (image) {
-      var width = image.analysis.size.width;
-      var height = image.analysis.size.height;
-
-      var factor = 1;
-      if (width > 300) {
-        factor = 300 / width;
-      }
-      if (height > 200) {
-        factor = 200 / height;
-      }
-
-      return factor;
+    controller.facePositionAsPercent = function(faceLocation, image){
+      return {
+        top: (100 * faceLocation.top / image.analysis.size.height).toFixed(2),
+        left: (100 * faceLocation.left / image.analysis.size.width).toFixed(2),
+        width: (100 * faceLocation.width / image.analysis.size.width).toFixed(2),
+        height: (100 * faceLocation.height / image.analysis.size.height).toFixed(2),
+      };
     };
-
-    // $("#uploadVideoZone").dropzone({
-    //   parallelUploads: 1,
-    //   uploadMultiple: false,
-    //   acceptedFiles: "video/*",
-    //   dictDefaultMessage: "Drop Videos here to upload"
-    // }).on("success", function (file, responseText) {
-    //   controller.reload();
-    // });
 
     controller.reload();
   }
