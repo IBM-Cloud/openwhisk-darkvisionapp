@@ -63,6 +63,7 @@ spinner {
   top: 50px;
   left: 0;
   right: 0;
+  z-index: 1000;
 }
 
 .loadingProgress {
@@ -114,9 +115,7 @@ md-icon {
 }
 
 .container {
-  padding-top: 40px;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding: 40px;
   max-width: 1058px;
   margin: 0 auto;
 }
