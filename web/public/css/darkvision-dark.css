@@ -6,85 +6,122 @@ body, html {
   color: #eaeaea;
 }
 
-a {
-  color: #eaeaea;
+/**
+  Header
+  **/
+
+md-toolbar {
+  background-color: black !important;
 }
 
-md-icon {
-  color: #eaeaea;
+md-toolbar md-icon {
+  fill: white !important;
 }
 
-header md-toolbar {
-  background-color: #1a191f !important;
+.title {
+  color: #ffffff;
 }
 
-.subtitle {
-  color: rgb(170, 170, 170);
-}
-
-spinner {
-  background-color: #1a191f;
-}
-
-.md-button[disabled] {
-  background-color: rgb(170, 170, 170) !important;
+.upload-button {
+  background-color: #ed215e;
+  color: #ffffff !important;
 }
 
 md-progress-circular path {
-  stroke: #ed215e !important;
+  stroke: white !important;
 }
 
 md-progress-linear .md-container {
-  background-color: #1a191f;
+  background-color: #ebebeb;
 }
 
 md-progress-linear .md-container .md-bar {
   background-color: #ed215e;
 }
 
+/**
+  Footer
+  **/
+
 footer {
-  background-color: #282828;
+  background-color: black !important;
 }
 
-footer md-toolbar {
-  background-color: #ffffff !important;
-}
-
-md-tabs .md-tab {
-  color: rgb(170, 170, 170);
-}
-
-md-tabs .md-tab.md-active {
+footer a {
   color: white;
 }
 
-md-tabs .md-tab .md-ripple-container {
+/**
+  Common
+  **/
+
+h3 {
   color: #ed215e;
+  border-bottom-color: #ed215e;
 }
 
-md-tabs md-ink-bar {
-  color: #ed215e;
-  background-color: #ed215e;
-}
-
-md-tabs md-ink-bar {
-}
-
-.video-box-tag {
-  background-color: white;
+button.md-button {
   color: black;
+}
+
+label.md-button {
+  color: black;
+}
+
+.box-border {
+  border-color: #ebebeb;
 }
 
 .tag, .tag a, .tag a md-icon {
-  background-color: white;
-  color: black !important;
+  background-color: #22557F;
+  color: #90CDFF;
+}
+
+.tag-keyword {
+  background-color: #22557F;
+  color: #90CDFF;
+}
+
+.tag-face {
+  background-color: #3B7F4F;
+  color: #C2FFD4;
 }
 
 .face-overlay-box {
-  border-color: white !important;
+  border-color: #3B7F4F !important;
 }
 
 .face-overlay-text {
-  background-color: white;
-  color: black;
+  color: #C2FFD4;
+  background-color: #3B7F4F;
+}
+
+/**
+  Home
+  **/
+
+.button-group {
+  color: #bcc0c1 !important;
+}
+
+.button-group[disabled] {
+  background-color: #ed215e !important;
+  color: white !important;
+}
+
+.video-box-tag {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #eaeaea;
+}
+
+.video-box-title {
+  color: #eaeaea;
+}
+
+/**
+  Video
+  **/
+
+.selected-frame {
+  background-color: #efefef;
 }
