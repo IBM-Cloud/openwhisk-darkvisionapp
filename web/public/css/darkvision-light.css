@@ -130,17 +130,39 @@ label.md-button {
   color: #ee6161;
 }
 
+.video-menu-button md-icon {
+  color: #ee6161;
+}
+
 .video-frame-timeline {
   width: 2px;
-  border-left-color: #ee6161 !important;
+  background-color: #ee6161 !important;
 }
 
 .timecode {
   color: #ee6161;
-  border-color: #ee6161;
+  border-color: #ee6161 !important;
   background-color: #ffffff;
+}
+
+.selected-frame .timecode {
+  color: #ffffff;
+  border-color: #ee6161;
+  background-color: #ee6161;
+}
+
+.selected-frame-indicator {
+  color: #ee6161;
 }
 
 .selected-frame {
   background-color: #efefef;
+}
+
+.transcript {
+  background-color: #f8f8f8;
+}
+
+.transcript-timestamp {
+  color: #5b9d98;
 }

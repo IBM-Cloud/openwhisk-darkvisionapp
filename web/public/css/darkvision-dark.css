@@ -72,8 +72,8 @@ label.md-button {
   color: black;
 }
 
-.box-border {
-  border-color: #ebebeb;
+.border-box {
+  border-color: #1f1f25 !important;
 }
 
 .tag, .tag a, .tag a md-icon {
@@ -126,6 +126,50 @@ label.md-button {
   Video
   **/
 
+.video-details, .video-navigator {
+  border-color: #1f1f25 !important;
+}
+
+.video-overview-box {
+}
+
+.video-overview-title {
+  color: #ffffff;
+}
+
+.video-menu-button md-icon {
+  color: #ed215e;
+}
+
+.video-frame-timeline {
+  width: 2px;
+  background-color: #ed215e !important;
+}
+
+.timecode {
+  color: #ffffff;
+  border-color: #ed215e !important;
+  background-color: #ed215e;
+}
+
+.selected-frame .timecode {
+  color: #ed215e;
+  border-color: #ffffff !important;
+  background-color: #ffffff;
+}
+
+.selected-frame-indicator {
+  color: #ed215e;
+}
+
 .selected-frame {
-  background-color: #efefef;
+  background-color: #24242c;
+}
+
+.transcript {
+  background-color: #24242c;
+}
+
+.transcript-timestamp {
+  color: #ed215e;
 }

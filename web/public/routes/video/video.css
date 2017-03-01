@@ -3,15 +3,13 @@
 }
 
 .video-details {
-  padding-top: 20px;
-  padding-right: 40px;
+  padding: 40px;
   overflow: auto;
-  padding-bottom: 40px;
   border-right: 1px solid;
 }
 
 .video-thumbnail {
-  width: 100%
+  width: 100%;
 }
 
 .video-box-title {
@@ -27,7 +25,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   font-size: 25px;
-  font-weight: bold;
+  font-weight: 400;
 }
 
 .video-box-tags {
@@ -45,6 +43,10 @@
   padding: 20px;
 }
 
+.transcript-timestamp {
+  font-weight: 500;
+}
+
 .transcript-break {
   display: block;
   margin-top: 10px;
@@ -57,7 +59,6 @@
 .video-navigator {
   border-bottom: 1px solid;
   min-width: 265px;
-  max-height: 80%;
 }
 
 .video-frames {
@@ -66,34 +67,34 @@
 }
 
 .video-frame {
-  margin-bottom: 10px;
-  margin-top: 10px;
-  padding: 10px;
+  position: relative;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .video-frame-timeline {
   position: absolute;
-  left: 50%;
-  top: -85px;
-  height: 200px;
-  border-left: 1px solid;
+  left: 55px;
+  top: 0px;
+  width: 2px;
+  height: 105px;
 }
 
-.first {
-  top: 10px;
+.selected-frame-indicator {
+  position: absolute;
+  left: -5px;
+  top: 45px;
+  font-size: 16px !important;
 }
 
 .last {
-  height: 95px;
-}
-
-.video-frame-timecode {
-  position: relative;
-  margin-left: 20px;
-  margin-right: 20px;
+  height: 125px;
 }
 
 .timecode {
+  position: relative;
+  margin-left: 20px;
+  margin-right: 20px;
   border: 1px solid;
   padding: 4px;
   border-radius: 4px;

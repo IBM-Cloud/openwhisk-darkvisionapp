@@ -29,7 +29,7 @@
       </div>
       <div>
         <md-menu>
-          <md-button class="md-icon-button" ng-click="$mdMenu.open()">
+          <md-button class="video-menu-button md-icon-button" ng-click="$mdMenu.open()">
             <md-icon md-font-library="material-icons">more_vert</md-icon>
           </md-button>
           <md-menu-content>
@@ -153,10 +153,9 @@
     </div>
     <div flex class="video-frames">
       <div ng-class="{ 'selected-frame': image===controller.data.selected }" class="video-frame" ng-repeat="image in filteredImages" layout="row" layout-align="center center">
-        <div class="video-frame-timecode">
-          <span class="timecode">{{image.frame_timecode | formatSeconds }}</span>
-          <div ng-class="{first: $index===0, last: $index===filteredImages.length-1}" class="video-frame-timeline"></div>
-        </div>
+        <div ng-class="{first: $index===0, last: $index===filteredImages.length-1}" class="video-frame-timeline"></div>
+        <md-icon ng-if="image===controller.data.selected" class="selected-frame-indicator" md-font-library="material-icons">play_arrow</md-icon>
+        <span class="timecode">{{image.frame_timecode | formatSeconds }}</span>
         <div ng-click="controller.selectImage(image);" class="video-frame-thumbnail image-cover" style="background-image: url(/images/image/{{image._id}}.jpg);">
         </div>
       </div>
