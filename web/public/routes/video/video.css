@@ -7,6 +7,7 @@
   padding-right: 40px;
   overflow: auto;
   padding-bottom: 40px;
+  border-right: 1px solid;
 }
 
 .video-thumbnail {
@@ -54,9 +55,9 @@
 }
 
 .video-navigator {
-  padding-top: 20px;
-  border-left: 1px solid;
-  min-width: 340px;
+  border-bottom: 1px solid;
+  min-width: 265px;
+  max-height: 80%;
 }
 
 .video-frames {
@@ -92,27 +93,36 @@
   margin-right: 20px;
 }
 
+.timecode {
+  border: 1px solid;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 1000;
+}
+
 .video-overview-box {
   border-bottom: 1px solid;
-  padding-bottom: 20px;
-  margin-left: 20px;
+  padding-left: 20px;
   outline: none;
   cursor: pointer;
+  height: 60px;
 }
 
 .video-overview-thumbnail {
-  width: 50px;
-  height: 50px;
-  margin-right: 10px;
+  width: 60px;
+  height: 36px;
+  margin-right: 20px;
 }
 
 .video-overview-title {
-  width: 300px;
+  font-weight: 500;
 }
 
 .video-frame-thumbnail {
-  width: 300px;
-  height: 170px;
+  width: 150px;
+  height: 85px;
   cursor: pointer;
   outline: none;
+  border-radius: 4px;
 }

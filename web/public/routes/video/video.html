@@ -17,7 +17,7 @@
         <img ng-if="!controller.isVideo()" class="video-thumbnail" ng-src="/images/image/{{controller.data.selected._id}}.jpg" />
       </div>
     </div>
-    <div layout="row" layout-align="center center" class="video-box-title box-border">
+    <div layout="row" layout-align="center center" class="video-box-title border-box">
       <div flex class="video-title">
         {{controller.data.video.title}}
       </div>
@@ -145,17 +145,17 @@
 
   <div class="video-navigator" layout="column">
     <div ng-click="controller.selectVideo();" class="video-overview-box border-box" layout="row" layout-align="center center">
-      <div flex class="video-overview-thumbnail image-cover" ng-style="{'background-image': 'url(/images/thumbnail/' + controller.data.videoId + '.jpg'}">
+      <div class="video-overview-thumbnail image-cover" ng-style="{'background-image': 'url(/images/thumbnail/' + controller.data.videoId + '.jpg'}">
       </div>
-      <div class="video-overview-title">
+      <div flex class="video-overview-title">
         Video overview
       </div>
     </div>
     <div flex class="video-frames">
       <div ng-class="{ 'selected-frame': image===controller.data.selected }" class="video-frame" ng-repeat="image in filteredImages" layout="row" layout-align="center center">
         <div class="video-frame-timecode">
-          <span class="tag">{{image.frame_timecode | formatSeconds }}</span>
-          <div ng-class="{first: $index===0, last: $index===filteredImages.length-1}" class="video-frame-timeline border-box"></div>
+          <span class="timecode">{{image.frame_timecode | formatSeconds }}</span>
+          <div ng-class="{first: $index===0, last: $index===filteredImages.length-1}" class="video-frame-timeline"></div>
         </div>
         <div ng-click="controller.selectImage(image);" class="video-frame-thumbnail image-cover" style="background-image: url(/images/image/{{image._id}}.jpg);">
         </div>
