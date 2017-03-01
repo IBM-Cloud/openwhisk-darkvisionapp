@@ -8,6 +8,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" sizes="any" href="images/favico.png"/>
   <title>OpenWhisk Dark Vision</title>
 
   <link rel="stylesheet" href="vendor/angular-material/angular-material.min.css">
@@ -21,18 +22,12 @@
     <md-toolbar>
       <div class="md-toolbar-tools">
         <a ui-sref="home()">
-          <md-icon md-svg-src="images/favico.svg"></md-icon>
-          <span class="title md-title">
-            OpenWhisk Dark Vision
-          </span>
+          <span class="title ow">OpenWhisk</span><span class="title dv">Dark Vision</span>
         </a>
-        <span class="subtitle" hide-xs>
-          watch - listen - discover
-        </span>
         <input flex id="search" ng-model="global.search" type="search" placeholder="filter videos, images" autofocus>
         <div>
           <input ng-disabled="uploader.isUploading" class="ng-hide" nv-file-select id="fileUpload" uploader="uploader" type="file" />
-          <label ng-disabled="uploader.isUploading" for="fileUpload" class="md-button md-raised">
+          <label ng-disabled="uploader.isUploading" for="fileUpload" class="md-button upload-button">
             Upload
             <md-icon ng-if="!uploader.isUploading" md-font-library="material-icons">backup</md-icon>
             <md-progress-circular ng-if="uploader.isUploading && uploader.progress < 100" md-diameter="22" md-mode="determinate" value="{{uploader.progress}}"></md-progress-circular>
@@ -58,7 +53,7 @@
     <md-progress-linear class="loadingProgress" id="loadingProgress" md-mode="indeterminate"></md-progress-linear>
   </spinner>
 
-  <div class="container" ui-view flex>
+  <div class="wrapper" ui-view flex>
   </div>
 
   <footer>

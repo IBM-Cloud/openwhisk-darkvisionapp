@@ -1,4 +1,4 @@
-<div class="home" ng-controller="HomeController as controller" layout="column">
+<div class="home container" ng-controller="HomeController as controller" layout="column">
 
   {{ filteredVideos = (controller.data.videos | filter:global.search); "" }}
   {{ filteredImages = (controller.data.images | filter:global.search); "" }}
@@ -68,22 +68,22 @@
             </div>
           </div>
           <div flex class="entry-tags">
-            <h3>Image Keywords</h3>
+            <h4>Image Keywords</h4>
             <span ng-if="!image.analysis.image_keywords">No data yet</span>
             <span ng-if="image.analysis.image_keywords.length == 0">No tag detected</span>
             <ul class="entry-taglist">
               <li ng-repeat="keyword in image.analysis.image_keywords" class="entry-tag">
-                <span class="tag">{{keyword.class}} {{keyword.score | formatPercent}}%</span>
+                <span class="tag tag-keyword">{{keyword.class}} {{keyword.score | formatPercent}}%</span>
               </li>
             </ul>
           </div>
           <div flex class="entry-faces">
-            <h3>Face Detection</h3>
+            <h4>Face Detection</h4>
             <span ng-if="!image.analysis.face_detection">No data yet</span>
             <span ng-if="image.analysis.face_detection.length == 0">No face detected</span>
             <ul class="entry-taglist">
               <li ng-if="face.face_location.left>0" ng-repeat="face in image.analysis.face_detection" class="entry-tag">
-                <span class="tag">
+                <span class="tag tag-face">
                   <span class="face-overlay-text">{{$index+1}}</span>
                   <span ng-if="face.identity">{{face.identity.name}} {{face.identity.score | formatPercent}}%</span>
                   <span ng-if="face.identity">&nbsp;</span>

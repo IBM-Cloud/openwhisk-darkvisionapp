@@ -91,7 +91,7 @@
     $rootScope.global = {
       search: ''
     };
-    
+
     $scope.lightTheme = true;
     $scope.toggleLight = function() {
       $scope.lightTheme = !$scope.lightTheme;

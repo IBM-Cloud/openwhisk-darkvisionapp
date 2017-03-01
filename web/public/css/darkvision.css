@@ -1,4 +1,4 @@
-@import url(//fonts.googleapis.com/css?family=Rubik);
+@import url(//fonts.googleapis.com/css?family=Rubik:400,500);
 @import url(//fonts.googleapis.com/icon?family=Material+Icons);
 
 body, html {
@@ -6,7 +6,12 @@ body, html {
   margin: 0 auto;
   font-size: 14px;
   font-family: Rubik,Helvetica,sans-serif;
+  font-weight: 400;
 }
+
+/**
+  Header
+  **/
 
 #search {
   outline: none;
@@ -20,44 +25,48 @@ body, html {
   border: none;
 }
 
-a {
-  font-weight: bold;
-}
-
 .title {
   margin-left: 10px;
-  font-weight: bold;
 }
 
-.subtitle {
-  padding-left: 16px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.title.ow {
+  font-weight: 400;
 }
 
-.container {
-  padding-left: 100px;
-  padding-right: 100px;
-  overflow: scroll;
+.title.dv {
+  font-weight: 500;
+}
+
+.upload-button {
+  height: 50px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 8px;
+  text-transform: capitalize;
+  border: none;
+  border-radius: 0;
+}
+
+label md-progress-circular {
+  display: inline-block;
+  top: 5px;
+  width: 24px !important;
+  height: 24px;
 }
 
 .twitter-icon {
   fill: #1b95e0 !important;
 }
 
-.button-group {
-  border-radius: 5px;
+spinner {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
 }
 
-h2 {
-  font-weight: normal;
-}
-
-h3 {
-  font-weight: normal;
-  border-bottom: 1px solid;
-  padding-bottom: 4px;
+.loadingProgress {
+  visibility: hidden;
 }
 
 md-progress-linear {
@@ -75,29 +84,76 @@ md-progress-linear .md-container .md-bar {
   height: 2px;
 }
 
-label md-progress-circular {
-  display: inline-block;
-  top: 5px;
-  width: 24px !important;
-  height: 24px;
+md-toolbar {
+  min-height: 50px;
 }
 
-.loadingProgress {
-  visibility: hidden;
+.md-toolbar-tools {
+  font-size: 14px;
+  height: 50px;
+  max-height: 50px;
 }
+
+button.md-button.md-icon-button, a.md-button.md-icon-button {
+  height: 50px;
+  width: 50px;
+}
+
+md-icon {
+  width: 32px;
+  height: 32px;
+  font-size: 32px !important;
+}
+
+/**
+  Container
+  **/
+
+.wrapper {
+  overflow-y: scroll;
+}
+
+.container {
+  padding-left: 40px;
+  padding-right: 40px;
+  max-width: 1058px;
+  margin: 0 auto;
+}
+
+/**
+  Footer
+  **/
 
 footer {
   text-align: center;
   padding: 8px;
 }
 
-.button-group[disabled] {
-  background-color: white !important;
-  color: black !important;
+/** Common **/
+
+h2 {
+  font-weight: 500;
+}
+
+h3 {
+  font-weight: 500;
+  border-bottom: 1px solid;
+  padding-bottom: 4px;
+  font-size: 14px;
+}
+
+h4 {
+  font-weight: 500;
+  margin-bottom: 10px;
 }
 
 .entry-tags, .entry-faces {
   margin-left: 20px;
+}
+
+.entry-taglist {
+  padding: 0;
+  margin: 0;
 }
 
 .entry-tag {
@@ -109,12 +165,14 @@ footer {
   padding: 4px;
   margin: 4px;
   border-radius: 4px;
+  font-size: 12px;
 }
 
 .video-box-tag {
   padding: 4px;
   margin-left: 4px;
-  opacity: 0.5;
+  font-weight: 500;
+  font-size: 12px;
 }
 
 .image-cover {

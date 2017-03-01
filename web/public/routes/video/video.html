@@ -1,7 +1,7 @@
 <!--
 // Licensed under the Apache License. See footer for details.
 -->
-<div class="video-container" ng-controller="VideoController as controller" layout="row" layout-fill  ng-cloak>
+<div class="video-container container" ng-controller="VideoController as controller" layout="row" layout-fill  ng-cloak>
 
   {{ filteredImages = (controller.data.images | filter:global.search); "" }}
 
@@ -57,7 +57,7 @@
       <h4>Image Keywords</h4>
       <ul class="entry-taglist">
         <li ng-repeat="keyword in controller.data.selectedSummary.image_keywords" class="entry-tag">
-          <span class="tag">{{keyword.class}} {{keyword.score | formatPercent}}%</span>
+          <span class="tag tag-keyword">{{keyword.class}} {{keyword.score | formatPercent}}%</span>
         </li>
       </ul>
     </div>
@@ -67,7 +67,7 @@
       <span ng-if="controller.data.selectedSummary.face_detection.length == 0">No known face detected</span>
       <ul class="entry-taglist">
         <li ng-repeat="face in controller.data.selectedSummary.face_detection" class="entry-tag">
-          <span class="tag">
+          <span class="tag tag-face">
             <span class="face-overlay-text">{{$index+1}}</span>
             <span ng-if="face.identity">{{face.identity.name}} {{face.identity.score | formatPercent}}%</span>
             <span ng-if="face.identity">&nbsp;</span>
@@ -85,7 +85,7 @@
       <h4>Audio Keywords</h4>
       <ul class="entry-taglist">
         <li ng-repeat="keyword in controller.data.summary.audio.analysis.nlu.keywords" class="entry-tag">
-          <span class="tag">{{keyword.text}} {{keyword.relevance | formatPercent}}%</span>
+          <span class="tag tag-keyword">{{keyword.text}} {{keyword.relevance | formatPercent}}%</span>
         </li>
       </ul>
     </div>

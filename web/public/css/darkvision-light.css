@@ -1,55 +1,31 @@
 body, html {
   background: white;
-  color: black;
+  color: #717777;
 }
 
-a {
-  color: black;
-}
+/**
+  Header
+  **/
 
-header md-toolbar {
-  background-color: #ebebeb !important;
-}
-
-.title {
-  color: black;
-}
-
-.subtitle {
-  color: rgb(110, 110, 110);
-}
-
-.theme-light {
-  visibility: hidden;
-}
-
-
-button.md-button {
-  color: black;
-}
-
-h3 {
-  border-bottom-color: #ebebeb;
+md-toolbar {
+  background-color: #333333 !important;
 }
 
 md-toolbar md-icon {
-  fill: black !important;
+  fill: white !important;
 }
 
-spinner {
-  background-color: #ebebeb;
+.title {
+  color: #ffffff;
 }
 
-label.md-button {
-  color: black;
-}
-
-md-icon {
-  color: black !important;
+.upload-button {
+  background-color: #ee6161;
+  color: #ffffff !important;
 }
 
 md-progress-circular path {
-  stroke: black !important;
+  stroke: white !important;
 }
 
 md-progress-linear .md-container {
@@ -60,62 +36,84 @@ md-progress-linear .md-container .md-bar {
   background-color: #E77A4D;
 }
 
+/**
+  Footer
+  **/
+
 footer {
   background-color: #ebebeb !important;
 }
 
-footer md-toolbar {
-  background-color: #ffffff !important;
+/**
+  Common
+  **/
+
+h3 {
+  color: #ee6161;
+  border-bottom-color: #ee6161;
 }
 
-md-tabs .md-tab {
+button.md-button {
   color: black;
 }
 
-md-tabs .md-tab.md-active {
-  color: #E77A4D;
-}
-
-md-tabs .md-tab .md-ripple-container {
-  color: white;
-}
-
-md-tabs md-ink-bar {
-  color: #E77A4D;
-  background-color: #E77A4D;
-}
-
-.button-group[disabled] {
-  background-color: black !important;
-  color: white !important;
-}
-
-.video-box, .image-box {
-  border-color: #ebebeb;
+label.md-button {
+  color: black;
 }
 
 .box-border {
   border-color: #ebebeb;
 }
 
-.video-box-tag {
-  background-color: black;
-  color: white;
+.tag, .tag a, .tag a md-icon {
+  background-color: #c3daf4;
+  color: #294261;
+}
+
+.tag-keyword {
+  background-color: #c3daf4;
+  color: #294261;
+}
+
+.tag-face {
+  background-color: #d2f0f8;
+  color: #2e575e;
 }
 
 .face-overlay-box {
-  border-color: yellow !important;
+  border-color: #4cd3ba !important;
 }
 
 .face-overlay-text {
-  color: black;
-  background-color: yellow;
+  color: white;
+  background-color: #4cd3ba;
 }
 
-.tag, .tag a, .tag a md-icon {
-  background-color: black;
+/**
+  Home
+  **/
+
+.button-group {
+  color: #bcc0c1 !important;
+}
+
+.button-group[disabled] {
+  background-color: #ee6161 !important;
   color: white !important;
 }
+
+.video-box-tag {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+}
+
+.video-box-title {
+  color: black;
+}
+
+/**
+  Video
+  **/
 
 .selected-frame {
   background-color: #efefef;

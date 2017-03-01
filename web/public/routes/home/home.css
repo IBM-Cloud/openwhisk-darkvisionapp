@@ -2,51 +2,49 @@
   padding-top: 20px;
 }
 
+.button-group {
+  text-transform: none;
+  border-radius: 5px;
+}
+
 .video-box-title {
   margin-top: 5px;
   display: block; /* Fallback for non-webkit */
   display: -webkit-box;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 20px;
-  line-height: 25px;
-  height: 50px;
-  font-weight: bold;
+  font-size: 14px;
+  line-height: 14px;
+  height: 28px;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
 .video-box-tags {
   position: absolute;
-  bottom: 16px;
-  right: 16px;
+  bottom: 10px;
+  right: 10px;
 }
 
 .image-thumbnail {
-  width: 300px;
-  max-width: 300px;
+  width: 220px;
+  max-width: 220px;
+  max-height: 300px;
 }
 
 .video-box {
-  width: 380px;
-  height: 270px;
-  margin-top: 20px;
+  width: 220px;
   margin-bottom: 20px;
-  padding: 10px;
-  border: 1px solid;
 }
 
 .image-box {
-  margin-top: 20px;
   margin-bottom: 20px;
-  padding: 10px;
-  border: 1px solid;
 }
 
 .video-box-image {
   position: relative;
-  width: 360px;
-  height: 200px;
+  width: 100%;
+  height: 125px;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
