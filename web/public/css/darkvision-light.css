@@ -48,6 +48,10 @@ footer {
   Common
   **/
 
+a {
+  color: #717777;
+}
+
 h3 {
   color: #ee6161;
   border-bottom-color: #ee6161;

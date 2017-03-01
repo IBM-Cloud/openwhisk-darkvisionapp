@@ -16,7 +16,7 @@ body, html {
 #search {
   outline: none;
   height: 36px;
-  margin-left: 10px;
+  margin-left: 20px;
   margin-right: 10px;
   padding-left: 10px;
   padding-right: 10px;
@@ -114,6 +114,7 @@ md-icon {
 }
 
 .container {
+  padding-top: 40px;
   padding-left: 40px;
   padding-right: 40px;
   max-width: 1058px;

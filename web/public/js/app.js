@@ -40,15 +40,22 @@
     'angularFileUpload',
   ]);
 
-  app.config(function ($stateProvider, $urlRouterProvider) {
+  app.config(function($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.otherwise("/");
+    $urlRouterProvider.otherwise('/');
 
     $stateProvider
       .state('home', {
         url: '/',
         templateUrl: 'routes/home/home.html',
         css: 'routes/home/home.css'
+      });
+
+    $stateProvider
+      .state('about', {
+        url: '/about',
+        templateUrl: 'routes/about/about.html',
+        css: 'routes/about/about.css'
       });
 
     $stateProvider

@@ -47,13 +47,13 @@ footer {
   background-color: black !important;
 }
 
-footer a {
-  color: white;
-}
-
 /**
   Common
   **/
+
+a {
+  color: #eaeaea;
+}
 
 h3 {
   color: #ed215e;
