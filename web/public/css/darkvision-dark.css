@@ -22,6 +22,11 @@ md-toolbar md-icon {
   color: #ffffff;
 }
 
+#search {
+  background-color: #24242c;
+  color: white;
+}
+
 .upload-button {
   background-color: #ed215e;
   color: #ffffff !important;
