@@ -5,27 +5,17 @@
 
   {{ filteredImages = (controller.data.images | filter:global.search); "" }}
 
-  <div class="video-details" flex>
-    <div>
-      <div class="entry-thumbnail-container" style="position: relative;">
-        <div ng-if="!controller.isVideo() && face.face_location.left>0" ng-repeat="face in controller.data.selectedSummary.face_detection" class="face-overlay-box" style="position: absolute;
-                    top: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).top}}%;
-                    left: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).left}}%;
-                    width: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).width}}%;
-                    height: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).height}}%;"><span class="face-overlay-text">{{$index+1}}</span></div>
-        <img ng-if="controller.isVideo()" class="video-thumbnail" ng-src="/images/thumbnail/{{controller.data.selected._id}}.jpg" />
-        <img ng-if="!controller.isVideo()" class="video-thumbnail" ng-src="/images/image/{{controller.data.selected._id}}.jpg" />
+  <div flex layout="column">
+    <div class="header border-box">
+      <div class="width-wrapper" layout="row" layout-align="center center">
+      <div class="breadcrumb">
+        <a ui-sref="home()">
+          <md-icon md-font-library="material-icons">arrow_back</md-icon>
+          All Uploads
+        </a>
       </div>
-    </div>
-    <div layout="row" layout-align="center center" class="video-box-title border-box">
-      <div flex class="video-title">
+      <div flex class="video-title border-box">
         {{controller.data.video.title}}
-      </div>
-      <div class="video-box-tags" ng-repeat="stream in controller.data.video.metadata.streams">
-        <div ng-if="stream.codec_type == 'video'" class="text-muted">
-          <span class="video-box-tag">{{stream.width}}x{{stream.height}}</span>
-          <span class="video-box-tag">{{stream.duration | formatSeconds }}</span>
-        </div>
       </div>
       <div>
         <md-menu>
@@ -46,99 +36,161 @@
           </md-menu-content>
         </md-menu>
       </div>
+      </div>
     </div>
+    <div class="overview border-box">
+      <div class="width-wrapper" layout="row" layout-align="center center">
+        <div class="entry-thumbnail-container">
+          <div ng-if="!controller.isVideo() && face.face_location.left>0" ng-repeat="face in controller.data.selectedSummary.face_detection" class="face-overlay-box" style="position: absolute;
+                      top: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).top}}%;
+                      left: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).left}}%;
+                      width: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).width}}%;
+                      height: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).height}}%;"><span class="face-overlay-text">{{$index+1}}</span></div>
+          <img ng-if="controller.isVideo()" class="video-thumbnail" ng-src="/images/thumbnail/{{controller.data.selected._id}}.jpg" />
+          <img ng-if="!controller.isVideo()" class="video-thumbnail" ng-src="/images/image/{{controller.data.selected._id}}.jpg" />
+          <div ng-if="controller.isVideo()"class="video-box-tags" ng-repeat="stream in controller.data.video.metadata.streams">
+            <div ng-if="stream.codec_type == 'video'" class="text-muted">
+              <span class="video-box-tag">{{stream.width}}x{{stream.height}}</span>
+              <span class="video-box-tag">{{stream.duration | formatSeconds }}</span>
+            </div>
+          </div>
+          <div ng-if="!controller.isVideo()"class="video-box-tags" ng-repeat="stream in controller.data.video.metadata.streams">
+            <div class="text-muted">
+              <span class="video-box-tag">{{controller.data.selected.frame_timecode | formatSeconds }}</span>
+            </div>
+          </div>
+        </div>
+        <div flex class="entry-overview">
+          <div class="entry-overview-title">
+            <span ng-if="controller.isVideo()">Video Overview</span>
+            <span ng-if="!controller.isVideo()">Frame {{controller.data.selected.frame_number}} Overview</span>
+          </div>
 
-    <div class="video-overview">
-      <span ng-if="controller.isVideo()">Video Overview</span>
-      <span ng-if="!controller.isVideo()">Frame {{controller.data.selected.frame_number}} Overview</span>
+          <div ng-if="controller.isVideo()">
+            <div layout="row">
+              <div layout="column">
+                <div class="entry-overview-counter">
+                  <span class="entry-overview-counter-title">Frames: </span>
+                  <span class="entry-overview-counter-value">{{controller.data.selected.frame_count}}</span>
+                </div>
+                <div class="entry-overview-counter">
+                  <span class="entry-overview-counter-title">Keywords: </span>
+                  <span class="entry-overview-counter-value">{{controller.data.selectedSummary.image_keywords.length + controller.data.summary.audio.analysis.nlu.keywords.length}}</span>
+                </div>
+              </div>
+              <div layout="column">
+                <div class="entry-overview-counter">
+                  <span class="entry-overview-counter-title">Entities: </span>
+                  <span class="entry-overview-counter-value">{{controller.data.summary.audio.analysis.nlu.entities.length}}</span>
+                </div>
+                <div class="entry-overview-counter">
+                  <span class="entry-overview-counter-title">Concepts: </span>
+                  <span class="entry-overview-counter-value">{{controller.data.summary.audio.analysis.nlu.concepts.length}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div ng-if="!controller.isVideo()">
+            <div layout="row">
+              <div layout="column">
+                <div class="entry-overview-counter">
+                  <span class="entry-overview-counter-title">Keywords: </span>
+                  <span class="entry-overview-counter-value">{{controller.data.selectedSummary.image_keywords.length}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
+    <div class="insights" flex>
+      <div class="width-wrapper">
+        <div>
+          <h4>Face Detection</h4>
+          <span ng-if="controller.data.selectedSummary.face_detection.length == 0">No known face detected</span>
+          <ul class="entry-taglist">
+            <li ng-repeat="face in controller.data.selectedSummary.face_detection" class="entry-tag">
+              <span class="tag tag-face">
+                <span class="face-overlay-text">{{$index+1}}</span>
+                <span ng-if="face.identity">{{face.identity.name}} {{face.identity.score | formatPercent}}%</span>
+                <span ng-if="face.identity">&nbsp;</span>
+                <span>{{face.gender.gender}} {{face.age.min}}-{{face.age.max}} {{face.age.score | formatPercent}}%</span>
+              </span>
+            </li>
+          </ul>
+        </div>
 
-    <div>
-      <h4>Image Keywords</h4>
-      <ul class="entry-taglist">
-        <li ng-repeat="keyword in controller.data.selectedSummary.image_keywords" class="entry-tag">
-          <span class="tag tag-keyword">{{keyword.class}} {{keyword.score | formatPercent}}%</span>
-        </li>
-      </ul>
-    </div>
+        <div>
+          <h4>Image Keywords</h4>
+          <ul class="entry-taglist">
+            <li ng-repeat="keyword in controller.data.selectedSummary.image_keywords" class="entry-tag">
+              <span class="tag tag-keyword">{{keyword.class}} {{keyword.score | formatPercent}}%</span>
+            </li>
+          </ul>
+        </div>
 
-    <div>
-      <h4>Face Detection</h4>
-      <span ng-if="controller.data.selectedSummary.face_detection.length == 0">No known face detected</span>
-      <ul class="entry-taglist">
-        <li ng-repeat="face in controller.data.selectedSummary.face_detection" class="entry-tag">
-          <span class="tag tag-face">
-            <span class="face-overlay-text">{{$index+1}}</span>
-            <span ng-if="face.identity">{{face.identity.name}} {{face.identity.score | formatPercent}}%</span>
-            <span ng-if="face.identity">&nbsp;</span>
-            <span>{{face.gender.gender}} {{face.age.min}}-{{face.age.max}} {{face.age.score | formatPercent}}%</span>
+        <div ng-if="controller.isVideo() && controller.data.summary.audio.analysis.nlu.keywords">
+          <h4>Audio Keywords</h4>
+          <ul class="entry-taglist">
+            <li ng-repeat="keyword in controller.data.summary.audio.analysis.nlu.keywords" class="entry-tag">
+              <span class="tag tag-keyword">{{keyword.text}} {{keyword.relevance | formatPercent}}%</span>
+            </li>
+          </ul>
+        </div>
+
+        <div ng-if="controller.isVideo() && controller.data.summary.audio.analysis.nlu.entities">
+          <h4>Entities</h4>
+          <span ng-if="controller.data.summary.audio.analysis.nlu.entities.length === 0">
+            No entity found
           </span>
-        </li>
-      </ul>
-    </div>
+          <ul class="entry-taglist" ng-if="controller.data.summary.audio.analysis.nlu.entities.length > 0">
+            <li ng-repeat="entity in controller.data.summary.audio.analysis.nlu.entities" class="entry-tag">
+              <span ng-if="entity.disambiguation.dbpedia_resource" class="tag"><a href="{{entity.disambiguation.dbpedia_resource}}">{{entity.text}} ({{entity.type}}) {{entity.relevance | formatPercent}}% <md-icon md-font-library="material-icons">open_in_new</md-icon></a></span>
+              <span ng-if="!entity.disambiguation.dbpedia_resource" class="tag">{{entity.text}} ({{entity.type}}) {{entity.relevance | formatPercent}}%</span>
+            </li>
+          </ul>
+        </div>
 
-    <div ng-if="controller.isVideo()" class="video-overview">
-      <span>Audio Analysis</span>
-    </div>
-
-    <div ng-if="controller.isVideo() && controller.data.summary.audio.analysis.nlu.keywords">
-      <h4>Audio Keywords</h4>
-      <ul class="entry-taglist">
-        <li ng-repeat="keyword in controller.data.summary.audio.analysis.nlu.keywords" class="entry-tag">
-          <span class="tag tag-keyword">{{keyword.text}} {{keyword.relevance | formatPercent}}%</span>
-        </li>
-      </ul>
-    </div>
-
-    <div ng-if="controller.isVideo() && controller.data.summary.audio.analysis.nlu.entities">
-      <h4>Entities</h4>
-      <span ng-if="controller.data.summary.audio.analysis.nlu.entities.length === 0">
-        No entity found
-      </span>
-      <ul class="entry-taglist" ng-if="controller.data.summary.audio.analysis.nlu.entities.length > 0">
-        <li ng-repeat="entity in controller.data.summary.audio.analysis.nlu.entities" class="entry-tag">
-          <span ng-if="entity.disambiguation.dbpedia_resource" class="tag"><a href="{{entity.disambiguation.dbpedia_resource}}">{{entity.text}} ({{entity.type}}) {{entity.relevance | formatPercent}}% <md-icon md-font-library="material-icons">open_in_new</md-icon></a></span>
-          <span ng-if="!entity.disambiguation.dbpedia_resource" class="tag">{{entity.text}} ({{entity.type}}) {{entity.relevance | formatPercent}}%</span>
-        </li>
-      </ul>
-    </div>
-
-    <div ng-if="controller.isVideo() && controller.data.summary.audio.analysis.nlu.concepts">
-      <h4>Concepts</h4>
-      <span ng-if="controller.data.summary.audio.analysis.nlu.concepts.length === 0">
-        No concept found
-      </span>
-      <ul class="entry-taglist" ng-if="controller.data.summary.audio.analysis.nlu.concepts.length > 0">
-        <li ng-repeat="concept in controller.data.summary.audio.analysis.nlu.concepts" class="entry-tag">
-          <span class="tag"><a href="{{concept.dbpedia_resource}}">{{concept.text}} {{concept.relevance | formatPercent}}% <md-icon md-font-library="material-icons">open_in_new</md-icon></a></span>
-        </li>
-      </ul>
-    </div>
-
-    <div ng-if="controller.isVideo() && controller.data.summary.audio.analysis.nlu.emotion">
-      <h4>Emotion Analysis</h4>
-      <ul class="entry-taglist">
-        <li ng-repeat="(key, value) in controller.data.summary.audio.analysis.nlu.emotion.document.emotion" class="entry-tag">
-          <span class="tag">{{key}} {{value | formatPercent}}%</span>
-        </li>
-      </ul>
-    </div>
-
-    <div ng-if="controller.isVideo() && controller.data.summary.audio.transcript">
-      <h4>
-        Video Transcript <span class="small text-muted">(15 minutes max)</span>
-      </h4>
-      <div class="transcript border-box">
-        <span ng-repeat="transcript in allTranscripts = controller.data.summary.audio.transcript.results">
-          <span class="transcript-timestamp md-caption">
-            {{transcript.alternatives[0].timestamps[0][1] | formatSeconds }}
+        <div ng-if="controller.isVideo() && controller.data.summary.audio.analysis.nlu.concepts">
+          <h4>Concepts</h4>
+          <span ng-if="controller.data.summary.audio.analysis.nlu.concepts.length === 0">
+            No concept found
           </span>
-          <span class="transcript-sentence">
-            {{transcript.alternatives[0].transcript | formatSentence}}.
-          </span>
-          <!-- add a paragraph break when there is some time before the next sentences. -->
-          <span class="transcript-break" ng-if="allTranscripts[$index + 1].alternatives[0].timestamps[0][1] - transcript.alternatives[0].timestamps[transcript.alternatives[0].timestamps.length - 1][2] > 1" />
-        </span>
+          <ul class="entry-taglist" ng-if="controller.data.summary.audio.analysis.nlu.concepts.length > 0">
+            <li ng-repeat="concept in controller.data.summary.audio.analysis.nlu.concepts" class="entry-tag">
+              <span class="tag"><a href="{{concept.dbpedia_resource}}">{{concept.text}} {{concept.relevance | formatPercent}}% <md-icon md-font-library="material-icons">open_in_new</md-icon></a></span>
+            </li>
+          </ul>
+        </div>
+
+        <div ng-if="controller.isVideo() && controller.data.summary.audio.analysis.nlu.emotion">
+          <h4>Emotion Analysis</h4>
+          <ul class="entry-taglist">
+            <li ng-repeat="(key, value) in controller.data.summary.audio.analysis.nlu.emotion.document.emotion" class="entry-tag">
+              <span class="tag">{{key}} {{value | formatPercent}}%</span>
+            </li>
+          </ul>
+        </div>
+
+        <div ng-if="controller.isVideo() && controller.data.summary.audio.transcript">
+          <h4>
+            Video Transcript <span class="small text-muted">(15 minutes max)</span>
+          </h4>
+          <div class="transcript border-box">
+            <span ng-repeat="transcript in allTranscripts = controller.data.summary.audio.transcript.results">
+              <span class="transcript-timestamp md-caption">
+                {{transcript.alternatives[0].timestamps[0][1] | formatSeconds }}
+              </span>
+              <span class="transcript-sentence">
+                {{transcript.alternatives[0].transcript | formatSentence}}.
+              </span>
+              <!-- add a paragraph break when there is some time before the next sentences. -->
+              <span class="transcript-break" ng-if="allTranscripts[$index + 1].alternatives[0].timestamps[0][1] - transcript.alternatives[0].timestamps[transcript.alternatives[0].timestamps.length - 1][2] > 1" />
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>

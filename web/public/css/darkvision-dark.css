@@ -126,7 +126,15 @@ label.md-button {
   Video
   **/
 
-.video-details, .video-navigator {
+.breadcrumb a md-icon {
+  color: #ed215e;
+}
+
+.entry-overview-counter-value {
+  color: #ed215e;
+}
+
+.video-navigator {
   border-color: #1f1f25 !important;
 }
 
