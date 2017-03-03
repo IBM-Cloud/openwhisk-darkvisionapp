@@ -3,7 +3,7 @@
 -->
 <div class="video-container container" ng-controller="VideoController as controller" layout="row" layout-fill  ng-cloak>
 
-  {{ filteredImages = (controller.data.images | filter:global.search); "" }}
+  {{ filteredImages = (controller.data.images | filter:search); "" }}
 
   <div flex layout="column">
     <div class="header border-box">
@@ -203,6 +203,10 @@
         Video overview
       </div>
     </div>
+    <div class="search border-box" layout="row" layout-align="center center">
+      <md-icon md-font-library="material-icons">search</md-icon>
+      <input flex id="search" ng-model="search" type="search" placeholder="Filter image frame" autofocus >
+    </div>
     <div flex class="video-frames">
       <div ng-class="{ 'selected-frame': image===controller.data.selected }" class="video-frame" ng-repeat="image in filteredImages" layout="row" layout-align="center center">
         <div ng-class="{first: $index===0, last: $index===filteredImages.length-1}" class="video-frame-timeline"></div>
@@ -210,6 +214,9 @@
         <span class="timecode">{{image.frame_timecode | formatSeconds }}</span>
         <div ng-click="controller.selectImage(image);" class="video-frame-thumbnail image-cover" style="background-image: url(/images/image/{{image._id}}.jpg);">
         </div>
+      </div>
+      <div class="no-frames" ng-if="filteredImages.length===0">
+        No frame
       </div>
     </div>
   </div>

@@ -1,7 +1,7 @@
 <div class="home container" ng-controller="HomeController as controller" layout="column">
 
-  {{ filteredVideos = (controller.data.videos | filter:global.search); "" }}
-  {{ filteredImages = (controller.data.images | filter:global.search); "" }}
+  {{ filteredVideos = (controller.data.videos); "" }}
+  {{ filteredImages = (controller.data.images); "" }}
 
   <div layout="row">
     <h2 ng-if="controller.data.showVideos && controller.data.showImages">

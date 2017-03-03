@@ -132,6 +132,32 @@
   min-width: 265px;
 }
 
+.search {
+  border-bottom: 1px solid;
+}
+
+.search md-icon {
+  font-size: 24px !important;
+  height: 24px;
+  width: 24px;
+  margin-left: 10px;
+}
+
+#search {
+  outline: none;
+  height: 36px;
+  margin-right: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 0;
+  padding-bottom: 0;
+  border: none;
+}
+
+.no-frames {
+  margin: 20px;
+}
+
 .video-frames {
   overflow: auto;
   padding-bottom: 20px;
