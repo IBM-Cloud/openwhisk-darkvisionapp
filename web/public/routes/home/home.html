@@ -1,28 +1,30 @@
-<div class="home container" ng-controller="HomeController as controller" layout="column">
+<div class="home" ng-controller="HomeController as controller" layout="column" >
 
   {{ filteredVideos = (controller.data.videos); "" }}
   {{ filteredImages = (controller.data.images); "" }}
 
-  <div layout="row">
-    <h2 ng-if="controller.data.showVideos && controller.data.showImages">
-      All Uploads ({{filteredVideos.length + filteredImages.length}})
-    </h2>
-    <h2 ng-if="controller.data.showVideos && !controller.data.showImages">
-      Videos ({{filteredVideos.length}})
-    </h2>
-    <h2 ng-if="!controller.data.showVideos && controller.data.showImages">
-      Images ({{filteredImages.length}})
-    </h2>
-    <div flex></div>
-    <div>
-      Showing:
-      <md-button class="button-group" ng-click="controller.data.showVideos = controller.data.showImages = true;" ng-disabled="controller.data.showVideos && controller.data.showImages">All Uploads</md-button>
-      <md-button class="button-group" ng-click="controller.data.showVideos = true; controller.data.showImages = false;" ng-disabled="controller.data.showVideos && !controller.data.showImages">Videos</md-button>
-      <md-button class="button-group" ng-click="controller.data.showVideos = false; controller.data.showImages = true;" ng-disabled="!controller.data.showVideos && controller.data.showImages">Images</md-button>
+  <div>
+    <div layout="row" layout-align="center center">
+      <h2 ng-if="controller.data.showVideos && controller.data.showImages">
+        All Uploads ({{filteredVideos.length + filteredImages.length}})
+      </h2>
+      <h2 ng-if="controller.data.showVideos && !controller.data.showImages">
+        Videos ({{filteredVideos.length}})
+      </h2>
+      <h2 ng-if="!controller.data.showVideos && controller.data.showImages">
+        Images ({{filteredImages.length}})
+      </h2>
+      <div flex></div>
+      <div>
+        Showing:
+        <md-button class="button-group" ng-click="controller.data.showVideos = controller.data.showImages = true;" ng-disabled="controller.data.showVideos && controller.data.showImages">All Uploads</md-button>
+        <md-button class="button-group" ng-click="controller.data.showVideos = true; controller.data.showImages = false;" ng-disabled="controller.data.showVideos && !controller.data.showImages">Videos</md-button>
+        <md-button class="button-group" ng-click="controller.data.showVideos = false; controller.data.showImages = true;" ng-disabled="!controller.data.showVideos && controller.data.showImages">Images</md-button>
+      </div>
     </div>
   </div>
 
-  <div flex="auto" ng-if="controller.data.showVideos">
+  <div flex="grow" ng-if="controller.data.showVideos">
     <h3 ng-if="controller.data.showImages">
       Video Uploads ({{filteredVideos.length}})
     </h3>
@@ -49,7 +51,7 @@
     </div>
   </div>
 
-  <div flex="auto" ng-if="controller.data.showImages">
+  <div flex="grow" ng-if="controller.data.showImages">
     <h3 ng-if="controller.data.showVideos">
       Image Uploads ({{filteredImages.length}})
     </h3>

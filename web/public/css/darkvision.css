@@ -99,10 +99,7 @@ md-icon {
   **/
 
 .wrapper {
-  overflow-y: scroll;
-}
-
-.container {
+  overflow: hidden;
 }
 
 /**

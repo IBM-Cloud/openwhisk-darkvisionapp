@@ -1,7 +1,7 @@
 <!--
 // Licensed under the Apache License. See footer for details.
 -->
-<div class="video-container container" ng-controller="VideoController as controller" layout="row" layout-fill  ng-cloak>
+<div flex class="video-container" ng-controller="VideoController as controller" layout="row" layout-fill>
 
   {{ filteredImages = (controller.data.images | filter:search); "" }}
 

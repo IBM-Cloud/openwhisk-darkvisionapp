@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="css/darkvision-light.css" id="theme">
 </head>
 
-<body layout="row" ng-controller="MainController">
+<body layout="row" layout-fill ng-controller="MainController">
   <div layout="column" layout-fill>
   <header>
     <md-toolbar>
@@ -50,7 +50,7 @@
     <md-progress-linear class="loadingProgress" id="loadingProgress" md-mode="indeterminate"></md-progress-linear>
   </spinner>
 
-  <div class="wrapper" ui-view flex>
+  <div class="wrapper" ui-view flex layout="row" layout-fill>
   </div>
 
   <script src="vendor/angular/angular.min.js"></script>
