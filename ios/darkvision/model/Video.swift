@@ -17,27 +17,27 @@ import SwiftyJSON
 import SwiftMoment
 
 class Video {
-  
+
   let api: API;
   let impl: JSON;
   var summaryImpl: JSON?;
   var relatedVideos: [Video]?
-  
+
   let starRating : Double
   let viewCount : Int
-  
+
   init(api: API, impl: JSON) {
     self.api = api;
     self.impl = impl;
-    
+
     let titleCount = impl["title"].stringValue.characters.count
     starRating = Double(titleCount % 4) + 1
     viewCount = (titleCount % 7) * 1000 + titleCount
   }
-  
+
   func load(_ completionhandler: ((UIBackgroundFetchResult) -> Void)!) {
     // its summary
-    api.get("/api/videos/" + impl["_id"].string! + "/summary",
+    api.get("/api/videos/" + impl["_id"].string!,
       onSuccess: { (data) -> Void in
         self.summaryImpl = data;
         completionhandler(UIBackgroundFetchResult.newData);
@@ -45,7 +45,7 @@ class Video {
       onFailure: { () -> Void in
         completionhandler(UIBackgroundFetchResult.failed)
     })
-    
+
     // its related videos
     api.get("/api/videos/" + impl["_id"].string! + "/related",
       onSuccess: { (data) -> Void in
@@ -59,19 +59,19 @@ class Video {
         completionhandler(UIBackgroundFetchResult.failed)
     })
   }
-  
+
   func isAnalyzed() -> Bool {
     return impl["metadata"].exists()
   }
-  
+
   func title() -> String {
     return impl["title"].string!;
   }
-  
+
   func thumbnailUrl() -> String {
     return api.apiUrl + "/images/thumbnail/" + impl["_id"].string! + ".jpg";
   }
-  
+
   func duration() -> String {
     if (impl["metadata"].exists()) {
       let durationInSeconds = impl["metadata"]["streams"].array![0]["duration"].doubleValue
@@ -83,7 +83,7 @@ class Video {
       return ""
     }
   }
-  
+
   func createdAgo() -> String {
     // "createdAt": "2016-01-21T13:38:16.132Z",
     let dateFormatter: DateFormatter = DateFormatter()
@@ -91,31 +91,25 @@ class Video {
     let createdAt = dateFormatter.date(from: impl["createdAt"].string!)?.timeAgoSinceNow
     return createdAt!
   }
-  
+
   func keywords() -> [JSON] {
-    var result : [JSON] = []
-    if (summaryImpl != nil) {
-      for occurrence in summaryImpl!["image_keywords"].array! {
-        result.append(occurrence["occurrences"].array![0])
-      }
-    }
-    return result
+    return (summaryImpl != nil ? summaryImpl!["image_keywords"].array! : [])
   }
-  
+
   func faceCount() -> Int {
     return summaryImpl == nil ? 0 : summaryImpl!["face_detection"].count;
   }
-  
+
   func faceAt(_ position: Int) -> Face {
-    return Face(impl: summaryImpl!["face_detection"][position]["occurrences"][0])
+    return Face(impl: summaryImpl!["face_detection"][position])
   }
-  
+
   func relatedVideoCount() -> Int {
     return relatedVideos == nil ? 0 : relatedVideos!.count
   }
-  
+
   func relatedVideoAt(_ position: Int) -> Video {
     return relatedVideos![position]
   }
-  
+
 }

@@ -34,24 +34,6 @@
         });
         return deferred.promise;
       },
-      images: function (videoId) {
-        var deferred = $q.defer();
-        $http.get("/api/videos/" + encodeURIComponent(videoId) + "/images").then(function(response) { return response.data; }).then(function (data) {
-          deferred.resolve(data);
-        }).catch(function () {
-          deferred.reject();
-        });
-        return deferred.promise;
-      },
-      summary: function (videoId) {
-        var deferred = $q.defer();
-        $http.get("/api/videos/" + encodeURIComponent(videoId) + "/summary").then(function(response) { return response.data; }).then(function (data) {
-          deferred.resolve(data);
-        }).catch(function () {
-          deferred.reject();
-        });
-        return deferred.promise;
-      },
       reset: function (videoId) {
         var deferred = $q.defer();
         $http.get("/api/videos/" + encodeURIComponent(videoId) + "/reset").then(function(response) { return response.data; }).then(function (data) {
