@@ -39,6 +39,10 @@ md-progress-circular path {
   stroke: white !important;
 }
 
+md-progress-circular.loading path {
+  stroke: #ed215e !important;
+}
+
 md-progress-linear .md-container {
   background-color: #ebebeb;
 }

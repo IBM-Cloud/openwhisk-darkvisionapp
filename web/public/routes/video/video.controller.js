@@ -17,9 +17,9 @@
     var controller = this;
 
     controller.data = {
-      video: {},
-      images: [],
-      summary: {},
+      video: null,
+      images: null,
+      summary: null,
       selected: null,
       selectedSummary: null,
     };
@@ -51,11 +51,11 @@
     }
 
     VideosService.get($stateParams.videoId).then(function (summary) {
-      controller.data.video = controller.data.selected = summary.video;
       controller.data.images = summary.images;
       controller.data.summary = summary;
       controller.data.selected = controller.data.video;
       controller.data.selectedSummary = summary;
+      controller.data.video = controller.data.selected = summary.video;
     });
 
     controller.reset = function () {

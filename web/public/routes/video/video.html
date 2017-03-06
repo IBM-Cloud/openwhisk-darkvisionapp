@@ -36,7 +36,10 @@
         </md-menu>
       </div>
     </div>
-    <div flex layout="row">
+    <div ng-if="!controller.data.video" flex layout="row" layout-align="center center">
+      <md-progress-circular class="loading" md-diameter="100" md-mode="indeterminate"></md-progress-circular>
+    </div>
+    <div ng-if="controller.data.video" flex layout="row">
       <div class="video-navigator" layout="column">
         <div class="video-frame-count">
           Video Frames ({{filteredImages.length}})

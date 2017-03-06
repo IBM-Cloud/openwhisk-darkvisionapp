@@ -30,6 +30,10 @@
         Video Uploads ({{filteredVideos.length}})
       </h3>
 
+      <div ng-if="!controller.data.videos" flex layout="row" layout-align="center center">
+        <md-progress-circular class="loading" md-diameter="100" md-mode="indeterminate"></md-progress-circular>
+      </div>
+
       <div layout="row" layout-align="space-between center" layout-wrap>
         <div ng-repeat="video in filteredVideos" class="video-box">
           <a ui-sref="video({ videoId: video._id })">
@@ -56,6 +60,10 @@
       <h3 ng-if="controller.data.showVideos">
         Image Uploads ({{filteredImages.length}})
       </h3>
+
+      <div ng-if="!controller.data.images" flex layout="row" layout-align="center center">
+        <md-progress-circular class="loading" md-diameter="100" md-mode="indeterminate"></md-progress-circular>
+      </div>
 
       <div>
         <div ng-repeat="image in filteredImages">

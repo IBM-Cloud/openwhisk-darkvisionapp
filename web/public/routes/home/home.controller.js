@@ -17,8 +17,8 @@
     var controller = this;
 
     controller.data = {
-      videos: [],
-      images: [],
+      videos: null,
+      images: null,
       showVideos: true,
       showImages: true,
     };

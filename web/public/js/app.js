@@ -66,6 +66,12 @@
       });
   });
 
+  app.config(function($mdProgressCircularProvider) {
+    $mdProgressCircularProvider.configure({
+      strokeWidth: 4
+    });
+  });
+
   app
     .filter('formatSentence', [
       function() {
