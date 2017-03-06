@@ -126,12 +126,17 @@ label.md-button {
   color: #ee6161;
 }
 
+.video-frame-count {
+  background-color: #ee6161;
+  color: #ffffff;
+}
+
 .video-navigator {
   border-color: #eef0ef !important;
 }
 
 .video-overview-box {
-  background-color: #f1f1f1;
+  background-color: #f9f9f9;
 }
 
 .video-overview-title {
@@ -161,10 +166,15 @@ label.md-button {
 
 .selected-frame-indicator {
   color: #ee6161;
+  border-right-color: #ee6161;
+}
+
+.selected-frame-indicator md-icon {
+  color: #ee6161;
 }
 
 .selected-frame {
-  background-color: #efefef;
+  background-color: #e6e5e9;
 }
 
 .transcript {

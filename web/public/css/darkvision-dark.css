@@ -138,6 +138,11 @@ label.md-button {
   color: #ed215e;
 }
 
+.video-frame-count {
+  background-color: #ed215e;
+  color: #ffffff;
+}
+
 .video-navigator {
   border-color: #1f1f25 !important;
 }
@@ -172,10 +177,15 @@ label.md-button {
 
 .selected-frame-indicator {
   color: #ed215e;
+  border-right-color: #ed215e;
+}
+
+.selected-frame-indicator md-icon {
+  color: #ed215e;
 }
 
 .selected-frame {
-  background-color: #24242c;
+  background-color: #71102d;
 }
 
 .transcript {

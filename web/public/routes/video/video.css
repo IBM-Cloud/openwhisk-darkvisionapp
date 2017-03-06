@@ -13,8 +13,8 @@
 
 .header {
   height: 59px;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
   border-bottom: 1px solid;
 }
 
@@ -41,11 +41,11 @@
   Overview
   **/
 .overview {
-  padding-top: 10px;
+  padding-top: 20px;
   border-bottom: 1px solid;
   padding-bottom: 10px;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .video-title {
@@ -100,8 +100,8 @@
   **/
 .insights {
   overflow-y: auto;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
   padding-bottom: 40px;
 }
 
@@ -127,8 +127,13 @@
   Navigator
   **/
 
+.video-frame-count {
+  padding: 10px 20px;
+  font-weight: 500;
+}
+
 .video-navigator {
-  border-left: 1px solid;
+  border-right: 1px solid;
   min-width: 265px;
 }
 
@@ -140,7 +145,7 @@
   font-size: 24px !important;
   height: 24px;
   width: 24px;
-  margin-left: 10px;
+  margin-left: 20px;
 }
 
 #search {
@@ -167,11 +172,12 @@
   position: relative;
   padding-top: 10px;
   padding-bottom: 10px;
+  padding-right: 20px;
 }
 
 .video-frame-timeline {
   position: absolute;
-  left: 55px;
+  left: 47px;
   top: 0px;
   width: 2px;
   height: 105px;
@@ -179,9 +185,23 @@
 
 .selected-frame-indicator {
   position: absolute;
-  left: -5px;
-  top: 45px;
+  right: 0;
+  top: 0;
+  height: 100%;
+  border-right: 4px solid;
+}
+
+.selected-frame-indicator md-icon {
+  position: absolute;
   font-size: 16px !important;
+  width: 16px;
+  height: 16px;
+  left: -10px;
+  top: calc(50% - 8px);
+  padding: 0;
+  transform: rotate(180deg);
+  min-height: 16px;
+  min-width: 16px;
 }
 
 .last {
@@ -200,6 +220,7 @@
 }
 
 .video-overview-box {
+  position: relative;
   border-bottom: 1px solid;
   padding-left: 20px;
   outline: none;
