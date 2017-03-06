@@ -3,8 +3,6 @@
 -->
 <div flex class="video-container" ng-controller="VideoController as controller" layout="row" ng-cloak>
 
-  {{ filteredImages = (controller.data.images | filter:search); "" }}
-
   <div flex layout="column">
     <div class="header border-box" layout="row" layout-align="center center">
       <div class="breadcrumb">
@@ -40,6 +38,9 @@
       <md-progress-circular class="loading" md-diameter="100" md-mode="indeterminate"></md-progress-circular>
     </div>
     <div ng-if="controller.data.video" flex layout="row">
+
+      {{ filteredImages = (controller.data.images | filter:search); "" }}
+
       <div class="video-navigator" layout="column">
         <div class="video-frame-count">
           Video Frames ({{filteredImages.length}})
