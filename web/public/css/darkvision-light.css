@@ -137,10 +137,11 @@ label.md-button {
 
 .video-overview-box {
   background-color: #f9f9f9;
+  color: #ee6161;
 }
 
-.video-overview-title {
-  color: #ee6161;
+.video-overview-box.selected-frame {
+  color: #717777;
 }
 
 .video-menu-button md-icon {
