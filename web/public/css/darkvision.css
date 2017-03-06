@@ -14,7 +14,6 @@ body, html {
   **/
 
 .title {
-  margin-left: 10px;
 }
 
 .title.ow {
@@ -84,14 +83,13 @@ md-toolbar {
 }
 
 button.md-button.md-icon-button, a.md-button.md-icon-button {
-  height: 50px;
-  width: 50px;
+  margin-left: 8px;
 }
 
 md-icon {
-  width: 32px;
-  height: 32px;
-  font-size: 32px !important;
+  width: 28px;
+  height: 28px;
+  font-size: 28px !important;
 }
 
 /**
@@ -122,6 +120,7 @@ h3 {
   border-bottom: 1px solid;
   padding-bottom: 4px;
   font-size: 14px;
+  margin-bottom: 20px;
 }
 
 h4 {

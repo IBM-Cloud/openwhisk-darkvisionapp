@@ -1,5 +1,5 @@
 .home {
-  padding: 40px;
+  padding: 18px 40px;
   overflow-y: scroll;
 }
 
@@ -18,14 +18,13 @@
 }
 
 .video-box-title {
-  margin-top: 5px;
+  margin-top: 10px;
   display: block; /* Fallback for non-webkit */
   display: -webkit-box;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 14px;
-  line-height: 14px;
-  height: 28px;
+  height: 32px;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
@@ -41,6 +40,10 @@
   right: 10px;
 }
 
+.image-uploads-title {
+  margin-top:30px;
+}
+
 .image-thumbnail {
   width: 220px;
   max-width: 220px;
@@ -52,6 +55,8 @@
 
 .image-box {
   margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eaeaea;
 }
 
 .video-box {
