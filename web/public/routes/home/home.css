@@ -30,6 +30,11 @@
   -webkit-box-orient: vertical;
 }
 
+.video-box-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
 .video-box-tags {
   position: absolute;
   bottom: 10px;
@@ -43,22 +48,28 @@
 }
 
 .video-box {
-  width: 220px;
-  margin-bottom: 20px;
 }
 
 .image-box {
   margin-bottom: 20px;
 }
 
-.video-box-image {
-  position: relative;
+.video-box {
   width: 100%;
-  height: 125px;
+  height: 100%;
+}
+
+.video-box > a {
+  display: block;
+  position: relative;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
+}
+
+.video-box-title a {
+  background-color: transparent;
 }

@@ -112,6 +112,7 @@
       url: '/upload',
       alias: 'file',
       autoUpload: true,
+      withCredentials:true,
     });
   }]);
 
