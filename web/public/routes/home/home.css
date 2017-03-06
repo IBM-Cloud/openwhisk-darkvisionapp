@@ -1,13 +1,20 @@
 .home {
   padding: 40px;
+  overflow-y: scroll;
+}
+
+.width-wrapper {
   max-width: 1440px;
   margin: 0 auto;
-  overflow-y: scroll;
 }
 
 .button-group {
   text-transform: none;
   border-radius: 5px;
+}
+
+.showing {
+  font-weight: 500;
 }
 
 .video-box-title {
