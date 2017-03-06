@@ -109,10 +109,9 @@
     };
 
     $scope.uploader = new FileUploader({
-      url: '/upload',
+      url: '/upload/file',
       alias: 'file',
       autoUpload: true,
-      withCredentials:true,
     });
   }]);
 
