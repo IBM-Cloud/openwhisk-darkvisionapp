@@ -105,6 +105,11 @@ label.md-button {
   color: white !important;
 }
 
+.video-box-image,
+.image-box-image {
+  background-color: #f9f9f9;
+}
+
 .video-box-tag {
   background-color: rgba(0, 0, 0, 0.3);
   color: white;
