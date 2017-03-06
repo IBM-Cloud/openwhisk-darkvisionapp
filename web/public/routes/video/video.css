@@ -2,117 +2,246 @@
   overflow: hidden;
 }
 
-.video-details {
-  padding-top: 20px;
-  padding-right: 40px;
-  overflow: auto;
-  padding-bottom: 40px;
+.width-wrapper {
+  max-width: 960px;
+  margin: 0 auto;
 }
 
-.video-thumbnail {
-  width: 100%
-}
+/**
+  Header
+  **/
 
-.video-box-title {
-  margin-top: 10px;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
+.header {
+  height: 59px;
+  padding-left: 20px;
+  padding-right: 20px;
   border-bottom: 1px solid;
 }
 
-.video-title {
-  margin-right: 15px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  font-size: 25px;
+.header .width-wrapper {
+  height: 100%;
+}
+
+.breadcrumb {
+  margin-right: 10px;
+}
+
+.breadcrumb a {
+  text-decoration: none;
+}
+
+.breadcrumb a md-icon {
+  font-size: 20px !important;
+  width: 20px;
+  line-height: 32px;
   font-weight: bold;
 }
 
-.video-box-tags {
-  font-size: 15px;
+/**
+  Overview
+  **/
+.overview {
+  padding-top: 20px;
+  border-bottom: 1px solid;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.video-title {
+  padding-left: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 25px;
+  font-weight: 500;
+  border-left: 1px solid;
   white-space: nowrap;
 }
 
-.video-overview {
-  margin-top: 15px;
+.entry-thumbnail-container {
+  width: 30%;
+  position: relative;
+}
+
+.video-thumbnail {
+  width: 100%;
+}
+
+.video-box-tags {
+  position: absolute;
+  bottom: 16px;
+  right: 10px;
+}
+
+.entry-overview {
+  margin-left: 20px;
+}
+
+.entry-overview-title {
   font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.entry-overview-counter {
+  padding-right: 30px;
+  padding-bottom: 5px;
+}
+
+.entry-overview-counter-title {
+  font-weight: 500;
+}
+
+.entry-overview-counter-value {
+  font-weight: 500;
+}
+
+/**
+  Insights
+  **/
+.insights {
+  overflow-y: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 40px;
 }
 
 .transcript {
-  border: 1px solid;
-  padding: 20px;
+ border: 1px solid;
+ padding: 20px;
+}
+
+.transcript-timestamp {
+ font-weight: 500;
 }
 
 .transcript-break {
-  display: block;
-  margin-top: 10px;
+ display: block;
+ margin-top: 10px;
 }
 
 .transcript-sentence::first-letter {
-  text-transform: capitalize;
+ text-transform: capitalize;
+}
+
+/**
+  Navigator
+  **/
+
+.video-frame-count {
+  padding: 10px 20px;
+  font-weight: 500;
 }
 
 .video-navigator {
-  padding-top: 20px;
-  border-left: 1px solid;
-  min-width: 340px;
+  border-right: 1px solid;
+  min-width: 265px;
+}
+
+.search {
+  border-bottom: 1px solid;
+}
+
+.search md-icon {
+  font-size: 24px !important;
+  height: 24px;
+  width: 24px;
+  margin-left: 20px;
+}
+
+#search {
+  outline: none;
+  height: 36px;
+  margin-right: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 0;
+  padding-bottom: 0;
+  border: none;
+}
+
+.no-frames {
+  margin: 20px;
 }
 
 .video-frames {
-  overflow: auto;
+  overflow-y: scroll;
   padding-bottom: 20px;
 }
 
 .video-frame {
-  margin-bottom: 10px;
-  margin-top: 10px;
-  padding: 10px;
+  position: relative;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 20px;
 }
 
 .video-frame-timeline {
   position: absolute;
-  left: 50%;
-  top: -85px;
-  height: 200px;
-  border-left: 1px solid;
+  left: 47px;
+  top: 0px;
+  width: 2px;
+  height: 105px;
 }
 
-.first {
-  top: 10px;
+.selected-frame-indicator {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  border-right: 4px solid;
+}
+
+.selected-frame-indicator md-icon {
+  position: absolute;
+  font-size: 16px !important;
+  width: 16px;
+  height: 16px;
+  left: -10px;
+  top: calc(50% - 8px);
+  padding: 0;
+  transform: rotate(180deg);
+  min-height: 16px;
+  min-width: 16px;
 }
 
 .last {
-  height: 95px;
+  height: 125px;
 }
 
-.video-frame-timecode {
+.timecode {
   position: relative;
   margin-left: 20px;
   margin-right: 20px;
+  border: 1px solid;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 1000;
 }
 
 .video-overview-box {
+  position: relative;
   border-bottom: 1px solid;
-  padding-bottom: 20px;
-  margin-left: 20px;
+  padding-left: 20px;
   outline: none;
   cursor: pointer;
+  height: 60px;
 }
 
 .video-overview-thumbnail {
-  width: 50px;
-  height: 50px;
-  margin-right: 10px;
+  width: 60px;
+  height: 36px;
+  margin-right: 20px;
 }
 
 .video-overview-title {
-  width: 300px;
+  font-weight: 500;
 }
 
 .video-frame-thumbnail {
-  width: 300px;
-  height: 170px;
+  width: 150px;
+  height: 85px;
   cursor: pointer;
   outline: none;
+  border-radius: 4px;
 }

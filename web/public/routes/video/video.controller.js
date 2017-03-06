@@ -17,9 +17,9 @@
     var controller = this;
 
     controller.data = {
-      video: {},
-      images: [],
-      summary: {},
+      video: null,
+      images: null,
+      summary: null,
       selected: null,
       selectedSummary: null,
     };
@@ -50,21 +50,12 @@
       return controller.data.selected && controller.data.selected.type === 'video';
     }
 
-    VideosService.get($stateParams.videoId).then(function (video) {
-      controller.data.video = video;
-      controller.data.selected = video;
-    });
-
-    VideosService.images($stateParams.videoId).then(function (images) {
-      controller.data.images = images;
-      controller.data.notProcessed = images.filter(image => image.analysis === null).length;
-    });
-
-    VideosService.summary($stateParams.videoId).then(function (summary) {
+    VideosService.get($stateParams.videoId).then(function (summary) {
+      controller.data.images = summary.images;
       controller.data.summary = summary;
-      if (controller.data.video === controller.data.selected) {
-        controller.data.selectedSummary = summary;
-      }
+      controller.data.selected = controller.data.video;
+      controller.data.selectedSummary = summary;
+      controller.data.video = controller.data.selected = summary.video;
     });
 
     controller.reset = function () {

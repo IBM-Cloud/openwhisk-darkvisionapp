@@ -194,25 +194,10 @@ app.get('/api/videos', (req, res) => {
 });
 
 /**
- * Returns the video and its metadata.
- */
-app.get('/api/videos/:id', (req, res) => {
-  mediaStorage.get(req.params.id, (err, video) => {
-    if (err) {
-      res.status(500).send({
-        error: err
-      });
-    } else {
-      res.send(video);
-    }
-  });
-});
-
-/**
  * Returns a summary of the results for one video.
  * It collects all images and their analysis and keeps only the most relevants.
  */
-app.get('/api/videos/:id/summary', (req, res) => {
+app.get('/api/videos/:id', (req, res) => {
   // threshold to decide what tags/labels/faces to keep
   const options = {
     minimumFaceOccurrence: 3,
@@ -245,6 +230,8 @@ app.get('/api/videos/:id/summary', (req, res) => {
         if (err) {
           callback(err);
         } else {
+          images.sort((image1, image2) =>
+            (image1.frame_number ? image1.frame_number - image2.frame_number : 0));
           callback(null, video, images);
         }
       });
@@ -350,8 +337,9 @@ app.get('/api/videos/:id/summary', (req, res) => {
 
       callback(null, {
         video,
+        images,
         face_detection: peopleNameToOccurrences,
-        image_keywords: keywordToOccurrences
+        image_keywords: keywordToOccurrences,
       });
     },
     // get the video transcript
@@ -361,13 +349,21 @@ app.get('/api/videos/:id/summary', (req, res) => {
         if (err) {
           callback(err);
         } else {
-          if (audio && audio.analysis && audio.analysis.entities) {
-            audio.analysis.entities = audio.analysis.entities
-              .filter(entity => entity.relevance > options.minimumEntityScore);
-          }
-          if (audio && audio.analysis && audio.analysis.concepts) {
-            audio.analysis.concepts = audio.analysis.concepts
-              .filter(entity => entity.relevance > options.minimumConceptScore);
+          if (audio && audio.analysis && audio.analysis.nlu) {
+            if (audio.analysis.nlu.entities) {
+              audio.analysis.nlu.entities = audio.analysis.nlu.entities
+                .filter(entity => entity.relevance > options.minimumEntityScore);
+              audio.analysis.nlu.entities.sort((oneOccurrence, anotherOccurrence) =>
+                anotherOccurrence.relevance - oneOccurrence.relevance
+              );
+            }
+            if (audio.analysis.nlu.concepts) {
+              audio.analysis.nlu.concepts = audio.analysis.nlu.concepts
+                .filter(entity => entity.relevance > options.minimumConceptScore);
+              audio.analysis.nlu.concepts.sort((oneOccurrence, anotherOccurrence) =>
+                anotherOccurrence.relevance - oneOccurrence.relevance
+              );
+            }
           }
           result.audio = audio;
           callback(null, result);
@@ -395,24 +391,6 @@ app.get('/api/videos/:id/related', (req, res) => {
       });
     } else {
       res.send(videos.filter(video => video._id !== req.params.id && video.metadata));
-    }
-  });
-});
-
-/**
- * Returns all images for a video, including the analysis for each image.
- */
-app.get('/api/videos/:id/images', (req, res) => {
-  mediaStorage.videoImages(req.params.id, (err, images) => {
-    if (err) {
-      res.status(500).send({
-        error: err
-      });
-    } else {
-      // get the images document and sort them on the frame_number
-      images.sort((image1, image2) =>
-        (image1.frame_number ? image1.frame_number - image2.frame_number : 0));
-      res.send(images);
     }
   });
 });
@@ -452,9 +430,7 @@ app.get('/api/videos/:id/reset-images', checkForAuthentication, (req, res) => {
 });
 
 // Protects the upload zone with login and password if they are configured
-app.use('/upload', checkForAuthentication);
-
-app.post('/upload', upload.single('file'), (req, res) => {
+app.post('/upload/file', checkForAuthentication, upload.single('file'), (req, res) => {
   if (!req.file || !req.file.mimetype) {
     res.status(500).send({ error: 'no file or mimetype' });
   } else if (req.file.mimetype.startsWith('video/')) {

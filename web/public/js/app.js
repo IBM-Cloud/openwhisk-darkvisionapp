@@ -40,9 +40,9 @@
     'angularFileUpload',
   ]);
 
-  app.config(function ($stateProvider, $urlRouterProvider) {
+  app.config(function($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.otherwise("/");
+    $urlRouterProvider.otherwise('/');
 
     $stateProvider
       .state('home', {
@@ -52,11 +52,24 @@
       });
 
     $stateProvider
+      .state('about', {
+        url: '/about',
+        templateUrl: 'routes/about/about.html',
+        css: 'routes/about/about.css'
+      });
+
+    $stateProvider
       .state('video', {
         url: '/videos/:videoId',
         templateUrl: 'routes/video/video.html',
         css: 'routes/video/video.css',
       });
+  });
+
+  app.config(function($mdProgressCircularProvider) {
+    $mdProgressCircularProvider.configure({
+      strokeWidth: 4
+    });
   });
 
   app
@@ -85,7 +98,7 @@
     }
     ]);
 
-  app.controller('MainController', ['$scope', '$state', 'FileUploader', function($scope, $state, FileUploader) {
+  app.controller('MainController', ['$scope', '$rootScope', '$state', 'FileUploader', function($scope, $rootScope, $state, FileUploader) {
     var controller = this;
 
     $scope.lightTheme = true;
@@ -96,7 +109,7 @@
     };
 
     $scope.uploader = new FileUploader({
-      url: '/upload',
+      url: '/upload/file',
       alias: 'file',
       autoUpload: true,
     });

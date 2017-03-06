@@ -18,7 +18,7 @@
     return {
       all: function () {
         var deferred = $q.defer();
-        $http.get("/api/videos").then(response => response.data).then(function (data) {
+        $http.get("/api/videos").then(function(response) { return response.data; }).then(function (data) {
           deferred.resolve(data);
         }).catch(function () {
           deferred.reject();
@@ -27,25 +27,7 @@
       },
       get: function (videoId) {
         var deferred = $q.defer();
-        $http.get("/api/videos/" + encodeURIComponent(videoId)).then(response => response.data).then(function (data) {
-          deferred.resolve(data);
-        }).catch(function () {
-          deferred.reject();
-        });
-        return deferred.promise;
-      },
-      images: function (videoId) {
-        var deferred = $q.defer();
-        $http.get("/api/videos/" + encodeURIComponent(videoId) + "/images").then(response => response.data).then(function (data) {
-          deferred.resolve(data);
-        }).catch(function () {
-          deferred.reject();
-        });
-        return deferred.promise;
-      },
-      summary: function (videoId) {
-        var deferred = $q.defer();
-        $http.get("/api/videos/" + encodeURIComponent(videoId) + "/summary").then(response => response.data).then(function (data) {
+        $http.get("/api/videos/" + encodeURIComponent(videoId)).then(function(response) { return response.data; }).then(function (data) {
           deferred.resolve(data);
         }).catch(function () {
           deferred.reject();
@@ -54,7 +36,7 @@
       },
       reset: function (videoId) {
         var deferred = $q.defer();
-        $http.get("/api/videos/" + encodeURIComponent(videoId) + "/reset").then(response => response.data).then(function (data) {
+        $http.get("/api/videos/" + encodeURIComponent(videoId) + "/reset").then(function(response) { return response.data; }).then(function (data) {
           deferred.resolve(data);
         }).catch(function () {
           deferred.reject();
@@ -63,7 +45,7 @@
       },
       resetImages: function (videoId) {
         var deferred = $q.defer();
-        $http.get("/api/videos/" + encodeURIComponent(videoId) + "/reset-images").then(response => response.data).then(function (data) {
+        $http.get("/api/videos/" + encodeURIComponent(videoId) + "/reset-images").then(function(response) { return response.data; }).then(function (data) {
           deferred.resolve(data);
         }).catch(function () {
           deferred.reject();
