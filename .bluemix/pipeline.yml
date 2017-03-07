@@ -22,6 +22,8 @@ stages:
     value: ${WATSON_API_KEY}
   - name: STT_CALLBACK_SECRET
     value: ASecret{{name}}4Dv
+  - name: CF_APP_HOSTNAME
+    value: ""
   jobs:
   - name: Deploy
     type: deployer

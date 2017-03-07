@@ -125,8 +125,14 @@ figlet 'Web app'
 
 # Push app
 cd web
+
+if [ -z "$CF_APP_HOSTNAME" ]; then
+  echo 'CF_APP_HOSTNAME was not set in the pipeline. Using CF_APP as hostname.'
+  export CF_APP_HOSTNAME=$CF_APP
+fi
+
 if ! cf app $CF_APP; then
-  cf push $CF_APP --hostname $CF_APP --no-start
+  cf push $CF_APP --hostname $CF_APP_HOSTNAME --no-start
   if [ -z "$ADMIN_USERNAME" ]; then
     echo 'No admin username configured'
   else
@@ -150,7 +156,7 @@ else
   trap rollback ERR
   figlet -f small 'Deploy new version'
   cf rename $CF_APP $OLD_CF_APP
-  cf push $CF_APP --hostname $CF_APP --no-start
+  cf push $CF_APP --hostname $CF_APP_HOSTNAME --no-start
   if [ -z "$ADMIN_USERNAME" ]; then
     echo 'No admin username configured'
   else
