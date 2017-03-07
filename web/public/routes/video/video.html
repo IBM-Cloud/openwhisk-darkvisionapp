@@ -15,19 +15,37 @@
         {{controller.data.video.title}}
       </div>
       <div>
-        <md-menu>
+        <md-menu ng-if="controller.isVideo()">
           <md-button class="video-menu-button md-icon-button" ng-click="$mdMenu.open()">
             <md-icon md-font-library="material-icons">more_vert</md-icon>
           </md-button>
           <md-menu-content>
             <md-menu-item>
               <md-button ng-click="controller.resetImages()">
-                Reset all images
+                Reset All Images
               </md-button>
             </md-menu-item>
             <md-menu-item>
               <md-button ng-click="controller.reset()">
-                Relaunch analysis
+                Relaunch Video Analysis
+              </md-button>
+            </md-menu-item>
+          </md-menu-content>
+        </md-menu>
+        <md-menu ng-if="!controller.isVideo()">
+          <md-button class="video-menu-button md-icon-button" ng-click="$mdMenu.open()">
+            <md-icon md-font-library="material-icons">more_vert</md-icon>
+          </md-button>
+          <md-menu-content>
+            <md-menu-item>
+              <md-button ng-click="controller.reset()">
+                Relaunch Image Analysis
+              </md-button>
+            </md-menu-item>
+            <md-menu-divider></md-menu-divider>
+            <md-menu-item>
+              <md-button ng-click="controller.delete()">
+                Delete Image
               </md-button>
             </md-menu-item>
           </md-menu-content>
@@ -108,7 +126,7 @@
                   <div layout="column">
                     <div class="entry-overview-counter">
                       <span class="entry-overview-counter-title">Frames: </span>
-                      <span class="entry-overview-counter-value">{{controller.data.selected.frame_count}}</span>
+                      <span class="entry-overview-counter-value">{{controller.data.images.length}}</span>
                     </div>
                     <div class="entry-overview-counter">
                       <span class="entry-overview-counter-title">Keywords: </span>
