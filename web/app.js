@@ -432,6 +432,10 @@ app.get('/api/videos/:id/reset-images', checkForAuthentication, (req, res) => {
 // Protects the upload zone with login and password if they are configured
 app.use('/upload', checkForAuthentication);
 
+app.get('/upload', (req, res) => {
+  res.send(200);
+});
+
 app.post('/upload', upload.single('file'), (req, res) => {
   if (!req.file || !req.file.mimetype) {
     res.status(500).send({ error: 'no file or mimetype' });

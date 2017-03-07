@@ -98,7 +98,7 @@
     }
     ]);
 
-  app.controller('MainController', ['$scope', '$rootScope', '$state', 'Upload', function($scope, $rootScope, $state, Upload) {
+  app.controller('MainController', ['$scope', '$rootScope', '$state', '$http', 'Upload', function($scope, $rootScope, $state, $http, Upload) {
     $scope.lightTheme = true;
     $scope.toggleLight = function() {
       $scope.lightTheme = !$scope.lightTheme;
@@ -122,14 +122,19 @@
           data: { file: file }
         });
 
-        file.upload.then(function(response) {
+        // this should trigger the basic auth login/password
+        $http.get('/upload').then(function(response) {
+          file.upload.then(function(response) {
+            $scope.isUploading = false;
+            console.log('Upload complete', response.data);
+          }, function(response) {
+            $scope.isUploading = false;
+            console.log('Upload failed', response.status, response.data);
+          }, function(evt) {
+            $scope.uploadProgress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+          });
+        }).catch(function () {
           $scope.isUploading = false;
-          console.log('Upload complete', response.data);
-        }, function(response) {
-          $scope.isUploading = false;
-          console.log('Upload failed', response.status, response.data);
-        }, function(evt) {
-          $scope.uploadProgress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
         });
       }
     };
