@@ -13,7 +13,7 @@
 //------------------------------------------------------------------------------
 (function () {
   function HomeController($location, VideosService, ImagesService) {
-    console.info("Initializing HomeController");
+    console.info('Initializing HomeController');
     var controller = this;
 
     controller.data = {
@@ -23,13 +23,21 @@
       showImages: true,
     };
 
-    controller.reload = function () {
-      VideosService.all().then(function (videos) {
+    controller.reload = function() {
+      controller.reloadVideos();
+      controller.reloadImages();
+    };
+
+    controller.reloadVideos = function() {
+      VideosService.all().then(function(videos) {
         videos.sort(function(video1, video2) {
           return video1.title.localeCompare(video2.title);
         });
         controller.data.videos = videos;
       });
+    };
+
+    controller.reloadImages = function() {
       ImagesService.all().then(function (images) {
         controller.data.images = images;
       });
@@ -42,6 +50,18 @@
         width: (100 * faceLocation.width / image.analysis.size.width).toFixed(2),
         height: (100 * faceLocation.height / image.analysis.size.height).toFixed(2),
       };
+    };
+
+    controller.resetImage = function(image) {
+      ImagesService.reset(image).then(function() {
+        controller.reloadImages();
+      });
+    };
+
+    controller.deleteImage = function(image) {
+      ImagesService.delete(image).then(function() {
+        controller.reloadImages();
+      });
     };
 
     controller.reload();
