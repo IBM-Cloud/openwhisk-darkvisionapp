@@ -127,7 +127,7 @@ label.md-button {
 }
 
 .image-box {
-  border-bottom: 1px solid #151515;
+  border-bottom: 1px solid;
 }
 
 .video-box-tag {
