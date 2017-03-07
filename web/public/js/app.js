@@ -37,7 +37,7 @@
     'ngLoadingSpinner',
     'ui.router',
     'angularCSS',
-    'angularFileUpload',
+    'ngFileUpload',
   ]);
 
   app.config(function($stateProvider, $urlRouterProvider) {
@@ -98,21 +98,41 @@
     }
     ]);
 
-  app.controller('MainController', ['$scope', '$rootScope', '$state', 'FileUploader', function($scope, $rootScope, $state, FileUploader) {
-    var controller = this;
-
+  app.controller('MainController', ['$scope', '$rootScope', '$state', 'Upload', function($scope, $rootScope, $state, Upload) {
     $scope.lightTheme = true;
     $scope.toggleLight = function() {
       $scope.lightTheme = !$scope.lightTheme;
-      var theme = $scope.lightTheme ? 'css/darkvision-light.css': 'css/darkvision-dark.css'
-      document.getElementById("theme").href=theme;
+      var theme = $scope.lightTheme ? 'css/darkvision-light.css' : 'css/darkvision-dark.css'
+      document.getElementById("theme").href = theme;
     };
 
-    $scope.uploader = new FileUploader({
-      url: '/upload/file',
-      alias: 'file',
-      autoUpload: true,
-    });
+    $scope.isUploading = false;
+    $scope.uploadProgress = 0;
+
+    $scope.uploadFile = function(file, errFiles) {
+      console.log('Uploading', file, errFiles);
+      $scope.f = file;
+      $scope.errFile = errFiles && errFiles[0];
+      if (file) {
+        $scope.isUploading = true;
+        $scope.uploadProgress = 0;
+
+        file.upload = Upload.upload({
+          url: '/upload',
+          data: { file: file }
+        });
+
+        file.upload.then(function(response) {
+          $scope.isUploading = false;
+          console.log('Upload complete', response.data);
+        }, function(response) {
+          $scope.isUploading = false;
+          console.log('Upload failed', response.status, response.data);
+        }, function(evt) {
+          $scope.uploadProgress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+        });
+      }
+    };
   }]);
 
 }());

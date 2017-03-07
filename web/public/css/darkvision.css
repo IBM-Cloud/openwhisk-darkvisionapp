@@ -35,7 +35,7 @@ body, html {
   border-radius: 0;
 }
 
-label md-progress-circular {
+.upload-button md-progress-circular {
   display: inline-block;
   top: 5px;
   width: 24px !important;

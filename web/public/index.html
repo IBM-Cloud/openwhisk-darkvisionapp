@@ -27,15 +27,12 @@
           <span class="title ow">OpenWhisk</span><span class="title dv">Dark Vision</span>
         </a>
         <span flex></span>
-        <div>
-          <input ng-disabled="uploader.isUploading" class="ng-hide" nv-file-select id="fileUpload" uploader="uploader" type="file" />
-          <label ng-disabled="uploader.isUploading" for="fileUpload" class="md-button upload-button">
-            Upload
-            <md-icon ng-if="!uploader.isUploading" md-font-library="material-icons">backup</md-icon>
-            <md-progress-circular ng-if="uploader.isUploading && uploader.progress < 100" md-diameter="22" md-mode="determinate" value="{{uploader.progress}}"></md-progress-circular>
-            <md-progress-circular ng-if="uploader.isUploading && uploader.progress === 100" md-diameter="22" md-mode="indeterminate" value="{{uploader.progress}}"></md-progress-circular>
-          </label>
-        </div>
+        <md-button class="upload-button" ng-disabled="isUploading" type="file" ngf-select="uploadFile($file, $invalidFiles)" accept="image/*,video/mp4">
+          Upload
+          <md-icon ng-if="!isUploading" md-font-library="material-icons">backup</md-icon>
+          <md-progress-circular ng-if="isUploading && uploadProgress < 100" md-diameter="22" md-mode="determinate" value="{{uploadProgress}}"></md-progress-circular>
+          <md-progress-circular ng-if="isUploading && uploadProgress === 100" md-diameter="22" md-mode="indeterminate"></md-progress-circular>
+        </md-button>
         <md-button class="md-icon-button" ng-click="toggleLight();">
           <md-icon md-svg-src="images/lightbulb.svg"></md-icon>
         </md-button>
@@ -61,12 +58,10 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular-css/1.0.8/angular-css.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.3/angular-material.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-file-upload/2.5.0/angular-file-upload.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload-shim.min.js"></script>
 
   <script src="js/app.js"></script>
-
-  <!-- <script src="js/status.service.js"></script>
-  <script src="js/status.controller.js"></script> -->
 
   <script src="js/images.service.js"></script>
   <script src="js/videos.service.js"></script>
