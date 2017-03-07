@@ -61,6 +61,12 @@ By default, anyone can upload/delete/reset videos and images. You can restrict a
   cf set-env openwhisk-darkvision ADMIN_PASSWORD aNotTooSimplePassword
   ```
 
+You will need to restage the application for the change to take effect:
+
+  ```
+  cf restage openwhisk-darkvision
+  ```
+
 ## Build the Frame Extractor Docker image
 
 Extracting frames and audio from a video is achieved with ffmpeg. ffmpeg is not available to an OpenWhisk action written in JavaScript or Swift. Fortunately OpenWhisk allows to write an action as a Docker image and can retrieve this image from Docker Hub.
@@ -138,7 +144,7 @@ We need to tell the Speech to Text service where to call back when it has comple
 
   > This command reuses the configuration of the variables STT_URL, STT_USERNAME, STT_PASSWORD, STT_CALLBACK_URL made in your local.env file.
 
-**That's it! Use the web application to upload images/videos and view the results! You can also view the results using an iOS application as shown further down this README.**
+**That's it! Use the web application to upload images/videos and view the results! You can also view the results using an iOS application as shown further down the [README](./README.md).**
 
 ## Running the web application locally
 
@@ -160,6 +166,4 @@ We need to tell the Speech to Text service where to call back when it has comple
   the application uses the environment variables defined in **local.env** in previous steps.
 
 1. Upload videos through the web user interface. Wait for OpenWhisk to process the videos.
-Look at the results. While OpenWhisk processes videos, the counters at the top of the
-application will update. These counters call the **/api/status** endpoint of the web
-application to retrieve statistics.
+Refresh the page to look at the results.

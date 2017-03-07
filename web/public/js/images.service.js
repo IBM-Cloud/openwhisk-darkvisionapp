@@ -27,7 +27,7 @@
       },
       reset: function (image) {
         var deferred = $q.defer();
-        $http.get("/api/images/" + encodeURIComponent(image._id) + "/reset").then(function(response) { return response.data; }).then(function (data) {
+        $http.post("/api/images/" + encodeURIComponent(image._id) + "/reset").then(function(response) { return response.data; }).then(function (data) {
           deferred.resolve(data);
         }).catch(function () {
           deferred.reject();

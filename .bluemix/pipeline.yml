@@ -8,16 +8,18 @@ stages:
   triggers:
   - type: commit
   properties:
-  - name: CLOUDANT_db
-    value: ${CLOUDANT_db}
+  - name: CF_APP_HOSTNAME
+    value: ""
   - name: ADMIN_USERNAME
     value: ${ADMIN_USERNAME}
   - name: ADMIN_PASSWORD
     value: ${ADMIN_PASSWORD}
-  - name: DOCKER_EXTRACTOR_NAME
-    value: "l2fprod/darkvision-extractor-audio"
+  - name: CLOUDANT_db
+    value: ${CLOUDANT_db}
   - name: OPENWHISK_API_HOST
     value: "openwhisk.ng.bluemix.net"
+  - name: DOCKER_EXTRACTOR_NAME
+    value: "l2fprod/darkvision-extractor-audio"
   - name: WATSON_API_KEY
     value: ${WATSON_API_KEY}
   - name: STT_CALLBACK_SECRET

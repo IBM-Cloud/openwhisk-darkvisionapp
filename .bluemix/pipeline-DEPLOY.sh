@@ -34,7 +34,7 @@ export CLOUDANT_username=`echo $CLOUDANT_CREDENTIALS | jq -r .username`
 export CLOUDANT_password=`echo $CLOUDANT_CREDENTIALS | jq -r .password`
 export CLOUDANT_host=`echo $CLOUDANT_CREDENTIALS | jq -r .host`
 # Cloudant database should be set by the pipeline, use a default if not set
-if [ -z ${CLOUDANT_db+x} ]; then
+if [ -z "$CLOUDANT_db" ]; then
   echo 'CLOUDANT_db was not set in the pipeline. Using default value.'
   export CLOUDANT_db=openwhisk-darkvision
 fi
@@ -45,7 +45,7 @@ curl -s -X PUT "https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host/$CL
 
 # Create Watson Visual Recognition service unless WATSON_API_KEY is defined in the service
 figlet -f small 'Visual Recognition'
-if [ -z ${WATSON_API_KEY+x} ]; then
+if [ -z "$WATSON_API_KEY" ]; then
   cf create-service watson_vision_combined free visualrecognition-for-darkvision
   cf create-service-key visualrecognition-for-darkvision for-darkvision
 
@@ -76,7 +76,7 @@ export NLU_PASSWORD=`echo $NLU_CREDENTIALS | jq -r .password`
 export NLU_URL=`echo $NLU_CREDENTIALS | jq -r .url`
 
 # Docker image should be set by the pipeline, use a default if not set
-if [ -z ${DOCKER_EXTRACTOR_NAME+x} ]; then
+if [ -z "$DOCKER_EXTRACTOR_NAME" ]; then
   echo 'DOCKER_EXTRACTOR_NAME was not set in the pipeline. Using default value.'
   export DOCKER_EXTRACTOR_NAME=l2fprod/darkvision-extractor-master
 fi
@@ -92,7 +92,7 @@ echo 'Retrieving OpenWhisk authorization key...'
 CF_ACCESS_TOKEN=`cat ~/.cf/config.json | jq -r .AccessToken | awk '{print $2}'`
 
 # Docker image should be set by the pipeline, use a default if not set
-if [ -z ${OPENWHISK_API_HOST+x} ]; then
+if [ -z "$OPENWHISK_API_HOST" ]; then
   echo 'OPENWHISK_API_HOST was not set in the pipeline. Using default value.'
   export OPENWHISK_API_HOST=openwhisk.ng.bluemix.net
 fi
@@ -125,9 +125,15 @@ figlet 'Web app'
 
 # Push app
 cd web
+
+if [ -z "$CF_APP_HOSTNAME" ]; then
+  echo 'CF_APP_HOSTNAME was not set in the pipeline. Using CF_APP as hostname.'
+  export CF_APP_HOSTNAME=$CF_APP
+fi
+
 if ! cf app $CF_APP; then
-  cf push $CF_APP --hostname $CF_APP --no-start
-  if [ -z ${ADMIN_USERNAME+x} ]; then
+  cf push $CF_APP --hostname $CF_APP_HOSTNAME --no-start
+  if [ -z "$ADMIN_USERNAME" ]; then
     echo 'No admin username configured'
   else
     cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"
@@ -150,8 +156,8 @@ else
   trap rollback ERR
   figlet -f small 'Deploy new version'
   cf rename $CF_APP $OLD_CF_APP
-  cf push $CF_APP --hostname $CF_APP --no-start
-  if [ -z ${ADMIN_USERNAME+x} ]; then
+  cf push $CF_APP --hostname $CF_APP_HOSTNAME --no-start
+  if [ -z "$ADMIN_USERNAME" ]; then
     echo 'No admin username configured'
   else
     cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"

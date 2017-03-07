@@ -147,7 +147,7 @@ app.get('/api/images', (req, res) => {
 /**
  * Removes the analysis from one image
  */
-app.get('/api/images/:id/reset', checkForAuthentication, (req, res) => {
+app.post('/api/images/:id/reset', checkForAuthentication, (req, res) => {
   mediaStorage.imageReset(req.params.id, (err, result) => {
     if (err) {
       console.log(err);
@@ -398,7 +398,7 @@ app.get('/api/videos/:id/related', (req, res) => {
 /**
  * Deletes all generated data for one video so that it gets analyzed again.
  */
-app.get('/api/videos/:id/reset', checkForAuthentication, (req, res) => {
+app.post('/api/videos/:id/reset', checkForAuthentication, (req, res) => {
   mediaStorage.videoReset(req.params.id, (err, result) => {
     if (err) {
       console.log(err);
@@ -415,7 +415,7 @@ app.get('/api/videos/:id/reset', checkForAuthentication, (req, res) => {
 /**
  * Deletes all generated data for images in the video so that they get analyzed again.
  */
-app.get('/api/videos/:id/reset-images', checkForAuthentication, (req, res) => {
+app.post('/api/videos/:id/reset-images', checkForAuthentication, (req, res) => {
   mediaStorage.videoImagesReset(req.params.id, (err, result) => {
     if (err) {
       console.log(err);
@@ -430,7 +430,13 @@ app.get('/api/videos/:id/reset-images', checkForAuthentication, (req, res) => {
 });
 
 // Protects the upload zone with login and password if they are configured
-app.post('/upload/file', checkForAuthentication, upload.single('file'), (req, res) => {
+app.use('/upload', checkForAuthentication);
+
+app.get('/upload', (req, res) => {
+  res.send(200);
+});
+
+app.post('/upload', upload.single('file'), (req, res) => {
   if (!req.file || !req.file.mimetype) {
     res.status(500).send({ error: 'no file or mimetype' });
   } else if (req.file.mimetype.startsWith('video/')) {

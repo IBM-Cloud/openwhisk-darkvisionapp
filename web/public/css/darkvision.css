@@ -34,7 +34,7 @@ body, html {
   border-radius: 0;
 }
 
-label md-progress-circular {
+.upload-button md-progress-circular {
   display: inline-block;
   top: 5px;
   width: 24px !important;
@@ -50,7 +50,7 @@ spinner {
   top: 50px;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 10;
 }
 
 .loadingProgress {

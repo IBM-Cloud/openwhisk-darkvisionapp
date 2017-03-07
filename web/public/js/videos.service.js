@@ -36,7 +36,7 @@
       },
       reset: function (videoId) {
         var deferred = $q.defer();
-        $http.get("/api/videos/" + encodeURIComponent(videoId) + "/reset").then(function(response) { return response.data; }).then(function (data) {
+        $http.post("/api/videos/" + encodeURIComponent(videoId) + "/reset").then(function(response) { return response.data; }).then(function (data) {
           deferred.resolve(data);
         }).catch(function () {
           deferred.reject();
@@ -45,7 +45,7 @@
       },
       resetImages: function (videoId) {
         var deferred = $q.defer();
-        $http.get("/api/videos/" + encodeURIComponent(videoId) + "/reset-images").then(function(response) { return response.data; }).then(function (data) {
+        $http.post("/api/videos/" + encodeURIComponent(videoId) + "/reset-images").then(function(response) { return response.data; }).then(function (data) {
           deferred.resolve(data);
         }).catch(function () {
           deferred.reject();

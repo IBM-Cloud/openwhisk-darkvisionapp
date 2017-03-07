@@ -106,6 +106,26 @@
                 </li>
               </ul>
             </div>
+            <div>
+              <md-menu>
+                <md-button class="video-menu-button md-icon-button" ng-click="$mdMenu.open()">
+                  <md-icon md-font-library="material-icons">more_vert</md-icon>
+                </md-button>
+                <md-menu-content>
+                  <md-menu-item>
+                    <md-button ng-click="controller.resetImage(image)">
+                      Relaunch Analysis
+                    </md-button>
+                  </md-menu-item>
+                  <md-menu-divider></md-menu-divider>
+                  <md-menu-item>
+                    <md-button ng-click="controller.deleteImage(image)">
+                      Delete
+                    </md-button>
+                  </md-menu-item>
+                </md-menu-content>
+              </md-menu>
+            </div>
           </div>
         </div>
       </div>

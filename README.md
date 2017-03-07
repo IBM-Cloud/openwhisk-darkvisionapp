@@ -28,8 +28,8 @@ In addition to processing videos, Dark Vision can also processes standalone imag
 
 ### Extracting frames and audio from a video
 
-The user uploads a video or image using the Dark Vision web application, which stores it in a Cloudant DB. Once the video is uploaded, OpenWhisk detects the new video by listening to Cloudant changes (trigger).
-OpenWhisk then triggers the video and audio extractor action. During its execution, the extractor produces frames (images), captures the audio track and stores them in Cloudant. The frames are then processed using Watson Visual Recognition, the audio with Watson Speech to Text and Natural Language Understanding. The results are stored in the same Cloudant DB. They can be viewed using Dark Vision web application OR an iOS application.
+The user uploads a video or image using the Dark Vision web application, which stores it in a Cloudant DB (1). Once the video is uploaded, OpenWhisk detects the new video (2) by listening to Cloudant changes (trigger).
+OpenWhisk then triggers the video and audio extractor action (3). During its execution, the extractor produces frames (images) (4), captures the audio track (5) and stores them in Cloudant (6, 7). The frames are then processed using Watson Visual Recognition, the audio with Watson Speech to Text and Natural Language Understanding. The results are stored in the same Cloudant DB. They can be viewed using Dark Vision web application or an iOS application.
 
 Object Storage can complement Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
 
@@ -38,17 +38,17 @@ Object Storage can complement Cloudant. When doing so, video and image medadata 
     node [fontname = "helvetica"]
     rankdir=LR
     /* stores a video */
-    user -> storage
+    user -> storage [label="1"]
     /* cloudant change sent to openwhisk */
-    storage -> openwhisk
+    storage -> openwhisk [label="2"]
     /* openwhisk triggers the extractor */
-    openwhisk -> extractor
+    openwhisk -> extractor [label="3"]
     /* extractor produces image frames and audio */
-    extractor -> frames
-    extractor -> audio
+    extractor -> frames [label="4"]
+    extractor -> audio [label="5"]
     /* frames and audio are stored */
-    frames -> storage
-    audio -> storage
+    frames -> storage [label="6"]
+    audio -> storage [label="7"]
     /* styling ****/
     frames [label="Image Frames"]
     audio [label="Audio Track"]
@@ -59,8 +59,8 @@ Object Storage can complement Cloudant. When doing so, video and image medadata 
 
 ### Processing frames and standalone images
 
-Whenever a frame is created and uploaded, Cloudant emits a change event and
-OpenWhisk triggers the analysis. The analysis is persisted with the image.
+Whenever a frame is created and uploaded (1), Cloudant emits a change event (2) and
+OpenWhisk triggers the analysis (3). The analysis (4) is persisted with the image (5).
 
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
@@ -88,12 +88,12 @@ OpenWhisk triggers the analysis. The analysis is persisted with the image.
 
 ### Processing audio
 
-Whenever the audio track is extracted, Cloudant emits a change event and
-OpenWhisk triggers the audio analysis.
+Whenever the audio track is extracted (1), Cloudant emits a change event (2) and
+OpenWhisk triggers the audio analysis (3).
 
 #### Get a transcript of the audio
 
-Extracting the transcript of an audio track may take more than 5 minutes. OpenWhisk actions have a 5 minutes limit so waiting in the action for the audio processing to complete may not work all the time. Fortunately the Speech to Text service has a very nice [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods). Instead of waiting for Speech to Text to process the audio, Dark Vision sends the audio file to Speech to Text and Speech to Text will notify Dark Vision with the transcript when it is done processing the audio.
+Extracting the transcript of an audio track may take more than 5 minutes. OpenWhisk actions have a 5 minutes limit so waiting in the action for the audio processing to complete may not work all the time. Fortunately the Speech to Text service has a very nice [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods). Instead of waiting for Speech to Text to process the audio, Dark Vision sends the audio file to Speech to Text (4) and Speech to Text will notify Dark Vision with the transcript when it is done processing the audio (5). The result is attached to the audio document (6).
 
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
@@ -115,7 +115,7 @@ Extracting the transcript of an audio track may take more than 5 minutes. OpenWh
 
 #### Analyze the transcript
 
-Once the transcript is stored, the text analysis is triggered to detect concepts, entities and emotion.
+Once the transcript is stored (1), the text analysis (3) is triggered (2) to detect concepts, entities and emotion (4). The result is attached to the audio (5).
 
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
@@ -234,13 +234,13 @@ The web app exposes an API to list all videos and retrieve the results.
 ### OpenWhisk - Frame extraction
 
 The **frame extractor** runs as a Docker action created with the [OpenWhisk Docker SDK](https://console.ng.bluemix.net/docs/openwhisk/openwhisk_reference.html#openwhisk_ref_docker):
-  * It uses *ffmpeg* to extract frames from the video.
+  * It uses *ffmpeg* to extract frames and audio from the video.
   * It is written as a nodejs app to benefit from several nodejs helper packages (Cloudant, ffmpeg, imagemagick)
 
 | File | Description |
 | ---- | ----------- |
 |[**Dockerfile**](processing/extractor/Dockerfile)|Docker file to build the extractor image. It pulls ffmpeg into the image together with node. It also runs npm install for both the server and client.|
-|[**extract.js**](processing/extractor/client/extract.js)|The core of the frame extractor. It downloads the video stored in Cloudant, uses ffmpeg to extract frames and video metadata, produces a thumbnail for the video. By default it produces around 15 images for a video. This can be changed by modifying the implementation of **getFps**. First 3 min of audio is also exported.|
+|[**extract.js**](processing/extractor/client/extract.js)|The core of the frame extractor. It downloads the video stored in Cloudant, uses ffmpeg to extract frames and video metadata, produces a thumbnail for the video. By default it produces around 15 images for a video. This can be changed by modifying the implementation of **getFps**. First 15 min of audio is also exported.|
 |[**app.js**](processing/extractor/server/app.js)|Adapted from the OpenWhisk Docker SDK to call the extract.js node script.|
 
 ### OpenWhisk - Frame analysis
@@ -262,7 +262,7 @@ The code is very similar to the one used in the [Vision app](https://github.com/
 
 | File | Description |
 | ---- | ----------- |
-|[**speechtotext.js**](processing/speechtotext/speechtotext.js)|Uses Speech to Text to transcript the audio. It acts as the callback server for the [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods) of Speech to Text service.|
+|[**speechtotext.js**](processing/speechtotext/speechtotext.js)|Uses Speech to Text to transcript the audio. It acts as the callback server for the [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods) of Speech to Text service. The speechtotext action is exposed as a public HTTP endpoint by the [**deploy.js**](deploy.js) script.|
 |[**textanalysis.js**](processing/textanalysis/textanalysis.js)|Calls Natural Language Understanding on the transcript.|
 
 ### Web app

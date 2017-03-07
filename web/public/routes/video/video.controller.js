@@ -58,12 +58,12 @@
       controller.data.video = controller.data.selected = summary.video;
     });
 
-    controller.reset = function () {
+    controller.reset = function() {
       if (controller.data.selected && controller.data.selected.type === 'image') {
         console.log('Resetting image', controller.data.selected._id);
         ImagesService.reset(controller.data.selected).then(function (targetImage) {
+          $state.reload();
         });
-        controller.selectVideo();
       } else {
         console.log('Resetting video', controller.data.video._id);
         VideosService.reset(controller.data.video._id).then(function (reset) {
@@ -79,6 +79,25 @@
         $state.reload();
       });
     }
+
+    controller.delete = function() {
+      if (controller.data.selected && controller.data.selected.type === 'image') {
+        var idToRemove = controller.data.selected._id;
+        console.log('Deleting image', idToRemove);
+        ImagesService.delete(controller.data.selected).then(function (targetImage) {
+          controller.data.images = controller.data.images.filter(function(image) {
+            return image._id !== idToRemove;
+          });
+        });
+        controller.selectVideo();
+      } else {
+        console.log('Deleting video', controller.data.video._id);
+        VideosService.delete(controller.data.video._id).then(function (reset) {
+          // reload the page, it will show empty
+          $state.reload();
+        });
+      }
+    };
   }
 
   angular.module('app')
