@@ -35,6 +35,10 @@ md-toolbar md-icon {
   color: #ffffff !important;
 }
 
+.upload-button[disabled] {
+  color: rgba(255,255,255,0.26) !important;
+}
+
 md-progress-circular path {
   stroke: white !important;
 }
