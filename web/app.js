@@ -17,8 +17,10 @@ const cfenv = require('cfenv');
 const fs = require('fs');
 const async = require('async');
 const auth = require('http-auth');
+const compression = require('compression');
 
 const app = express();
+app.use(compression());
 const upload = multer({
   dest: 'uploads/'
 });
