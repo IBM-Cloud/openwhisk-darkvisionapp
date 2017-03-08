@@ -132,7 +132,7 @@ if (!fs.existsSync(imageCacheDirectory)) {
 
 // track cached images
 const imageCache = new (require('node-cache'))({
-  stdTTL: 60 * 10, // cached for X seconds
+  stdTTL: 60 * 60, // cached for X seconds
   checkperiod: 60 * 5, // cleanup every Y seconds
 });
 
