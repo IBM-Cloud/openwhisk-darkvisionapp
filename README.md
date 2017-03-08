@@ -1,7 +1,7 @@
 # Dark Vision
 ## Discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
 
-Think about all the videos individuals and companies (Media and Entertainment) accumulate every year. How can you keep track of what's inside of them so you can quickly search and find what you're looking for? *Show me all the videos that have Arc De Rriomphe in it.* or *Show me the all the videos that talk about peaches*
+Think about all the videos individuals and companies (Media and Entertainment) accumulate every year. How can you keep track of what's inside of them so you can quickly search and find what you're looking for? *Show me all the videos that have Arc De Triomphe in it.* or *Show me the all the videos that talk about peaches*
 
 What if we used artificial intelligence to process these videos to tell us which video has what we're looking for without us having to watch all of them.
 
