@@ -164,6 +164,7 @@
 }
 
 .video-frames {
+  overflow-x: hidden;
   overflow-y: scroll;
   padding-bottom: 20px;
 }
