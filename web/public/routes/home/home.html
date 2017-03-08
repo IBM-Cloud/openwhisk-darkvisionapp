@@ -60,7 +60,7 @@
     </div>
 
     <div flex="grow" ng-if="controller.data.showImages">
-      <h3 ng-if="controller.data.showVideos">
+      <h3 ng-if="controller.data.showVideos" class="image-uploads-title">
         Image Uploads ({{filteredImages.length}})
       </h3>
 
@@ -70,7 +70,7 @@
 
       <div>
         <div ng-repeat="image in filteredImages">
-          <div id="image-{{image._id}}" layout="row" class="image-box">
+          <div id="image-{{image._id}}" layout="row" class="image-box border-box">
             <div flex="initial" class="image-box-image">
               <div class="entry-thumbnail-container" style="position: relative;">
                 <div ng-if="face.face_location.left>0" ng-repeat="face in image.analysis.face_detection" class="face-overlay-box" style="position: absolute;

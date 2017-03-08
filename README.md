@@ -1,22 +1,25 @@
-# Dark Vision - Discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
+# Dark Vision
+## Discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
+
+Think about all the videos individuals and companies (Media and Entertainment) accumulate every year. How can you keep track of what's inside of them so you can quickly search and find what you're looking for? *Show me all the videos that have Arc De Rriomphe in it.* or *Show me the all the videos that talk about peaches*
+
+What if we used artificial intelligence to process these videos to tell us which video has what we're looking for without us having to watch all of them.
+
+Dark Vision is an application that processes videos to discover what's inside of them. By analyzing individual frames and audio from videos with IBM Watson Visual Recognition and Natural Language Understanding, Dark Vision builds a summary with a set of tags, famous people or landmarks detected in the video. Use this summary to enhance video search and categorization.
+
+<p align="center">
+  <img src="xdocs/dv-video-summary.png" width="250"/>
+  <img src="xdocs/dv-ios-browse.png" width="250"/>
+  <img src="xdocs/dv-ios-video-details.png" width="250"/>
+</p>
 
 [![Build Status](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp) ![Bluemix Deployments](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/badge.svg)
 
-Dark Vision processes videos to discover dark data. By analyzing video frames, audio transcripts with
-IBM Watson Visual Recognition and Natural Language Understanding, Dark Vision builds a summary with a set of tags and famous people or building detected in the video. Use this
-summary to enhance video search and categorization.
-
-  <img src="xdocs/dv-video-summary.png" width="200"/>
-  <img src="xdocs/dv-ios-browse.png" width="200"/>
-  <img src="xdocs/dv-ios-video-details.png" width="200"/>
-
-In addition to processing videos, Dark Vision can also processes standalone images.
-
-### Watch this Youtube video to know more about the app
+### Watch this Youtube video to learn more about the app
 
 [![Dark Vision](xdocs/dv-video-play.png)](https://www.youtube.com/watch?v=1teIMpkI_Sg&feature=youtu.be "Dark Vision")
 
-## Overview
+## Overview and Architecture
 
  Built using IBM Bluemix, the application uses:
   * [Visual Recognition](https://console.ng.bluemix.net/catalog/services/watson_vision_combined)
@@ -28,8 +31,8 @@ In addition to processing videos, Dark Vision can also processes standalone imag
 
 ### Extracting frames and audio from a video
 
-The user uploads a video or image using the Dark Vision web application, which stores it in a Cloudant DB (1). Once the video is uploaded, OpenWhisk detects the new video (2) by listening to Cloudant changes (trigger).
-OpenWhisk then triggers the video and audio extractor action (3). During its execution, the extractor produces frames (images) (4), captures the audio track (5) and stores them in Cloudant (6, 7). The frames are then processed using Watson Visual Recognition, the audio with Watson Speech to Text and Natural Language Understanding. The results are stored in the same Cloudant DB. They can be viewed using Dark Vision web application or an iOS application.
+The user uploads a video or image using the Dark Vision web application, which stores it in a Cloudant Database (1). Once the video is uploaded, OpenWhisk detects the new video (2) by listening to Cloudant changes (trigger).
+OpenWhisk then triggers the video and audio extractor action (3). During its execution, the extractor produces frames (images) (4), captures the audio track (5) and stores them in Cloudant (6, 7). The frames are then processed using Watson Visual Recognition, the audio with Watson Speech to Text and Natural Language Understanding. The results are stored in the same Cloudant DB. They can be viewed using Dark Vision web application or the iOS application.
 
 Object Storage can complement Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
 
@@ -91,9 +94,9 @@ OpenWhisk triggers the analysis (3). The analysis (4) is persisted with the imag
 Whenever the audio track is extracted (1), Cloudant emits a change event (2) and
 OpenWhisk triggers the audio analysis (3).
 
-#### Get a transcript of the audio
+#### Extract the audio transcript
 
-Extracting the transcript of an audio track may take more than 5 minutes. OpenWhisk actions have a 5 minutes limit so waiting in the action for the audio processing to complete may not work all the time. Fortunately the Speech to Text service has a very nice [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods). Instead of waiting for Speech to Text to process the audio, Dark Vision sends the audio file to Speech to Text (4) and Speech to Text will notify Dark Vision with the transcript when it is done processing the audio (5). The result is attached to the audio document (6).
+Extracting the transcript from an audio track using the Speech to Text service may take more than 5 minutes depending on the video. Because OpenWhisk actions have a 5 minutes limit, waiting in the action for the audio processing to complete is not possible for longer videos. Fortunately the Speech to Text service has a very nice [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods). Instead of waiting for Speech to Text to process the audio, Dark Vision sends the audio file to Speech to Text (4) and Speech to Text will notify Dark Vision with the transcript when it is done processing the audio (5). The result is attached to the audio document (6).
 
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
@@ -136,12 +139,12 @@ Once the transcript is stored (1), the text analysis (3) is triggered (2) to det
   }
 )
 
-## Application Requirements
+## Prerequisites
 
 * IBM Bluemix account. [Sign up][bluemix_signup_url] for Bluemix, or use an existing account.
 * Docker Hub account. [Sign up](https://hub.docker.com/) for Docker Hub, or use an existing account.
-* XCode 8.0, iOS 10, Swift 3
 * Node.js >= 6.9.1
+* XCode 8.0, iOS 10, Swift 3 (For iOS application)
 
 ## Deploying Dark Vision automatically in Bluemix
 
@@ -186,7 +189,7 @@ The automatic approach should be the best option for most users as it does every
 The iOS application is a client to the API exposed by the web application
 to view the results of the analysis of videos. It is an optional piece.
 
-To configure the iOS application, you need the URL of the web application deployed before.
+To configure the iOS application, you need the URL of the web application deployed above.
 The web app exposes an API to list all videos and retrieve the results.
 
 1. Open **ios/darkvision.xcworkspace** with XCode
