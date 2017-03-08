@@ -121,12 +121,62 @@ const mediaStorage = require('./lib/cloudantstorage')(
     fileStore
   });
 
+// setup a cache directory for images
+const imageCacheDirectory = `${__dirname}/cache`;
+console.log('Images will be cached in', imageCacheDirectory);
+if (!fs.existsSync(imageCacheDirectory)) {
+  fs.mkdirSync(imageCacheDirectory);
+}
+
+// track cached images
+const imageCache = new (require('node-cache'))({
+  stdTTL: 60 * 10, // cached for X seconds
+  checkperiod: 60 * 5, // cleanup every Y seconds
+});
+
+// remove image file from disk on cache expiry,
+// so that we don't fill up the disk over time
+imageCache.on('del', (key) => {
+  console.log('Cleaning up cache entry', key);
+  const imageFilename = `${imageCacheDirectory}/${key}`;
+  fs.unlink(imageFilename);
+});
+
 /**
  * Returns an image attachment for a given video or image id,
  * such as the thumbnail for a video or the original data for an image.
+ *
+ * To reduce the load on the storage, images are cached locally.
  */
 app.get('/images/:type/:id.jpg', (req, res) => {
-  mediaStorage.read(req.params.id, `${req.params.type}.jpg`).pipe(res);
+  const cacheKey = `${encodeURIComponent(req.params.type)}-${encodeURIComponent(req.params.id)}.jpg`;
+  const imageFilename = `${imageCacheDirectory}/${cacheKey}`;
+  if (imageCache.get(cacheKey)) {
+    // cache hit, send the file
+    res.sendFile(imageFilename);
+  } else {
+    const mediaStream = mediaStorage.read(req.params.id, `${req.params.type}.jpg`);
+    const imageFile = fs.createWriteStream(imageFilename);
+    mediaStream.on('response', (response) => {
+      // get the image from the storage
+      if (response.statusCode !== 200) {
+        res.status(response.statusCode).send({ ok: false });
+      } else {
+        // save the image to disk
+        mediaStream
+          .pipe(imageFile)
+          .on('finish', () => {
+            console.log('Image cached at', imageFilename);
+            res.sendFile(imageFilename);
+            imageCache.set(cacheKey, true);
+          })
+          .on('error', (err) => {
+            console.log('Can not cache image', err);
+            res.status(500).send({ ok: false });
+          });
+      }
+    });
+  }
 });
 
 /**
