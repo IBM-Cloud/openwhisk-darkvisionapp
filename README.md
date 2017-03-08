@@ -1,9 +1,11 @@
-# Dark Vision - Discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
+# Dark Vision
+## Discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
 
-[![Build Status](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp) ![Bluemix Deployments](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/badge.svg)
+Think about all the videos individuals and companies (Media and Entertainment) accumulate every year. How can you keep track of what's inside of them so you can quickly search and find what you're looking for. *Show me all the videos that have Arc De Rriomphe in it.* or *Show me the all the videos that talk about peaches*
 
-Dark Vision is an application that processes videos to discover dark data. By extracting and analyzing frames and audio from videos with
-IBM Watson Visual Recognition and Natural Language Understanding, Dark Vision builds a summary with a set of tags, famous people or landmarks detected in the video. Use this summary to enhance video search and categorization.
+What if we used artificial intelligence to process these videos to tell us which video has what we're looking for without us having to watch all of them.
+
+Dark Vision is an application that processes videos to discover what's inside of them. By analyzing individual frames and audio from videos with IBM Watson Visual Recognition and Natural Language Understanding, Dark Vision builds a summary with a set of tags, famous people or landmarks detected in the video. Use this summary to enhance video search and categorization.
 <p align="center">
   <img src="xdocs/dv-video-summary.png" width="200"/>
   <img src="xdocs/dv-ios-browse.png" width="200"/>
@@ -11,6 +13,8 @@ IBM Watson Visual Recognition and Natural Language Understanding, Dark Vision bu
 </p>
 
 In addition to processing videos, Dark Vision can also processes standalone images.
+
+[![Build Status](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp) ![Bluemix Deployments](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/badge.svg)
 
 ### Watch this Youtube video to learn more about the app
 
