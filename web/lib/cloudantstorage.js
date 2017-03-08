@@ -88,6 +88,8 @@ function CloudandStorage(options) {
     async.waterfall(prepareDbTasks, (err) => {
       if (err) {
         console.log('Error in database preparation', err);
+      } else {
+        console.log('Database is ready.');
       }
     });
   }
