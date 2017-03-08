@@ -41,10 +41,6 @@ body, html {
   height: 24px;
 }
 
-.twitter-icon {
-  fill: #1b95e0 !important;
-}
-
 spinner {
   position: absolute;
   top: 50px;
