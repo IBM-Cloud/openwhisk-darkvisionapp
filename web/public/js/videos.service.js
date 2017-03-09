@@ -51,6 +51,15 @@
           deferred.reject();
         });
         return deferred.promise;
+      },
+      resetAudio: function (videoId) {
+        var deferred = $q.defer();
+        $http.post("/api/videos/" + encodeURIComponent(videoId) + "/reset-audio").then(function(response) { return response.data; }).then(function (data) {
+          deferred.resolve(data);
+        }).catch(function () {
+          deferred.reject();
+        });
+        return deferred.promise;
       }
     };
   }

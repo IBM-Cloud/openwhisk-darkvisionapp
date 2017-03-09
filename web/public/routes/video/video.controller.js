@@ -80,6 +80,13 @@
       });
     }
 
+    controller.resetAudio = function() {
+      VideosService.resetAudio(controller.data.video._id).then(function (reset) {
+        // reload the page, it will show empty
+        $state.reload();
+      });
+    }
+
     controller.delete = function() {
       if (controller.data.selected && controller.data.selected.type === 'image') {
         var idToRemove = controller.data.selected._id;

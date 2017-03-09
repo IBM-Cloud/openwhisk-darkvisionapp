@@ -481,6 +481,24 @@ app.post('/api/videos/:id/reset-images', checkForAuthentication, (req, res) => {
   });
 });
 
+/**
+ * Deletes all generated data for images in the video so that they get analyzed again.
+ */
+app.post('/api/videos/:id/reset-audio', checkForAuthentication, (req, res) => {
+  mediaStorage.videoAudioReset(req.params.id, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send({
+        error: err
+      });
+    } else {
+      console.log('Done');
+      res.send(result);
+    }
+  });
+});
+
+
 // Protects the upload zone with login and password if they are configured
 app.use('/upload', checkForAuthentication);
 

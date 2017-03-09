@@ -191,9 +191,9 @@ function CloudandStorage(options) {
     };
 
     visionDb.view('status', 'current', {
-          reduce: true,
+      reduce: true,
       group: true,
-        }, (err, body) => {
+    }, (err, body) => {
       if (!err) {
         body.rows.forEach((row) => {
           const type = row.key[0];
@@ -444,6 +444,39 @@ function CloudandStorage(options) {
           callback(err, body);
         });
       }
+    ], resetCallback);
+  };
+
+  // reset the audio within a video
+  self.videoAudioReset = function(videoId, resetCallback/* err, result*/) {
+    async.waterfall([
+      // get the audio for this video
+      (callback) => {
+        console.log('Retrieving audio documents for', videoId);
+        visionDb.find({
+          selector: {
+            type: 'audio',
+            video_id: videoId
+          }
+        }, (err, related) => {
+          callback(err, related ? related.docs : []);
+        });
+      },
+      // remove their analysis and save them
+      (audios, callback) => {
+        audios.forEach((audio) => {
+          console.log(audio);
+          delete audio.transcript;
+          delete audio.analysis;
+        });
+        const toBeUpdated = {
+          docs: audios
+        };
+        console.log('Updating', toBeUpdated.docs.length, 'audios...');
+        visionDb.bulk(toBeUpdated, (err, body) => {
+          callback(err, body);
+        });
+      },
     ], resetCallback);
   };
 
