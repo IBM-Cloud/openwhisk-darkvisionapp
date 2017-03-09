@@ -143,6 +143,10 @@ label.md-button {
   Video
   **/
 
+.breadcrumb a {
+  color: #b8c1c1;
+}
+
 .breadcrumb a md-icon {
   color: #ee6161;
 }

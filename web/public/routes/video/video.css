@@ -12,7 +12,7 @@
   **/
 
 .header {
-  height: 59px;
+  height: 50px;
   padding-left: 20px;
   padding-right: 20px;
   border-bottom: 1px solid;
@@ -28,12 +28,14 @@
 
 .breadcrumb a {
   text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .breadcrumb a md-icon {
   font-size: 20px !important;
   width: 20px;
-  line-height: 32px;
+  line-height: 28px;
   font-weight: bold;
 }
 
@@ -52,7 +54,7 @@
   padding-left: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 25px;
+  font-size: 20px;
   font-weight: 500;
   border-left: 1px solid;
   white-space: nowrap;
