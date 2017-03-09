@@ -179,8 +179,15 @@ md-icon {
   padding-bottom: 30px;
 }
 
-.status-value-cell div md-progress-linear {
+.status-value-cell .status-value,
+.status-value-cell div .status-value {
+  margin-left: 0;
+}
+
+.status-value-cell div .status-progress {
   max-width: 100px;
+  margin-left: 10px;
+  margin-right: 0;
 }
 
 .status-hide-details {

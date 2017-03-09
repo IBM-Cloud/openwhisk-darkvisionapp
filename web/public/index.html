@@ -55,11 +55,17 @@
   <div class="status border-box md-whiteframe-2dp" ng-controller="StatusController as controller">
     <div ng-if="controller.data.status" class="width-wrapper">
       <div class="status-compact" ng-if="!controller.data.showDetails" layout="row" layout-align="center center">
-        <span class="status-title">Processing:</span>
-        <span class="status-value">{{controller.data.status.by_type.video.todo}}</span>&nbsp;<span class="status-label">Videos</span>
-        <span class="status-value">{{controller.data.status.by_type.audio.todo}}</span>&nbsp;<span class="status-label">Audio</span>
-        <span class="status-value">{{controller.data.status.by_type.image.todo}}</span>&nbsp;<span class="status-label">Images</span>
-        <md-progress-linear class="status-progress" flex="33" md-mode="determinate" value="{{100 * controller.data.status.by_state.done / controller.data.status.total}}"></md-progress-linear>
+        <span ng-if="controller.data.status.by_state.todo>0" class="status-title">Processing:</span>
+        <div ng-if="controller.data.status.by_type.video.todo">
+          <span class="status-value">{{controller.data.status.by_type.video.todo}}</span>&nbsp;<span class="status-label">Videos</span>
+        </div>
+        <div ng-if="controller.data.status.by_type.audio.todo">
+          <span class="status-value">{{controller.data.status.by_type.audio.todo}}</span>&nbsp;<span class="status-label">Audio</span>
+        </div>
+        <div ng-if="controller.data.status.by_type.image.todo">
+          <span class="status-value">{{controller.data.status.by_type.image.todo}}</span>&nbsp;<span class="status-label">Images</span>
+        </div>
+        <md-progress-linear ng-if="controller.data.status.by_state.todo>0" class="status-progress" flex="33" md-mode="determinate" value="{{100 * controller.data.status.by_state.done / controller.data.status.total}}"></md-progress-linear>
         <span flex></span>
         <div class="status-view-details" ng-click="controller.toggleDetails()">
           <md-icon md-font-library="material-icons">av_timer</md-icon>
@@ -75,9 +81,24 @@
               <td class="status-title-cell"><span class="status-title">Total Audio Processed</span></td>
             </tr>
             <tr>
-              <td class="status-value-cell"><span class="status-value">{{controller.data.status.by_type.video.total}}</span> Video Files</td>
-              <td class="status-value-cell"><span class="status-value">{{controller.data.status.by_type.image.total}}</span> Image Files</td>
-              <td class="status-value-cell"><span class="status-value">{{controller.data.status.by_type.audio.total}}</span> Audio Files</td>
+              <td class="status-value-cell">
+                <span ng-if="!controller.data.status.by_type.video.done">None</span>
+                <div ng-if="controller.data.status.by_type.video.done>0">
+                  <span class="status-value">{{controller.data.status.by_type.video.done}}</span> Video Files
+                </div>
+              </td>
+              <td class="status-value-cell">
+                <span ng-if="!controller.data.status.by_type.image.done">None</span>
+                <div ng-if="controller.data.status.by_type.image.done>0">
+                  <span class="status-value">{{controller.data.status.by_type.image.done}}</span> Image Files
+                </div>
+              </td>
+              <td class="status-value-cell">
+                <span ng-if="!controller.data.status.by_type.audio.done">None</span>
+                <div ng-if="controller.data.status.by_type.audio.done>0">
+                  <span class="status-value">{{controller.data.status.by_type.audio.done}}</span> Audio Files
+                </div>
+              </td>
             </tr>
             <tr>
               <td class="status-title-cell"><span class="status-title">Videos Processing</span></td>
@@ -86,21 +107,24 @@
             </tr>
             <tr>
               <td class="status-value-cell">
-                <div layout="row">
+                <span ng-if="!controller.data.status.by_type.video.todo">None</span>
+                <div ng-if="controller.data.status.by_type.video.todo>0" layout="row">
                   <span class="status-value">{{controller.data.status.by_type.video.todo}}</span>
                   <md-progress-linear class="status-progress" md-mode="determinate" value="{{100 * controller.data.status.by_type.video.done / controller.data.status.by_type.video.total}}"></md-progress-linear>
                 </div>
               </td>
               <td class="status-value-cell">
-                <div layout="row">
+                <span ng-if="!controller.data.status.by_type.image.todo">None</span>
+                <div ng-if="controller.data.status.by_type.image.todo>0" layout="row">
                   <span class="status-value">{{controller.data.status.by_type.image.todo}}</span>
-                  <md-progress-linear class="status-progress" md-mode="determinate" value="{{100 * controller.data.status.by_type.video.done / controller.data.status.by_type.video.total}}"></md-progress-linear>
+                  <md-progress-linear class="status-progress" md-mode="determinate" value="{{100 * controller.data.status.by_type.image.done / controller.data.status.by_type.image.total}}"></md-progress-linear>
                 </div>
               </td>
               <td class="status-value-cell">
-                <div layout="row">
+                <span ng-if="!controller.data.status.by_type.audio.todo">None</span>
+                <div ng-if="controller.data.status.by_type.audio.todo>0" layout="row">
                   <span class="status-value">{{controller.data.status.by_type.audio.todo}}</span>
-                  <md-progress-linear class="status-progress" md-mode="determinate" value="{{100 * controller.data.status.by_type.video.done / controller.data.status.by_type.video.total}}"></md-progress-linear>
+                  <md-progress-linear class="status-progress" md-mode="determinate" value="{{100 * controller.data.status.by_type.audio.done / controller.data.status.by_type.audio.total}}"></md-progress-linear>
                 </div>
               </td>
             </tr>
