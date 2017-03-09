@@ -15,6 +15,7 @@ const express = require('express');
 const multer = require('multer');
 const cfenv = require('cfenv');
 const fs = require('fs');
+const path = require('path');
 const async = require('async');
 const auth = require('http-auth');
 const compression = require('compression');
@@ -513,7 +514,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
     const videoDocument = {
       type: 'video',
       source: req.file.originalname,
-      title: req.file.originalname,
+      title: path.parse(req.file.originalname).name,
       createdAt: new Date()
     };
     uploadDocument(videoDocument, 'video.mp4', req, res);
