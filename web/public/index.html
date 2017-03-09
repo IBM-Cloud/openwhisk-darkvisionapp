@@ -52,6 +52,68 @@
   <div class="wrapper" ui-view flex layout="row" layout-fill>
   </div>
 
+  <div class="status border-box md-whiteframe-2dp" ng-controller="StatusController as controller">
+    <div ng-if="controller.data.status" class="width-wrapper">
+      <div class="status-compact" ng-if="!controller.data.showDetails" layout="row" layout-align="center center">
+        <span class="status-title">Processing:</span>
+        <span class="status-value">{{controller.data.status.by_type.video.todo}}</span>&nbsp;<span class="status-label">Videos</span>
+        <span class="status-value">{{controller.data.status.by_type.audio.todo}}</span>&nbsp;<span class="status-label">Audio</span>
+        <span class="status-value">{{controller.data.status.by_type.image.todo}}</span>&nbsp;<span class="status-label">Images</span>
+        <md-progress-linear class="status-progress" flex="33" md-mode="determinate" value="{{100 * controller.data.status.by_state.done / controller.data.status.total}}"></md-progress-linear>
+        <span flex></span>
+        <div class="status-view-details" ng-click="controller.toggleDetails()">
+          <md-icon md-font-library="material-icons">av_timer</md-icon>
+          View Processing Details
+        </div>
+      </div>
+      <div class="status-details" ng-if="controller.data.showDetails" layout="row" layout-align="start start">
+        <div flex="70">
+          <table width="100%" class="status-table">
+            <tr>
+              <td class="status-title-cell"><span class="status-title">Total Videos Processed</span></td>
+              <td class="status-title-cell"><span class="status-title">Total Images Processed</span></td>
+              <td class="status-title-cell"><span class="status-title">Total Audio Processed</span></td>
+            </tr>
+            <tr>
+              <td class="status-value-cell"><span class="status-value">{{controller.data.status.by_type.video.total}}</span> Video Files</td>
+              <td class="status-value-cell"><span class="status-value">{{controller.data.status.by_type.image.total}}</span> Image Files</td>
+              <td class="status-value-cell"><span class="status-value">{{controller.data.status.by_type.audio.total}}</span> Audio Files</td>
+            </tr>
+            <tr>
+              <td class="status-title-cell"><span class="status-title">Videos Processing</span></td>
+              <td class="status-title-cell"><span class="status-title">Images Processing</span></td>
+              <td class="status-title-cell"><span class="status-title">Audio Processing</span></td>
+            </tr>
+            <tr>
+              <td class="status-value-cell">
+                <div layout="row">
+                  <span class="status-value">{{controller.data.status.by_type.video.todo}}</span>
+                  <md-progress-linear class="status-progress" md-mode="determinate" value="{{100 * controller.data.status.by_type.video.done / controller.data.status.by_type.video.total}}"></md-progress-linear>
+                </div>
+              </td>
+              <td class="status-value-cell">
+                <div layout="row">
+                  <span class="status-value">{{controller.data.status.by_type.image.todo}}</span>
+                  <md-progress-linear class="status-progress" md-mode="determinate" value="{{100 * controller.data.status.by_type.video.done / controller.data.status.by_type.video.total}}"></md-progress-linear>
+                </div>
+              </td>
+              <td class="status-value-cell">
+                <div layout="row">
+                  <span class="status-value">{{controller.data.status.by_type.audio.todo}}</span>
+                  <md-progress-linear class="status-progress" md-mode="determinate" value="{{100 * controller.data.status.by_type.video.done / controller.data.status.by_type.video.total}}"></md-progress-linear>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <span flex></span>
+        <div>
+          <md-icon class="status-hide-details" ng-click="controller.toggleDetails()" md-font-library="material-icons">close</md-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.2/angular-animate.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.2/angular-aria.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.2/angular-messages.min.js"></script>
@@ -65,7 +127,9 @@
 
   <script src="js/images.service.js"></script>
   <script src="js/videos.service.js"></script>
+  <script src="js/status.service.js"></script>
 
+  <script src="js/status.controller.js"></script>
   <script src="routes/home/home.controller.js"></script>
   <script src="routes/video/video.controller.js"></script>
 </body>

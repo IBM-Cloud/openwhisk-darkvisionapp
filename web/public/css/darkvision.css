@@ -104,6 +104,92 @@ md-icon {
 }
 
 /**
+  Status
+  **/
+
+.status {
+  padding: 0 40px;
+  border-bottom: 1px solid;
+}
+
+.status .width-wrapper {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/**
+  Compact Status View
+  **/
+
+.status-compact {
+  min-height: 40px;
+}
+
+.status-title {
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.status-view-details {
+  text-transform: uppercase;
+  opacity: 0.5;
+  cursor: pointer;
+  outline: none;
+}
+
+.status-view-details:hover {
+  opacity: 1;
+}
+
+.status-value {
+  font-weight: 500;
+  margin-left: 20px;
+}
+
+.status-progress {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.status-progress .md-container {
+  border-radius: 4px;
+}
+
+.status-progress,
+.status-progress .md-container,
+.status-progress .md-container .md-bar {
+  height: 16px;
+}
+
+/**
+  Expanded Status View
+  **/
+
+.status-details {
+  padding-top: 30px;
+}
+
+.status-title-cell {
+  font-size: 12px;
+  padding-bottom: 10px;
+}
+
+.status-value-cell {
+  font-size: 16px;
+  padding-bottom: 30px;
+}
+
+.status-value-cell div md-progress-linear {
+  max-width: 100px;
+}
+
+.status-hide-details {
+  outline: none;
+  font-weight: bold;
+  opacity: 0.5;
+}
+
+/**
   Container
   **/
 

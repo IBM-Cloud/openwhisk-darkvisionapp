@@ -3,7 +3,7 @@ body, html {
   background: -webkit-linear-gradient(top, #24242c 0%,#1a191f 100%); /* Chrome10-25,Safari5.1-6 */
   background: linear-gradient(to bottom, #24242c 0%,#1a191f 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#24242c', endColorstr='#1a191f',GradientType=0 ); /* IE6-9 */
-  color: #eaeaea;
+  color: #cccccc;
 }
 
 /**
@@ -11,7 +11,16 @@ body, html {
   **/
 
 md-toolbar {
-  background-color: black !important;
+  background-color: #262626 !important;
+}
+
+md-menu-content {
+  background-color: #262626 !important;
+  color: #cccccc;
+}
+
+md-menu-item button {
+  color: #cccccc !important;
 }
 
 md-toolbar md-icon {
@@ -23,7 +32,7 @@ md-toolbar md-icon {
 }
 
 .search, #search {
-  background-color: #24242c;
+  background-color: #262626;
   color: white;
 }
 
@@ -48,11 +57,33 @@ md-progress-circular.loading path {
 }
 
 md-progress-linear .md-container {
-  background-color: #ebebeb;
+  background-color: #333333;
 }
 
 md-progress-linear .md-container .md-bar {
   background-color: #ed215e;
+}
+
+/**
+  Status
+  **/
+
+.status {
+  background-color: #333333;
+}
+
+.status-progress .md-container {
+  background-color: #cccccc;
+}
+
+.status-progress .md-container .md-bar {
+  background-color: #595959;
+}
+
+.status-view-details,
+.status-view-details md-icon,
+.status-hide-details {
+  color: #cccccc !important;
 }
 
 /**
@@ -85,7 +116,8 @@ label.md-button {
 }
 
 .border-box {
-  border-color: #1f1f25 !important;
+  border-color: #373636 !important;
+  border-width: 2px;
 }
 
 .tag, .tag a, .tag a md-icon {
@@ -158,6 +190,7 @@ label.md-button {
 
 .video-navigator {
   border-color: #1f1f25 !important;
+  background-color: #262626;
 }
 
 .video-overview-box {

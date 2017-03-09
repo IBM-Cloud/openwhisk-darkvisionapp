@@ -44,6 +44,18 @@ md-progress-linear .md-container .md-bar {
 }
 
 /**
+  Status
+  **/
+
+.status {
+  background-color: #f8f8f8;
+}
+
+.status-progress .md-container .md-bar {
+  background-color: #96c3f1;
+}
+
+/**
   Footer
   **/
 
