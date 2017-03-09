@@ -8,6 +8,7 @@ What if we used artificial intelligence to process these videos to tell us which
 Dark Vision is an application that processes videos to discover what's inside of them. By analyzing individual frames and audio from videos with IBM Watson Visual Recognition and Natural Language Understanding, Dark Vision builds a summary with a set of tags, famous people or landmarks detected in the video. Use this summary to enhance video search and categorization.
 
 <p align="center">
+  <img src="xdocs/dv-landing-page.png" width="250"/>
   <img src="xdocs/dv-video-summary.png" width="250"/>
   <img src="xdocs/dv-ios-browse.png" width="250"/>
   <img src="xdocs/dv-ios-video-details.png" width="250"/>
