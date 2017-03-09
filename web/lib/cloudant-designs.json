@@ -43,7 +43,16 @@
           "map": "function (doc) {\n  if (doc.type == \"audio\") {\n    emit(doc._id, doc.video_id);\n  }\n}"
         },
         "to_be_analyzed": {
-          "map": "function (doc) {\n  if (doc.type == \"audio\" && !doc.metadata) {\n    emit(doc._id, doc.video_id);\n  }\n}"
+          "map": "function (doc) {\n  if (doc.type == \"audio\" && !doc.analysis) {\n    emit(doc._id, doc.video_id);\n  }\n}"
+        }
+      }
+    },
+    {
+      "_id": "_design/status",
+      "views": {
+        "current": {
+          "map": "function (doc) {\n  if (doc.type === 'video') {\n    emit([doc.type, doc.metadata ? 'done' : 'todo'], 1);\n  }\n  \n  if (doc.type === 'image') {\n    emit([doc.type, doc.analysis ? 'done' : 'todo'], 1);\n  }\n  \n  if (doc.type === 'audio') {\n    emit([doc.type, doc.analysis ? 'done' : 'todo'], 1);\n  }\n\n}",
+          "reduce": "_count"
         }
       }
     }

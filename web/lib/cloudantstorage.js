@@ -185,85 +185,34 @@ function CloudandStorage(options) {
   // return statistics about processed vs. unprocessed videos
   self.status = function(statusCallback/* err, stats*/) {
     const status = {
-      audios: {},
-      videos: {},
-      images: {}
+      by_type: { },
+      by_state: { },
+      total: 0,
     };
 
-    async.parallel([
-      (callback) => {
-        visionDb.view('videos', 'all', (err, body) => {
-          if (body) {
-            status.videos.count = body.total_rows;
-            status.videos.all = body.rows;
-          }
-          callback(null);
-        });
-      },
-      (callback) => {
-        visionDb.view('videos', 'to_be_analyzed', (err, body) => {
-          if (body) {
-            status.videos.to_be_analyzed = body.total_rows;
-          }
-          callback(null);
-        });
-      },
-      (callback) => {
-        visionDb.view('audios', 'all', (err, body) => {
-          if (body) {
-            status.audios.count = body.total_rows;
-            status.audios.all = body.rows;
-          }
-          callback(null);
-        });
-      },
-      (callback) => {
-        visionDb.view('audios', 'to_be_analyzed', (err, body) => {
-          if (body) {
-            status.audios.to_be_analyzed = body.total_rows;
-          }
-          callback(null);
-        });
-      },
-      (callback) => {
-        visionDb.view('images', 'all', (err, body) => {
-          if (body) {
-            status.images.count = body.total_rows;
-          }
-          callback(null);
-        });
-      },
-      (callback) => {
-        visionDb.view('images', 'to_be_analyzed', (err, body) => {
-          if (body) {
-            status.images.to_be_analyzed = body.total_rows;
-          }
-          callback(null);
-        });
-      },
-      (callback) => {
-        visionDb.view('images', 'total_by_video_id', {
+    visionDb.view('status', 'current', {
           reduce: true,
-          group: true
+      group: true,
         }, (err, body) => {
-          if (body) {
-            status.images.by_video_id = body.rows;
+      if (!err) {
+        body.rows.forEach((row) => {
+          const type = row.key[0];
+          const state = row.key[1];
+          if (!status.by_type[type]) {
+            status.by_type[type] = {
+              total: 0
+            };
           }
-          callback(null);
-        });
-      },
-      (callback) => {
-        visionDb.view('images', 'processed_by_video_id', {
-          reduce: true,
-          group: true
-        }, (err, body) => {
-          if (body) {
-            status.images.processed_by_video_id = body.rows;
+          status.by_type[type][state] = row.value;
+          status.by_type[type].total += row.value;
+
+          if (!status.by_state[state]) {
+            status.by_state[state] = 0;
           }
-          callback(null);
+          status.by_state[state] += row.value;
+          status.total += row.value;
         });
       }
-    ], (err) => {
       statusCallback(err, status);
     });
   };
