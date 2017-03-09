@@ -52,7 +52,7 @@
   <div class="wrapper" ui-view flex layout="row" layout-fill>
   </div>
 
-  <div class="status border-box md-whiteframe-2dp" ng-controller="StatusController as controller">
+  <div class="status border-box md-whiteframe-2dp" ng-controller="StatusController as controller" ng-cloak>
     <div ng-if="controller.data.status" class="width-wrapper">
       <div class="status-compact" ng-if="!controller.data.showDetails" layout="row" layout-align="center center">
         <span ng-if="controller.data.status.by_state.todo>0" class="status-title">Processing:</span>
