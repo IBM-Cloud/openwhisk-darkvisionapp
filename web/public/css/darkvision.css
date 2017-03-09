@@ -191,9 +191,14 @@ md-icon {
 }
 
 .status-hide-details {
-  outline: none;
   font-weight: bold;
+  cursor: pointer;
+  outline: none;
   opacity: 0.5;
+}
+
+.status-hide-details:hover {
+  opacity: 1;
 }
 
 /**
