@@ -131,8 +131,13 @@ if [ -z "$CF_APP_HOSTNAME" ]; then
   export CF_APP_HOSTNAME=$CF_APP
 fi
 
+if [ -z "$CF_APP_INSTANCES" ]; then
+  echo 'CF_APP_INSTANCES was not set in the pipeline. Using 1 as default value.'
+  export CF_APP_INSTANCES=1
+fi
+
 if ! cf app $CF_APP; then
-  cf push $CF_APP --hostname $CF_APP_HOSTNAME --no-start
+  cf push $CF_APP -i $CF_APP_INSTANCES -hostname $CF_APP_HOSTNAME --no-start
   cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"
   if [ ! -z "$USE_API_CACHE" ]; then
     cf set-env $CF_APP USE_API_CACHE true
@@ -159,7 +164,7 @@ else
   trap rollback ERR
   figlet -f small 'Deploy new version'
   cf rename $CF_APP $OLD_CF_APP
-  cf push $CF_APP --hostname $CF_APP_HOSTNAME --no-start
+  cf push $CF_APP -i $CF_APP_INSTANCES --hostname $CF_APP_HOSTNAME --no-start
   cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"
   if [ ! -z "$USE_API_CACHE" ]; then
     cf set-env $CF_APP USE_API_CACHE true

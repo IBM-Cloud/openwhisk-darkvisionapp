@@ -10,6 +10,8 @@ stages:
   properties:
   - name: CF_APP_HOSTNAME
     value: ""
+  - name: CF_APP_INSTANCES
+    value: "1"
   - name: ADMIN_USERNAME
     value: ${ADMIN_USERNAME}
   - name: ADMIN_PASSWORD
