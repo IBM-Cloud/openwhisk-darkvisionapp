@@ -112,6 +112,10 @@ label.md-button {
   background-color: #4cd3ba;
 }
 
+.more-tag-toggle span {
+  border-color: #eef0ef;
+}
+
 /**
   Home
   **/

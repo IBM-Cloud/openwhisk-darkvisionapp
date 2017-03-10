@@ -16,6 +16,11 @@
     console.info("Initializing VideoController");
     var controller = this;
 
+    controller.showMoreAudio = false;
+    controller.showMoreKeywords = false;
+    controller.showMoreEntities = false;
+    controller.showMoreConcepts = false;
+
     controller.data = {
       video: null,
       images: null,

@@ -268,6 +268,28 @@ h4 {
   min-height: 12px;
 }
 
+.tag.hidden-tag {
+  display: none;
+}
+
+.more-tag-toggle {
+  cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+}
+
+.more-tag-toggle span {
+  display: inline-block;
+  font-size: 12px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  margin: 4px;
+  border: 1px solid;
+  border-radius: 4px;
+}
+
 .video-box-tag {
   padding: 4px;
   margin-left: 4px;
