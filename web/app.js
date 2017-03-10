@@ -172,7 +172,7 @@ function withJsonApiCaching(req, res, cacheKey, builder /** req, callback(err, r
           const cachedResultStream = fs.createWriteStream(cachedResultFilename);
           cachedResultStream.write(JSON.stringify(result), 'utf8');
           cachedResultStream.end();
-          console.log('Cached', cacheKey);
+          console.log('Cached', cacheKey, 'at', cachedResultFilename);
         }
         res.send(result);
       }
@@ -295,19 +295,19 @@ app.get('/api/videos/:id', (req, res) => {
     async.waterfall([
       // get the video document
       (callback) => {
-        console.log(new Date(), 'Retrieving video', req.params.id);
+        console.log('Retrieving video', req.params.id);
         mediaStorage.get(req.params.id, (err, video) => {
           callback(err, video);
         });
       },
       // get all images for this video
       (video, callback) => {
-        console.log(new Date(), 'Retrieving images for', video._id);
+        console.log('Retrieving images for', video._id);
         mediaStorage.videoImages(video._id, (err, images) => {
           if (err) {
             callback(err);
           } else {
-            console.log(new Date(), 'Got images', new Date());
+            console.log('Got images');
             images.sort((image1, image2) =>
               (image1.frame_number ? image1.frame_number - image2.frame_number : 0));
             callback(null, video, images);
@@ -422,7 +422,7 @@ app.get('/api/videos/:id', (req, res) => {
       },
       // get the video transcript
       (result, callback) => {
-        console.log(new Date(), 'Retrieving transcript');
+        console.log('Retrieving transcript');
         mediaStorage.videoAudio(result.video._id, (err, audio) => {
           if (err) {
             callback(err);
@@ -548,6 +548,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
     const videoDocument = {
       type: 'video',
       source: req.file.originalname,
+      // remove extension from the filename to build the title
       title: path.parse(req.file.originalname).name,
       createdAt: new Date()
     };
