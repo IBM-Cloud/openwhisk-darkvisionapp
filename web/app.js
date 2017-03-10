@@ -141,8 +141,8 @@ console.log('Images will be cached in', imageCacheDirectory);
 
 // track cached images
 const imageCache = new (require('node-cache'))({
-  stdTTL: 60 * 60, // cached for X seconds
-  checkperiod: 60 * 5, // cleanup every Y seconds
+  stdTTL: 60 * 60 * 12, // cached for 12 hours
+  checkperiod: 60 * 60, // cleanup every hour
 });
 
 // remove image file from disk on cache expiry,
