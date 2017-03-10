@@ -133,10 +133,13 @@ fi
 
 if ! cf app $CF_APP; then
   cf push $CF_APP --hostname $CF_APP_HOSTNAME --no-start
+  cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"
+  if [ ! -z "$USE_API_CACHE" ]; then
+    cf set-env $CF_APP USE_API_CACHE true
+  fi
   if [ -z "$ADMIN_USERNAME" ]; then
     echo 'No admin username configured'
   else
-    cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"
     cf set-env $CF_APP ADMIN_USERNAME "${ADMIN_USERNAME}"
     cf set-env $CF_APP ADMIN_PASSWORD "${ADMIN_PASSWORD}"
   fi
@@ -157,10 +160,13 @@ else
   figlet -f small 'Deploy new version'
   cf rename $CF_APP $OLD_CF_APP
   cf push $CF_APP --hostname $CF_APP_HOSTNAME --no-start
+  cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"
+  if [ ! -z "$USE_API_CACHE" ]; then
+    cf set-env $CF_APP USE_API_CACHE true
+  fi
   if [ -z "$ADMIN_USERNAME" ]; then
     echo 'No admin username configured'
   else
-    cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"
     cf set-env $CF_APP ADMIN_USERNAME "${ADMIN_USERNAME}"
     cf set-env $CF_APP ADMIN_PASSWORD "${ADMIN_PASSWORD}"
   fi
