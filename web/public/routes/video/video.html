@@ -80,7 +80,7 @@
         </div>
         <div class="search border-box" layout="row" layout-align="center center">
           <md-icon md-font-library="material-icons">search</md-icon>
-          <input flex id="search" ng-model="search" type="search" placeholder="Filter image frame" autofocus >
+          <input flex id="search" ng-model="search" type="search" placeholder="Filter image frame">
         </div>
         <div flex class="video-frames">
           <div ng-class="{ 'selected-frame': image===controller.data.selected }" class="video-frame" ng-repeat="image in filteredImages" layout="row" layout-align="center center">
