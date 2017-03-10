@@ -7,6 +7,8 @@ body, html {
   font-size: 14px;
   font-family: Rubik,Helvetica,sans-serif;
   font-weight: 400;
+  /** smooth scrolling on mobile devices **/
+  -webkit-overflow-scrolling: touch;
 }
 
 /**
