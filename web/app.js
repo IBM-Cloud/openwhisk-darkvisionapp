@@ -392,6 +392,10 @@ app.get('/api/videos/:id', (req, res) => {
             result.push(occurrences[property][0]);
           });
 
+          result.sort((oneOccurrence, anotherOccurrence) =>
+            accessor.score(anotherOccurrence) - accessor.score(oneOccurrence)
+          );
+
           return result;
         }
 
