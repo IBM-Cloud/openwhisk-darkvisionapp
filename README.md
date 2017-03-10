@@ -1,54 +1,61 @@
-# Dark Vision - Discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
+# Dark Vision
+## Discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
 
-[![Build Status](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp) ![Bluemix Deployments](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/badge.svg)
+Think about all the videos individuals and companies (Media and Entertainment) accumulate every year. How can you keep track of what's inside of them so you can quickly search and find what you're looking for? *Show me all the videos that have Arc De Triomphe in it.* or *Show me the all the videos that talk about peaches*
 
-Dark Vision processes videos to discover dark data. By analyzing video frames with
-IBM Watson Visual Recognition, Dark Vision builds a summary
-with a set of tags and famous people or building detected in the video. Use this
-summary to enhance video search and categorization.
+What if we used artificial intelligence to process these videos to tell us which video has what we're looking for without us having to watch all of them.
 
+Dark Vision is an application that processes videos to discover what's inside of them. By analyzing individual frames and audio from videos with IBM Watson Visual Recognition and Natural Language Understanding, Dark Vision builds a summary with a set of tags, famous people or landmarks detected in the video. Use this summary to enhance video search and categorization.
+
+<p align="center">
+  <img src="xdocs/dv-landing-page.png" width="200"/>
   <img src="xdocs/dv-video-summary.png" width="200"/>
   <img src="xdocs/dv-ios-browse.png" width="200"/>
   <img src="xdocs/dv-ios-video-details.png" width="200"/>
+</p>
 
-In addition to processing videos, Dark Vision can also processes standalone images.
+[![Build Status](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp) ![Bluemix Deployments](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/badge.svg)
 
-### Watch this Youtube video to know more about the app
+### Watch this Youtube video to learn more about the app
 
 [![Dark Vision](xdocs/dv-video-play.png)](https://www.youtube.com/watch?v=1teIMpkI_Sg&feature=youtu.be "Dark Vision")
 
-## Overview
+## Overview and Architecture
 
  Built using IBM Bluemix, the application uses:
-  * [Watson Visual Recognition](https://console.ng.bluemix.net/catalog/services/watson_vision_combined)
+  * [Visual Recognition](https://console.ng.bluemix.net/catalog/services/watson_vision_combined)
+  * [Speech to Text](https://console.ng.bluemix.net/catalog/services/speech_to_text)
+  * [Natural Language Understanding](https://console.ng.bluemix.net/catalog/services/natural-language-understanding)
   * [OpenWhisk](console.ng.bluemix.net/openwhisk/)
   * [Cloudant](https://console.ng.bluemix.net/catalog/services/cloudantNoSQLDB)
   * [Object Storage](https://console.ng.bluemix.net/catalog/services/Object-Storage) (optional component)
 
-### Extracting frames from a video
+### Extracting frames and audio from a video
 
-The user uploads a video or image using the Dark Vision web application, which stores it in a Cloudant DB. Once the video is uploaded, OpenWhisk detects the new video by listening to Cloudant changes (trigger).
-OpenWhisk then triggers the video extractor action. During its execution, the extractor produces frames (images)
-and stores them in Cloudant. The frames are then processed using Watson Visual Recognition and the results are stored in the same Cloudant DB. The results can be viewed using Dark Vision web application OR an iOS application.
+The user uploads a video or image using the Dark Vision web application, which stores it in a Cloudant Database (1). Once the video is uploaded, OpenWhisk detects the new video (2) by listening to Cloudant changes (trigger).
+OpenWhisk then triggers the video and audio extractor action (3). During its execution, the extractor produces frames (images) (4), captures the audio track (5) and stores them in Cloudant (6, 7). The frames are then processed using Watson Visual Recognition, the audio with Watson Speech to Text and Natural Language Understanding. The results are stored in the same Cloudant DB. They can be viewed using Dark Vision web application or the iOS application.
 
-Object Storage can be used in addition to Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
+Object Storage can complement Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
 
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
     node [fontname = "helvetica"]
     rankdir=LR
     /* stores a video */
-    user -> storage
+    user -> storage [label="1"]
     /* cloudant change sent to openwhisk */
-    storage -> openwhisk
+    storage -> openwhisk [label="2"]
     /* openwhisk triggers the extractor */
-    openwhisk -> extractor
-    /* extractor produces image frames */
-    extractor -> frames
-    /* frames are stored in cloudant */
-    frames -> storage
-    /* styling */
+    openwhisk -> extractor [label="3"]
+    /* extractor produces image frames and audio */
+    extractor -> frames [label="4"]
+    extractor -> audio [label="5"]
+    /* frames and audio are stored */
+    frames -> storage [label="6"]
+    audio -> storage [label="7"]
+    /* styling ****/
     frames [label="Image Frames"]
+    audio [label="Audio Track"]
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
   }
@@ -56,41 +63,91 @@ Object Storage can be used in addition to Cloudant. When doing so, video and ima
 
 ### Processing frames and standalone images
 
-Whenever a frame is created and uploaded, Cloudant emits a change event and
-OpenWhisk triggers the analysis. The analysis is persisted with the image.
+Whenever a frame is created and uploaded (1), Cloudant emits a change event (2) and
+OpenWhisk triggers the analysis (3). The analysis (4) is persisted with the image (5).
 
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
     node [fontname = "helvetica"]
     /* stores a image */
-    frame -> storage
+    frame -> storage [label="1"]
     /* cloudant change sent to openwhisk */
-    storage -> openwhisk
+    storage -> openwhisk [label="2"]
     /* openwhisk triggers the analysis */
-    openwhisk -> analysis
+    openwhisk -> analysis [label="3"]
     /* extractor produces image frames */
     {rank=same; frame -> storage -> openwhisk -> analysis -> watson [style=invis] }
     /* analysis calls Watson */
-    analysis -> watson
+    analysis -> watson [label="4"]
     /* results are stored */
-    analysis -> storage
-    /* styling */
+    analysis -> storage [label="5"]
+    /* styling ****/
     frame [label="Image Frame"]
-    analysis [label="Image Analysis"]
+    analysis [label="analysis"]
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
     watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\nVisual\\nRecognition"]
   }
 )
 
-## Application Requirements
+### Processing audio
+
+Whenever the audio track is extracted (1), Cloudant emits a change event (2) and
+OpenWhisk triggers the audio analysis (3).
+
+#### Extract the audio transcript
+
+Extracting the transcript from an audio track using the Speech to Text service may take more than 5 minutes depending on the video. Because OpenWhisk actions have a 5 minutes limit, waiting in the action for the audio processing to complete is not possible for longer videos. Fortunately the Speech to Text service has a very nice [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods). Instead of waiting for Speech to Text to process the audio, Dark Vision sends the audio file to Speech to Text (4) and Speech to Text will notify Dark Vision with the transcript when it is done processing the audio (5). The result is attached to the audio document (6).
+
+![Architecture](http://g.gravizo.com/g?
+  digraph G {
+    node [fontname = "helvetica"]
+    audio -> storage [label="1"]
+    storage -> openwhisk [label="2"]
+    openwhisk -> speechtotext [label="3"]
+    speechtotext -> watson [label="4 - Start Recognition"]
+    watson -> speechtotext [label="5 - Receive transcript"]
+    speechtotext -> storage [label="6 - Store transcript"]
+    audio [label="Audio Track"]
+    {rank=same; audio -> storage -> openwhisk -> speechtotext -> watson [style=invis] }
+    storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
+    openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
+    speechtotext [label="speechtotext"]
+    watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\nSpeech to Text"]
+  }
+)
+
+#### Analyze the transcript
+
+Once the transcript is stored (1), the text analysis (3) is triggered (2) to detect concepts, entities and emotion (4). The result is attached to the audio (5).
+
+![Architecture](http://g.gravizo.com/g?
+  digraph G {
+    node [fontname = "helvetica"]
+    transcript -> storage [label="1"]
+    storage -> openwhisk [label="2"]
+    openwhisk -> textanalysis [label="3"]
+    textanalysis -> nlu [label="4"]
+    textanalysis -> storage [label="5"]
+    /* extractor produces image frames */
+    {rank=same; transcript -> storage -> openwhisk -> textanalysis -> nlu [style=invis] }
+    /* styling ****/
+    transcript [label="Transcript"]
+    textanalysis [label="textanalysis"]
+    storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
+    openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
+    nlu [shape=circle style=filled color="%234E96DB" fontcolor=white label="Natural\\nLanguage\\nUnderstanding"]
+  }
+)
+
+## Prerequisites
 
 * IBM Bluemix account. [Sign up][bluemix_signup_url] for Bluemix, or use an existing account.
 * Docker Hub account. [Sign up](https://hub.docker.com/) for Docker Hub, or use an existing account.
-* XCode 8.0, iOS 10, Swift 3
-* Node.js >= 6.7.0
+* Node.js >= 6.9.1
+* XCode 8.0, iOS 10, Swift 3 (For iOS application)
 
-## Deploying Dark Vision in Bluemix
+## Deploying Dark Vision automatically in Bluemix
 
 Dark Vision comes with a default toolchain you can use to deploy the solution with few clicks. If you want to deploy it manually, you can skip this section.
 
@@ -114,7 +171,7 @@ Click *Deploy to Bluemix* to start the Bluemix DevOps wizard:
 
 1. Optionally set the admin username and password for the application. When set, the application will prompt for this username and password when uploading videos/images, when resetting a video or an image. If the username and password are not defined, any visitor can upload videos/images for processing.
 
-1. If you already have a Watson Visual Recognition service instance you want to reuse, retrieve its API key from the credentials and set its value in the form. If you leave it empty, the pipeline will create a new service instance automatically.
+1. If you already have a Watson Visual Recognition service instance you want to reuse, retrieve its API key from the credentials and set the value in the form. If you leave the field empty, the pipeline will create a new service instance automatically.
 
 1. Click **Create**.
 
@@ -124,163 +181,16 @@ Click *Deploy to Bluemix* to start the Bluemix DevOps wizard:
 
 1. Access the Dark Vision app when it's ready and start uploading videos and images!
 
-## Preparing the environment
+## Deploying Dark Vision manually in Bluemix
 
-### Get the code
+The automatic approach should be the best option for most users as it does everything for you automatically. But if you want to go through all the steps manually or if you want to run the web application locally we've got your covered. Follow [these instructions](./DEPLOY_MANUALLY.md).
 
-* Clone the app to your local environment from your terminal using the following command:
-
-  ```
-  git clone https://github.com/IBM-Bluemix/openwhisk-darkvisionapp.git
-  ```
-
-* or Download and extract the source code from [this archive](https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/archive/master.zip)
-
-### Create the Bluemix Services
-
-***Note***: *if you have existing instances of these services, you don't need to create new instances.
-You can simply reuse the existing ones.*
-
-1. Open the IBM Bluemix console
-
-1. Create a Cloudant NoSQL DB service instance named **cloudant-for-darkvision**
-
-1. Open the Cloudant service dashboard and create a new database named **openwhisk-darkvision**
-
-1. Create a Watson Visual Recognition service instance named **visualrecognition-for-darkvision**
-
-1. Optionally create a Object Storage service instance named **objectstorage-for-darkvision**
-
-  > If configured, media files will be stored in Object Storage instead of Cloudant. A container named *openwhisk-darkvision* will be automatically created.
-
-### Deploy the web interface to upload videos and images
-
-This simple web user interface is used to upload the videos or images and
-visualize the results of each frame analysis.
-
-1. Change to the **web** directory.
-
-  ```
-  cd openwhisk-darkvisionapp/web
-  ```
-
-1. If in the previous section you decided to use existing services instead of creating new ones, open **manifest.yml** and update the Cloudant service name.
-
-1. If you configured an Object Storage service, make sure to add its name to the list of services in the **manifest.yml** *services* section or to uncomment the existing **objectstorage-for-darkvision** entry.
-
-1. Push the application to Bluemix:
-
-  ```
-  cf push
-  ```
-
-#### Protecting the upload, delete and reset actions (optional)
-
-By default, anyone can upload/delete/reset videos and images. You can restrict access to these actions by defining the environment variables *ADMIN_USERNAME* and *ADMIN_PASSWORD* on your application. This can be done in the Bluemix console or with the command line:
-
-  ```
-  cf set-env openwhisk-darkvision ADMIN_USERNAME admin
-  cf set-env openwhisk-darkvision ADMIN_PASSWORD aNotTooSimplePassword
-  ```
-
-### Build the Frame Extractor Docker image
-
-Extracting frames from a video is achieved with ffmpeg. ffmpeg is not available to an OpenWhisk
-action written in JavaScript or Swift. Fortunately OpenWhisk allows to write an action as a Docker
-image and can retrieve this image from Docker Hub.
-
-To build the extractor image, follow these steps:
-
-1. Change to the ***processing/extractor*** directory.
-
-1. Ensure your Docker environment works and that you have logged in Docker hub.
-
-1. Run
-
-  ```
-  ./buildAndPush.sh youruserid/yourimagename
-  ```
-  Note: On some systems this command needs to be run with `sudo`.
-
-1. After a while, your image will be available in Docker Hub, ready for OpenWhisk.
-
-### Deploy OpenWhisk Actions
-
-1. Change to the **root directory of the checkout**.
-
-1. Copy the file named **template-local.env** into **local.env**
-
-  ```
-  cp template-local.env local.env
-  ```
-
-1. Get the service credentials for services created above and replace placeholders in `local.env`
-with corresponding values (usernames, passwords, urls). These properties will be injected into
-a package so that all actions can get access to the services.
-
-  > If you configured an Object Storage service, specify its properties in this file too but uncommenting the placeholder variables.
-
-1. Make sure to also update the value of ***DOCKER_EXTRACTOR_NAME*** with the name of the Docker
-image you created in the previous section.
-
-1. Ensure your [OpenWhisk command line interface](https://new-console.ng.bluemix.net/openwhisk/cli) is property configured with:
-
-  ```
-  wsk list
-  ```
-
-  This shows the packages, actions, triggers and rules currently deployed in your OpenWhisk namespace.
-
-1. Get dependencies used by the deployment script
-
-  ```
-  npm install
-  ```
-
-  > :warning: Node.js >= 6.7.0 is required
-
-1. Create the action, trigger and rule using the script from the **root directory** directory:
-
-  ```
-  node deploy.js --install
-  ```
-
-  > The script can also be used to *--uninstall* the OpenWhisk artifacts to
-  *--update* the artifacts if you change the action code.
-
-**That's it! Use the web application to upload images/videos and view the results! You can also view the results using an iOS application as shown further down this README.**
-
-
-## Running the web application locally
-
-1. Change to the **web** directory
-
-1. Get dependencies
-
-  ```
-  npm install
-  ```
-
-1. Start the application
-
-  ```
-  npm start
-  ```
-
-  Note: To find the Cloudant database (and Object Storage) to connect to when running locally,
-  the application uses the environment variables defined in **local.env** in previous steps.
-
-1. Upload videos through the web user interface. Wait for OpenWhisk to process the videos.
-Look at the results. While OpenWhisk processes videos, the counters at the top of the
-application will update. These counters call the **/api/status** endpoint of the web
-application to retrieve statistics.
-
-### iOS application to view the results (Optional)
+## iOS application to view the results (Optional)
 
 The iOS application is a client to the API exposed by the web application
 to view the results of the analysis of videos. It is an optional piece.
 
-To configure the iOS application, you need the URL of the web application deployed before.
+To configure the iOS application, you need the URL of the web application deployed above.
 The web app exposes an API to list all videos and retrieve the results.
 
 1. Open **ios/darkvision.xcworkspace** with XCode
@@ -291,7 +201,7 @@ The web app exposes an API to list all videos and retrieve the results.
 
 1. Save the file
 
-## Running the iOS application in the simulator
+### Running the iOS application in the simulator
 
 1. Start the application from XCode with *iPad Air 2* as the target
 
@@ -328,13 +238,13 @@ The web app exposes an API to list all videos and retrieve the results.
 ### OpenWhisk - Frame extraction
 
 The **frame extractor** runs as a Docker action created with the [OpenWhisk Docker SDK](https://console.ng.bluemix.net/docs/openwhisk/openwhisk_reference.html#openwhisk_ref_docker):
-  * It uses *ffmpeg* to extract frames from the video.
+  * It uses *ffmpeg* to extract frames and audio from the video.
   * It is written as a nodejs app to benefit from several nodejs helper packages (Cloudant, ffmpeg, imagemagick)
 
 | File | Description |
 | ---- | ----------- |
 |[**Dockerfile**](processing/extractor/Dockerfile)|Docker file to build the extractor image. It pulls ffmpeg into the image together with node. It also runs npm install for both the server and client.|
-|[**extract.js**](processing/extractor/client/extract.js)|The core of the frame extractor. It downloads the video stored in Cloudant, uses ffmpeg to extract frames and video metadata, produces a thumbnail for the video. By default it produces around 15 images for a video. This can be changed by modifying the implementation of **getFps**.|
+|[**extract.js**](processing/extractor/client/extract.js)|The core of the frame extractor. It downloads the video stored in Cloudant, uses ffmpeg to extract frames and video metadata, produces a thumbnail for the video. By default it produces around 15 images for a video. This can be changed by modifying the implementation of **getFps**. First 15 min of audio is also exported.|
 |[**app.js**](processing/extractor/server/app.js)|Adapted from the OpenWhisk Docker SDK to call the extract.js node script.|
 
 ### OpenWhisk - Frame analysis
@@ -352,16 +262,24 @@ The action runs asynchronously.
 
 The code is very similar to the one used in the [Vision app](https://github.com/IBM-Bluemix/openwhisk-visionapp).
 
+### OpenWhisk - Audio analysis
+
+| File | Description |
+| ---- | ----------- |
+|[**speechtotext.js**](processing/speechtotext/speechtotext.js)|Uses Speech to Text to transcript the audio. It acts as the callback server for the [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods) of Speech to Text service. The speechtotext action is exposed as a public HTTP endpoint by the [**deploy.js**](deploy.js) script.|
+|[**textanalysis.js**](processing/textanalysis/textanalysis.js)|Calls Natural Language Understanding on the transcript.|
+
 ### Web app
 
 The web application allows to upload videos (and images).
-It shows the video catalog and for each video the extracted frames.
+It shows the video and image catalog and for each video the extracted frames.
 
 | File | Description |
 | ---- | ----------- |
 |[**app.js**](web/app.js)|The web app backend handles the upload of videos/images, and exposes an API to retrieve all videos, their frames, to compute the summary|
-|[**Angular controllers**](web/public/js)|Controllers for list of videos, individual video and standalone images|
-|[**Angular services**](web/public/js)|Services to interact with the backend API|
+|[**Services**](web/public/js)|Services used by controllers|
+|[**Home page**](web/public/routes/home)|Controller and view for the home page|
+|[**Video page**](web/public/routes/video)|Controller and view for the video detail page|
 
 ### Shared code between OpenWhisk actions and web app
 

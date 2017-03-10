@@ -32,9 +32,13 @@
     "darkvision-watson-api-key": {
       "description": "An existing Visual Recognition API key. Leave it empty to have the toolchain create a new service instance automatically.",
       "type": "string"
+    },
+    "darkvision-cloudant-db": {
+      "description": "Name of the database used by Dark Vision in the Cloudant service instance.",
+      "type": "string"
     }
   },
-  "required": ["darkvision-region", "darkvision-organization", "darkvision-space", "darkvision-app-name"],
+  "required": ["darkvision-region", "darkvision-organization", "darkvision-space", "darkvision-app-name", "darkvision-cloudant-db"],
   "form": [{
       "type": "validator",
       "url": "/devops/setup/bm-helper/helper.html"
@@ -94,6 +98,12 @@
       "readonly": false,
       "title": "Watson Visual Recognition API key (leave it empty to provision a new service)",
       "key": "darkvision-watson-api-key"
+    },
+    {
+      "type": "text",
+      "readonly": false,
+      "title": "Name of the database in the Cloudant service instance",
+      "key": "darkvision-cloudant-db"
     }
   ]
 }

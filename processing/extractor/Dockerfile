@@ -29,6 +29,7 @@ RUN mkdir /logs
 ADD client /blackbox/client
 ADD server /blackbox/server
 
+RUN echo '{ "date": "'`date -u +"%Y-%m-%dT%H:%M:%SZ"`'" }' > /blackbox/client/build.json
 RUN cd /blackbox/server; npm install
 RUN cd /blackbox/client; npm install
 

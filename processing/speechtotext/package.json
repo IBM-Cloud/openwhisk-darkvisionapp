@@ -1,0 +1,14 @@
+{
+  "name": "speechtotext",
+  "version": "1.0.0",
+  "description": "Converts audio to text",
+  "main": "speechtotext.js",
+  "dependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/"
+  },
+  "author": "IBM",
+  "license": "Apache-2.0"
+}

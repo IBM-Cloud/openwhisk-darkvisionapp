@@ -1,0 +1,321 @@
+@import url(//fonts.googleapis.com/css?family=Rubik:400,500);
+@import url(//fonts.googleapis.com/icon?family=Material+Icons);
+
+body, html {
+  height: 100%;
+  margin: 0 auto;
+  font-size: 14px;
+  font-family: Rubik,Helvetica,sans-serif;
+  font-weight: 400;
+  /** smooth scrolling on mobile devices **/
+  -webkit-overflow-scrolling: touch;
+}
+
+/**
+  Header
+  **/
+
+.title {
+}
+
+.title.ow {
+  font-weight: 400;
+}
+
+.title.dv {
+  font-weight: 500;
+}
+
+.upload-button {
+  height: 50px;
+  text-transform: capitalize;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+}
+
+.upload-button md-icon {
+  width: 22px;
+  height: 18px;
+  min-width: 22px;
+  min-height: 18px;
+  font-size: 22px !important;
+  line-height: 14px;
+  margin-left: 6px;
+}
+
+.upload-button md-progress-circular {
+  display: inline-block;
+  top: 5px;
+  width: 22px !important;
+  height: 22px;
+  margin-left: 6px;
+}
+
+spinner {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.loadingProgress {
+  visibility: hidden;
+}
+
+md-progress-linear {
+  height: 2px;
+}
+
+md-progress-linear .md-bar {
+}
+
+md-progress-linear .md-container {
+  height: 2px;
+}
+
+md-progress-linear .md-container .md-bar {
+  height: 2px;
+}
+
+md-toolbar {
+  min-height: 50px;
+}
+
+.md-toolbar-tools {
+  font-size: 14px;
+  height: 50px;
+  max-height: 50px;
+}
+
+button.md-button.md-icon-button, a.md-button.md-icon-button {
+  margin-left: 8px;
+  padding: 0;
+}
+
+a.md-icon-button md-icon {
+  margin-top: 6px;
+}
+
+md-icon {
+  line-height: 28px;
+  width: 28px;
+  height: 28px;
+  font-size: 28px !important;
+}
+
+/**
+  Status
+  **/
+
+.status {
+  padding: 0 40px;
+  border-bottom: 1px solid;
+}
+
+.status .width-wrapper {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/**
+  Compact Status View
+  **/
+
+.status-compact {
+  min-height: 40px;
+}
+
+.status-title {
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.status-view-details {
+  text-transform: uppercase;
+  opacity: 0.5;
+  cursor: pointer;
+  outline: none;
+}
+
+.status-view-details:hover {
+  opacity: 1;
+}
+
+.status-value {
+  font-weight: 500;
+  margin-left: 20px;
+}
+
+.status-progress {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.status-progress .md-container {
+  border-radius: 4px;
+}
+
+.status-progress,
+.status-progress .md-container,
+.status-progress .md-container .md-bar {
+  height: 16px;
+}
+
+/**
+  Expanded Status View
+  **/
+
+.status-details {
+  padding-top: 30px;
+}
+
+.status-title-cell {
+  font-size: 12px;
+  padding-bottom: 10px;
+}
+
+.status-value-cell {
+  font-size: 16px;
+  padding-bottom: 30px;
+}
+
+.status-value-cell .status-value,
+.status-value-cell div .status-value {
+  margin-left: 0;
+}
+
+.status-value-cell div .status-progress {
+  max-width: 100px;
+  margin-left: 10px;
+  margin-right: 0;
+}
+
+.status-hide-details {
+  font-weight: bold;
+  cursor: pointer;
+  outline: none;
+  opacity: 0.5;
+}
+
+.status-hide-details:hover {
+  opacity: 1;
+}
+
+/**
+  Container
+  **/
+
+.wrapper {
+  overflow: hidden;
+}
+
+/**
+  Footer
+  **/
+
+footer {
+  text-align: center;
+  padding: 8px;
+}
+
+/** Common **/
+
+h2 {
+  font-weight: 500;
+}
+
+h3 {
+  font-weight: 500;
+  border-bottom: 1px solid;
+  padding-bottom: 4px;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+h4 {
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.entry-tags, .entry-faces {
+  margin-left: 20px;
+}
+
+.entry-taglist {
+  padding: 0;
+  margin: 0;
+}
+
+.entry-tag {
+  display: inline;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px;
+  margin: 4px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.tag a md-icon {
+  font-size: 12px !important;
+  width: 12px;
+  height: 12px;
+  min-width: 12px;
+  min-height: 12px;
+}
+
+.tag.hidden-tag {
+  display: none;
+}
+
+.more-tag-toggle {
+  cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+}
+
+.more-tag-toggle span {
+  display: inline-block;
+  font-size: 12px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  margin: 4px;
+  border: 1px solid;
+  border-radius: 4px;
+}
+
+.video-box-tag {
+  padding: 4px;
+  margin-left: 4px;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.image-cover {
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.entry-thumbnail-container {
+  overflow: hidden;
+}
+
+.face-overlay-box {
+  border: 2px solid;
+  border-radius: 4px;
+}
+
+.face-overlay-text {
+  padding-left: 2px;
+  padding-right: 2px;
+}

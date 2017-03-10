@@ -219,9 +219,10 @@ function analyzeImage(args, fileName, analyzeCallback) {
             console.log('Face Detection', err);
           } else if (body.images && body.images.length > 0) {
             // sort the faces from left to right
-            analysis.face_detection = body.images[0].faces.sort((face1, face2) =>
-              face1.face_location.left - face2.face_location.left
-            );
+            analysis.face_detection = body.images[0].faces ?
+              body.images[0].faces.sort((face1, face2) =>
+                face1.face_location.left - face2.face_location.left) :
+              [];
           }
           callback(null);
         }));

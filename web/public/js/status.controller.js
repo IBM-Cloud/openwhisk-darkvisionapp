@@ -11,26 +11,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //------------------------------------------------------------------------------
-(function () {
-  function StatusController($interval, StatusService) {
+(function() {
+  function StatusController(StatusService) {
     console.info("Initializing StatusController");
     var controller = this;
 
     controller.data = {
-      status: {}
+      status: null,
+      showDetails: false,
     };
 
-    controller.refreshStatus = function () {
-      StatusService.status().then(function (status) {
+    controller.toggleDetails = function() {
+      controller.data.showDetails = !controller.data.showDetails;
+    }
+
+    controller.refreshStatus = function() {
+      StatusService.status().then(function(status) {
         controller.data.status = status;
+      }).then(function() {
+        setTimeout(controller.refreshStatus, 5000);
       });
     };
 
     controller.refreshStatus();
-
-    $interval(controller.refreshStatus, 5000);
   }
 
   angular.module('app')
-    .controller('StatusController', ['$interval', 'StatusService', StatusController]);
+    .controller('StatusController', [ 'StatusService', StatusController]);
 }());

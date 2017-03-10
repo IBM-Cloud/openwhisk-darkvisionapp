@@ -2,3 +2,5 @@ node_modules
 public/vendor
 uploads
 vcap-local.json
+~
+cache

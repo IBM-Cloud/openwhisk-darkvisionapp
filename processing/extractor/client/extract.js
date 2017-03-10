@@ -19,6 +19,13 @@ const ffmpeg = require('fluent-ffmpeg');
 const tmp = require('tmp');
 const rimraf = require('rimraf');
 
+// Show some info about the docker action
+try {
+  console.log('Docker action built on:', require('./build.json').date);
+} catch (err) {
+  console.log('No build.json file found', err);
+}
+
 // argv[2] is expected to be the payload JSON object as a string
 const payload = JSON.parse(process.argv[2]);
 
@@ -26,7 +33,8 @@ console.log('Payload', payload);
 const doc = payload.doc;
 
 const extractOptions = {
-  videoThumbnailSize: 640
+  videoThumbnailSize: 640,
+  speechDuration: 15 * 60 // export only the first 15 minutes of audio
 };
 
 function getFps(durationInSeconds) {
@@ -147,7 +155,7 @@ async.waterfall([
         callback(err);
       });
   },
-  // extract metata
+  // extract video metadata
   (callback) => {
     ffmpeg.ffprobe(inputFilename, (err, metadata) => {
       if (!err) {
@@ -168,6 +176,72 @@ async.waterfall([
       }
     });
   },
+  // extract the audio
+  (callback) => {
+    ffmpeg()
+      .input(inputFilename)
+      .outputOptions([
+        '-qscale:a',
+        '3',
+        '-acodec',
+        'vorbis',
+        '-map',
+        'a',
+        '-strict',
+        '-2',
+        // get only first n seconds
+        '-ss 0',
+        `-t ${extractOptions.speechDuration}`,
+        // force dual channel audio as vorbis encoder only supports 2 channels
+        '-ac',
+        '2'
+      ])
+      .output(`${workingDirectory.name}/audio.ogg`)
+      .on('progress', (progress) => {
+        console.log(`Exporting audio: ${Math.round(progress.percent)}% done`);
+      })
+      .on('error', (err) => {
+        console.log('Audio export', err);
+        callback(err);
+      })
+      .on('end', () => {
+        callback(null);
+      })
+      .run();
+  },
+  // create a new "audio" document
+  (callback) => {
+    const audioDocument = {
+      type: 'audio',
+      video_id: videoDocument._id,
+      language_model: videoDocument.language_model
+    };
+    mediaStorage.insert(audioDocument, (err, insertedDoc) => {
+      if (err) {
+        callback(err);
+      } else {
+        audioDocument._id = insertedDoc.id;
+        audioDocument._rev = insertedDoc.rev;
+        callback(null, audioDocument);
+      }
+    });
+  },
+  // persist the audio attachment with the video
+  (audioDocument, callback) => {
+    console.log('Uploading audio...');
+    fs.createReadStream(`${workingDirectory.name}/audio.ogg`).pipe(
+      mediaStorage.attach(audioDocument, 'audio.ogg', 'audio/ogg', (attachErr, attachedDoc) => {
+        fs.unlink(`${workingDirectory.name}/audio.ogg`);
+        if (attachErr) {
+          console.log('Audio upload failed', attachErr);
+          callback(attachErr);
+        } else {
+          console.log('Audio upload completed', attachedDoc.id);
+          callback(null);
+        }
+      }
+    ));
+  },
   // split frames
   (callback) => {
     const fps = getFps(videoDocument.metadata.streams[0].duration);
@@ -181,7 +255,7 @@ async.waterfall([
       ])
       .output(`${framesDirectory}/%0d.jpg`)
       .on('progress', (progress) => {
-        console.log(`Processing: ${Math.round(progress.percent)}% done`);
+        console.log(`Processed ${progress.frames} frames`);
       })
       .on('error', (err) => {
         console.log('split frames', err);
@@ -207,7 +281,7 @@ async.waterfall([
             createdAt: new Date(),
             video_id: videoDocument._id,
             frame_number: parseInt(file, 10),
-            frame_timecode: parseInt(file, 10) * timeBetweenFrame
+            frame_timecode: (parseInt(file, 10) - 1) * timeBetweenFrame
           };
           createDocument(frameDocument, 'image.jpg', 'image/jpeg', `${framesDirectory}/${file}`, uploadCallback);
         });

@@ -88,6 +88,8 @@ function CloudandStorage(options) {
     async.waterfall(prepareDbTasks, (err) => {
       if (err) {
         console.log('Error in database preparation', err);
+      } else {
+        console.log('Database is ready.');
       }
     });
   }
@@ -176,74 +178,41 @@ function CloudandStorage(options) {
     } else if (fileStore) {
       return fileStore.read(`${docOrId}-${attachmentName}`);
     } else { // eslint-disable-line no-else-return
-      return visionDb.attachment.get(docOrId._id || docOrId, attachmentName);
+      return uploadDb.attachment.get(docOrId._id || docOrId, attachmentName);
     }
   };
 
   // return statistics about processed vs. unprocessed videos
   self.status = function(statusCallback/* err, stats*/) {
     const status = {
-      videos: {},
-      images: {}
+      by_type: { },
+      by_state: { },
+      total: 0,
     };
 
-    async.parallel([
-      (callback) => {
-        visionDb.view('videos', 'all', (err, body) => {
-          if (body) {
-            status.videos.count = body.total_rows;
-            status.videos.all = body.rows;
+    visionDb.view('status', 'current', {
+      reduce: true,
+      group: true,
+    }, (err, body) => {
+      if (!err) {
+        body.rows.forEach((row) => {
+          const type = row.key[0];
+          const state = row.key[1];
+          if (!status.by_type[type]) {
+            status.by_type[type] = {
+              total: 0
+            };
           }
-          callback(null);
-        });
-      },
-      (callback) => {
-        visionDb.view('videos', 'to_be_analyzed', (err, body) => {
-          if (body) {
-            status.videos.to_be_analyzed = body.total_rows;
+          status.by_type[type][state] = row.value;
+          status.by_type[type].total += row.value;
+
+          if (!status.by_state[state]) {
+            status.by_state[state] = 0;
           }
-          callback(null);
-        });
-      },
-      (callback) => {
-        visionDb.view('images', 'all', (err, body) => {
-          if (body) {
-            status.images.count = body.total_rows;
-          }
-          callback(null);
-        });
-      },
-      (callback) => {
-        visionDb.view('images', 'to_be_analyzed', (err, body) => {
-          if (body) {
-            status.images.to_be_analyzed = body.total_rows;
-          }
-          callback(null);
-        });
-      },
-      (callback) => {
-        visionDb.view('images', 'total_by_video_id', {
-          reduce: true,
-          group: true
-        }, (err, body) => {
-          if (body) {
-            status.images.by_video_id = body.rows;
-          }
-          callback(null);
-        });
-      },
-      (callback) => {
-        visionDb.view('images', 'processed_by_video_id', {
-          reduce: true,
-          group: true
-        }, (err, body) => {
-          if (body) {
-            status.images.processed_by_video_id = body.rows;
-          }
-          callback(null);
+          status.by_state[state] += row.value;
+          status.total += row.value;
         });
       }
-    ], (err) => {
       statusCallback(err, status);
     });
   };
@@ -317,6 +286,19 @@ function CloudandStorage(options) {
     });
   };
 
+  // get all audios
+  self.audios = function(audiosCallback/* err, audios*/) {
+    visionDb.view('audios', 'all', {
+      include_docs: true
+    }, (err, body) => {
+      if (err) {
+        audiosCallback(err);
+      } else {
+        audiosCallback(null, body.rows.map(doc => doc.doc));
+      }
+    });
+  };
+
   function removeFileStoreAttachments(doc) {
     if (fileStore && doc.attachments) {
       Object.keys(doc.attachments).forEach((key) => {
@@ -362,40 +344,60 @@ function CloudandStorage(options) {
     });
   };
 
+  // get the audio of a video
+  self.videoAudio = function(videoId, callback/* err, transcript*/) {
+    visionDb.find({
+      selector: {
+        type: 'audio',
+        video_id: videoId
+      }
+    }, (err, audios) => {
+      if (err) {
+        callback(err);
+      } else if (audios.docs.length > 0) {
+        callback(null, audios.docs[0]);
+      } else {
+        callback(null, null);
+      }
+    });
+  };
+
   // reset a video
   self.videoReset = function(videoId, resetCallback/* err, result*/) {
     // remove all analysis for the give video
     async.waterfall([
-      // get all images for this video
+      // get all related content for this video
       (callback) => {
-        console.log('Retrieving all images for', videoId);
-        visionDb.view('images', 'by_video_id', {
-          key: videoId,
-          include_docs: true
-        }, (err, body) => {
-          callback(err, body ? body.rows : null);
+        console.log('Retrieving related documents for', videoId);
+        visionDb.find({
+          selector: {
+            video_id: videoId
+          }
+        }, (err, related) => {
+          callback(err, related ? related.docs : []);
         });
       },
-      // delete the images
-      (images, callback) => {
+      // delete related medias
+      (related, callback) => {
         const toBeDeleted = {
-          docs: images.map(row => ({
-            _id: row.doc._id,
-            _rev: row.doc._rev,
+          docs: related.map(doc => ({
+            _id: doc._id,
+            _rev: doc._rev,
             _deleted: true
           }))
         };
-        console.log('Deleting', toBeDeleted.docs.length, 'images...');
 
-        // drop the attachments
-        images.forEach(image => removeFileStoreAttachments(image.doc));
+        // delete all attachments for related medias
+        related.forEach(removeFileStoreAttachments);
 
         // and the documents
         if (toBeDeleted.docs.length > 0) {
+          console.log('Deleting', toBeDeleted.docs.length, 'medias...');
           visionDb.bulk(toBeDeleted, (err) => {
             callback(err);
           });
         } else {
+          console.log('No related media to delete');
           callback(null);
         }
       },
@@ -445,6 +447,39 @@ function CloudandStorage(options) {
     ], resetCallback);
   };
 
+  // reset the audio within a video
+  self.videoAudioReset = function(videoId, resetCallback/* err, result*/) {
+    async.waterfall([
+      // get the audio for this video
+      (callback) => {
+        console.log('Retrieving audio documents for', videoId);
+        visionDb.find({
+          selector: {
+            type: 'audio',
+            video_id: videoId
+          }
+        }, (err, related) => {
+          callback(err, related ? related.docs : []);
+        });
+      },
+      // remove their analysis and save them
+      (audios, callback) => {
+        audios.forEach((audio) => {
+          console.log(audio);
+          delete audio.transcript;
+          delete audio.analysis;
+        });
+        const toBeUpdated = {
+          docs: audios
+        };
+        console.log('Updating', toBeUpdated.docs.length, 'audios...');
+        visionDb.bulk(toBeUpdated, (err, body) => {
+          callback(err, body);
+        });
+      },
+    ], resetCallback);
+  };
+
   // reset the images within a video
   self.videoImagesReset = function(videoId, resetCallback/* err, result*/) {
     async.waterfall([
@@ -474,25 +509,10 @@ function CloudandStorage(options) {
     ], resetCallback);
   };
 
-  function hasAttachment(doc, attachmentName) {
+  // check if the given doc has an attachment of the given name
+  self.hasAttachment = function(doc, attachmentName) {
     return (doc.attachments && doc.attachments[attachmentName]) ||
       (doc._attachments && doc._attachments[attachmentName]);
-  }
-
-  // check if a video or image has already been processed
-  self.isReadyToProcess = function(doc) {
-    try {
-      if (doc.type === 'video') {
-        return hasAttachment(doc, 'video.mp4') && !doc.metadata;
-      } else if (doc.type === 'image') {
-        return hasAttachment(doc, 'image.jpg') && !doc.analysis;
-      } else { // eslint-disable-line no-else-return
-        return false;
-      }
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
   };
 }
 

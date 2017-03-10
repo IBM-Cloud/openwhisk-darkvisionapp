@@ -1,4 +1,10 @@
 
+## 2017-03-10
+
+  * Dark Vision now processes audio from videos too. It uses Watson Speech to Text to extract the audio track. Then the audio is processed by Natural Language Understanding to extract concepts, entities, emotion.
+
+  * New visual design for the web interface.
+
 ## 2017-02-15
 
   * A new toolchain to deploy Dark Vision in two steps! Head over to the README for details.

@@ -8,75 +8,163 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- icons for home screen shortcuts to questions -->
+  <link rel="apple-touch-icon" href="images/logo-58x58.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="images/logo-76x76.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="images/logo-120x120.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="images/logo-152x152.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Dark Vision">
+
+  <link rel="icon" type="image/x-icon" sizes="any" href="images/favico.png"/>
   <title>OpenWhisk Dark Vision</title>
 
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="vendor/dropzone/dist/min/dropzone.min.css">
-  <link href="css/app.css" rel="stylesheet">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.2/angular.min.js"></script>
+
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.3/angular-material.min.css">
+  <link rel="stylesheet" href="css/darkvision.css">
+  <link rel="stylesheet" href="css/darkvision-light.css" id="theme">
 </head>
 
-<body>
-
-  <nav class="navbar navbar-transparent">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" ui-sref="videos()">OpenWhisk Dark Vision</a>
+<body layout="row" layout-fill ng-controller="MainController">
+  <div layout="column" layout-fill>
+  <header ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <a ui-sref="home()">
+          <span class="title ow">OpenWhisk</span>&nbsp;<span class="title dv">Dark Vision</span>
+        </a>
+        <span flex></span>
+        <md-button class="upload-button" ng-disabled="isUploading" type="file" ngf-select="uploadFile($file, $invalidFiles)" accept="image/*,video/mp4">
+          Upload
+          <md-icon ng-if="!isUploading" md-font-library="material-icons">backup</md-icon>
+          <md-progress-circular ng-if="isUploading && uploadProgress < 100" md-diameter="22" md-mode="determinate" value="{{uploadProgress}}"></md-progress-circular>
+          <md-progress-circular ng-if="isUploading && uploadProgress === 100" md-diameter="22" md-mode="indeterminate"></md-progress-circular>
+        </md-button>
+        <md-button class="md-icon-button" ng-click="toggleLight();">
+          <md-icon md-font-library="material-icons">lightbulb_outline</md-icon>
+        </md-button>
+        <md-button class="md-icon-button" ui-sref="about()">
+          <md-icon md-font-library="material-icons">info_outline</md-icon>
+        </md-button>
+        <md-button class="md-icon-button" href="https://github.com/IBM-Bluemix/openwhisk-darkvisionapp">
+          <md-icon md-svg-src="images/github-circle.svg"></md-icon>
+        </md-button>
       </div>
-      <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav navbar-right">
-          <li><a ui-sref="videos()">Videos</a></li>
-          <li><a ui-sref="images()">Images</a></li>
-          <li><a href="https://github.com/IBM-Bluemix/openwhisk-darkvisionapp">Source Code</a></li>
-          <li><a href="https://www.youtube.com/watch?v=1teIMpkI_Sg&feature=youtu.be">About</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+    </md-toolbar>
+  </header>
+  <spinner>
+    <md-progress-linear class="loadingProgress" id="loadingProgress" md-mode="indeterminate"></md-progress-linear>
+  </spinner>
 
-  <div class="status" ng-controller="StatusController as controller">
-    <span class="label label-default">VIDEOS</span>
-    <span class="label label-success">total: {{controller.data.status.videos.count}}</span>
-    <span class="label label-warning">todo: {{controller.data.status.videos.to_be_analyzed}}</span>
-    
-    <span>&nbsp;</span>
-    
-    <span class="label label-default">IMAGES</span>
-    <span class="label label-success">total: {{controller.data.status.images.count}}</span>
-    <span class="label label-warning">todo: {{controller.data.status.images.to_be_analyzed}}</span>
-
+  <div class="wrapper" ui-view flex layout="row" layout-fill>
   </div>
 
-  <div ui-view></div>
+  <div class="status border-box md-whiteframe-2dp" ng-controller="StatusController as controller" ng-cloak>
+    <div ng-if="controller.data.status" class="width-wrapper">
+      <div class="status-compact" ng-if="!controller.data.showDetails" layout="row" layout-align="center center">
+        <span ng-if="controller.data.status.by_state.todo>0" class="status-title">Processing:</span>
+        <div ng-if="controller.data.status.by_type.video.todo">
+          <span class="status-value">{{controller.data.status.by_type.video.todo}}</span>&nbsp;<span class="status-label">Videos</span>
+        </div>
+        <div ng-if="controller.data.status.by_type.audio.todo">
+          <span class="status-value">{{controller.data.status.by_type.audio.todo}}</span>&nbsp;<span class="status-label">Audio</span>
+        </div>
+        <div ng-if="controller.data.status.by_type.image.todo">
+          <span class="status-value">{{controller.data.status.by_type.image.todo}}</span>&nbsp;<span class="status-label">Images</span>
+        </div>
+        <md-progress-linear ng-if="controller.data.status.by_state.todo>0" class="status-progress" flex="33" md-mode="determinate" value="{{100 * controller.data.status.by_state.done / controller.data.status.total}}"></md-progress-linear>
+        <span flex></span>
+        <div class="status-view-details" ng-click="controller.toggleDetails()">
+          <md-icon md-font-library="material-icons">av_timer</md-icon>
+          View Processing Details
+        </div>
+      </div>
+      <div class="status-details" ng-if="controller.data.showDetails" layout="row" layout-align="start start">
+        <div flex="70">
+          <table width="100%" class="status-table">
+            <tr>
+              <td class="status-title-cell"><span class="status-title">Total Videos Processed</span></td>
+              <td class="status-title-cell"><span class="status-title">Total Images Processed</span></td>
+              <td class="status-title-cell"><span class="status-title">Total Audio Processed</span></td>
+            </tr>
+            <tr>
+              <td class="status-value-cell">
+                <span ng-if="!controller.data.status.by_type.video.done">None</span>
+                <div ng-if="controller.data.status.by_type.video.done>0">
+                  <span class="status-value">{{controller.data.status.by_type.video.done}}</span> Video Files
+                </div>
+              </td>
+              <td class="status-value-cell">
+                <span ng-if="!controller.data.status.by_type.image.done">None</span>
+                <div ng-if="controller.data.status.by_type.image.done>0">
+                  <span class="status-value">{{controller.data.status.by_type.image.done}}</span> Image Files
+                </div>
+              </td>
+              <td class="status-value-cell">
+                <span ng-if="!controller.data.status.by_type.audio.done">None</span>
+                <div ng-if="controller.data.status.by_type.audio.done>0">
+                  <span class="status-value">{{controller.data.status.by_type.audio.done}}</span> Audio Files
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="status-title-cell"><span class="status-title">Videos Processing</span></td>
+              <td class="status-title-cell"><span class="status-title">Images Processing</span></td>
+              <td class="status-title-cell"><span class="status-title">Audio Processing</span></td>
+            </tr>
+            <tr>
+              <td class="status-value-cell">
+                <span ng-if="!controller.data.status.by_type.video.todo">None</span>
+                <div ng-if="controller.data.status.by_type.video.todo>0" layout="row">
+                  <span class="status-value">{{controller.data.status.by_type.video.todo}}</span>
+                  <md-progress-linear class="status-progress" md-mode="determinate" value="{{100 * controller.data.status.by_type.video.done / controller.data.status.by_type.video.total}}"></md-progress-linear>
+                </div>
+              </td>
+              <td class="status-value-cell">
+                <span ng-if="!controller.data.status.by_type.image.todo">None</span>
+                <div ng-if="controller.data.status.by_type.image.todo>0" layout="row">
+                  <span class="status-value">{{controller.data.status.by_type.image.todo}}</span>
+                  <md-progress-linear class="status-progress" md-mode="determinate" value="{{100 * controller.data.status.by_type.image.done / controller.data.status.by_type.image.total}}"></md-progress-linear>
+                </div>
+              </td>
+              <td class="status-value-cell">
+                <span ng-if="!controller.data.status.by_type.audio.todo">None</span>
+                <div ng-if="controller.data.status.by_type.audio.todo>0" layout="row">
+                  <span class="status-value">{{controller.data.status.by_type.audio.todo}}</span>
+                  <md-progress-linear class="status-progress" md-mode="determinate" value="{{100 * controller.data.status.by_type.audio.done / controller.data.status.by_type.audio.total}}"></md-progress-linear>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <span flex></span>
+        <div>
+          <md-icon class="status-hide-details" ng-click="controller.toggleDetails()" md-font-library="material-icons">close</md-icon>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <footer>
-    <p class="text-center">made by <a href="https://twitter.com/l2fprod">fred</a> with <a href="https://new-console.ng.bluemix.net/openwhisk">IBM Bluemix OpenWhisk</a> - source code on <a href="https://github.com/IBM-Bluemix/openwhisk-darkvisionapp">Github</a>
-</p>
-  </footer>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.2/angular-animate.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.2/angular-aria.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.2/angular-messages.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-css/1.0.8/angular-css.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.3/angular-material.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload-shim.min.js"></script>
 
-  <script src="vendor/jquery/dist/jquery.min.js"></script>
-  <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="vendor/angular/angular.min.js"></script>
-  <script src="vendor/angular-ui-router/release/angular-ui-router.min.js"></script>
-  <script src="vendor/dropzone/dist/min/dropzone.min.js"></script>
-  
   <script src="js/app.js"></script>
 
-  <script src="js/status.service.js"></script>
-  <script src="js/status.controller.js"></script>
-
   <script src="js/images.service.js"></script>
-  <script src="js/images.controller.js"></script>
-
   <script src="js/videos.service.js"></script>
-  <script src="js/videos.controller.js"></script>
-  <script src="js/video.controller.js"></script>
+  <script src="js/status.service.js"></script>
+
+  <script src="js/status.controller.js"></script>
+  <script src="routes/home/home.controller.js"></script>
+  <script src="routes/video/video.controller.js"></script>
 </body>
 
 </html>

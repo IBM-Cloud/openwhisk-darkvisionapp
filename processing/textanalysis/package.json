@@ -1,0 +1,14 @@
+{
+  "name": "textanalysis",
+  "version": "1.0.0",
+  "description": "Analyzes audio transcript",
+  "main": "textanalysis",
+  "dependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/"
+  },
+  "author": "IBM",
+  "license": "Apache-2.0"
+}

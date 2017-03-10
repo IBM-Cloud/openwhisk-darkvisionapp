@@ -1,13 +1,13 @@
 {
   "name": "openwhisk-darkvisionapp",
   "version": "1.0.0",
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
     "async": "2.1.4",
     "dotenv": "4.0.0",
     "node-zip": "1.1.1",
     "openwhisk": "3.2.1",
+    "request": "2.79.0",
     "yargs": "6.6.0"
   },
   "devDependencies": {
@@ -25,6 +25,6 @@
     "url": "https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/"
   },
   "engines": {
-    "node": ">=6.7.0"
+    "node": ">=6.9.1"
   }
 }

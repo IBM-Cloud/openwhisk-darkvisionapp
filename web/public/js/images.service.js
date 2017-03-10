@@ -18,27 +18,27 @@
     return {
       all: function () {
         var deferred = $q.defer();
-        $http.get("/api/images").success(function (data) {
+        $http.get("/api/images").then(function(response) { return response.data; }).then(function (data) {
           deferred.resolve(data);
-        }).error(function () {
+        }).catch(function () {
           deferred.reject();
         });
         return deferred.promise;
       },
       reset: function (image) {
         var deferred = $q.defer();
-        $http.get("/api/images/" + encodeURIComponent(image._id) + "/reset").success(function (data) {
+        $http.post("/api/images/" + encodeURIComponent(image._id) + "/reset").then(function(response) { return response.data; }).then(function (data) {
           deferred.resolve(data);
-        }).error(function () {
+        }).catch(function () {
           deferred.reject();
         });
         return deferred.promise;
       },
       delete: function (image) {
         var deferred = $q.defer();
-        $http.delete("/api/images/" + encodeURIComponent(image._id)).success(function (data) {
+        $http.delete("/api/images/" + encodeURIComponent(image._id)).then(function(response) { return response.data; }).then(function (data) {
           deferred.resolve(data);
-        }).error(function () {
+        }).catch(function () {
           deferred.reject();
         });
         return deferred.promise;
