@@ -17,6 +17,7 @@
     "compression": "1.6.2",
     "express": "4.14.0",
     "http-auth": "3.1.1",
+    "mkdirp": "0.5.1",
     "multer": "1.2.1",
     "node-cache": "4.1.1",
     "node-env-file": "0.1.8",

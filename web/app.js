@@ -16,12 +16,14 @@ const multer = require('multer');
 const cfenv = require('cfenv');
 const fs = require('fs');
 const path = require('path');
+const mkdirp = require('mkdirp');
 const async = require('async');
 const auth = require('http-auth');
 const compression = require('compression');
 
 const app = express();
 app.use(compression());
+
 const upload = multer({
   dest: 'uploads/'
 });
@@ -125,11 +127,17 @@ const mediaStorage = require('./lib/cloudantstorage')(
   });
 
 // setup a cache directory for images
-const imageCacheDirectory = `${__dirname}/cache`;
-console.log('Images will be cached in', imageCacheDirectory);
-if (!fs.existsSync(imageCacheDirectory)) {
-  fs.mkdirSync(imageCacheDirectory);
+const apiCacheDirectory = `${__dirname}/cache/api`;
+const imageCacheDirectory = `${__dirname}/cache/images`;
+mkdirp.sync(apiCacheDirectory);
+mkdirp.sync(imageCacheDirectory);
+
+if (process.env.USE_API_CACHE) {
+  console.log('API calls will be cached in', apiCacheDirectory);
+} else {
+  console.log('API caching is disabled. Set USE_API_CACHE environment variable to "true" to enable');
 }
+console.log('Images will be cached in', imageCacheDirectory);
 
 // track cached images
 const imageCache = new (require('node-cache'))({
@@ -144,6 +152,33 @@ imageCache.on('del', (key) => {
   const imageFilename = `${imageCacheDirectory}/${key}`;
   fs.unlink(imageFilename);
 });
+
+function withJsonApiCaching(req, res, cacheKey, builder /** req, callback(err, result)*/) {
+  // if the web-browser is asking for fresh content (shift or ctrl + F5)
+  const forceReload =
+    (req.headers['cache-control'] && req.headers['cache-control'].indexOf('no-cache') >= 0) ||
+    (req.headers.pragma && req.headers.pragma.indexOf('no-cache') >= 0);
+
+  const cachedResultFilename = `${apiCacheDirectory}/${encodeURIComponent(cacheKey)}.json`;
+  if (process.env.USE_API_CACHE && !forceReload && fs.existsSync(cachedResultFilename)) {
+    console.log('Cache hit for', cacheKey, '->', cachedResultFilename);
+    res.sendFile(cachedResultFilename);
+  } else {
+    builder(req, (err, result, canCache = true) => {
+      if (err) {
+        res.send(500).send({ ok: false });
+      } else {
+        if (process.env.USE_API_CACHE && canCache) {
+          const cachedResultStream = fs.createWriteStream(cachedResultFilename);
+          cachedResultStream.write(JSON.stringify(result), 'utf8');
+          cachedResultStream.end();
+          console.log('Cached', cacheKey);
+        }
+        res.send(result);
+      }
+    });
+  }
+}
 
 /**
  * Returns an image attachment for a given video or image id,
@@ -186,14 +221,8 @@ app.get('/images/:type/:id.jpg', (req, res) => {
  * Returns all standalone images (images not linked to a video)
  */
 app.get('/api/images', (req, res) => {
-  mediaStorage.images((err, body) => {
-    if (err) {
-      res.status(500).send({
-        error: err
-      });
-    } else {
-      res.send(body);
-    }
+  withJsonApiCaching(req, res, 'images', (request, callback) => {
+    mediaStorage.images((err, body) => callback(err, body));
   });
 });
 
@@ -235,14 +264,8 @@ app.delete('/api/images/:id', checkForAuthentication, (req, res) => {
  * Returns all videos.
  */
 app.get('/api/videos', (req, res) => {
-  mediaStorage.videos((err, videos) => {
-    if (err) {
-      res.status(500).send({
-        error: err
-      });
-    } else {
-      res.send(videos);
-    }
+  withJsonApiCaching(req, res, 'videos', (request, callback) => {
+    mediaStorage.videos((err, videos) => callback(err, videos));
   });
 });
 
@@ -251,185 +274,196 @@ app.get('/api/videos', (req, res) => {
  * It collects all images and their analysis and keeps only the most relevants.
  */
 app.get('/api/videos/:id', (req, res) => {
-  // threshold to decide what tags/labels/faces to keep
-  const options = {
-    minimumFaceOccurrence: 3,
-    minimumFaceScore: 0.85,
-    minimumFaceScoreOccurrence: 2,
-    minimumLabelOccurrence: 5,
-    minimumLabelScore: 0.70,
-    minimumLabelScoreOccurrence: 1,
-    maximumLabelCount: 5,
-    minimumKeywordOccurrence: 1,
-    minimumKeywordScore: 0.60,
-    minimumKeywordScoreOccurrence: 1,
-    maximumKeywordCount: 5,
-    minimumEntityScore: 0.55,
-    minimumConceptScore: 0.55
-  };
+  withJsonApiCaching(req, res, `video-${req.params.id}`, (request, cachingCallback) => {
+    // threshold to decide what tags/labels/faces to keep
+    const options = {
+      minimumFaceOccurrence: 3,
+      minimumFaceScore: 0.85,
+      minimumFaceScoreOccurrence: 2,
+      minimumLabelOccurrence: 5,
+      minimumLabelScore: 0.70,
+      minimumLabelScoreOccurrence: 1,
+      maximumLabelCount: 5,
+      minimumKeywordOccurrence: 1,
+      minimumKeywordScore: 0.60,
+      minimumKeywordScoreOccurrence: 1,
+      maximumKeywordCount: 5,
+      minimumEntityScore: 0.55,
+      minimumConceptScore: 0.55
+    };
 
-  async.waterfall([
-    // get the video document
-    (callback) => {
-      console.log('Retrieving video', req.params.id);
-      mediaStorage.get(req.params.id, (err, video) => {
-        callback(err, video);
-      });
-    },
-    // get all images for this video
-    (video, callback) => {
-      console.log('Retrieving images for', video._id);
-      mediaStorage.videoImages(video._id, (err, images) => {
-        if (err) {
-          callback(err);
-        } else {
-          images.sort((image1, image2) =>
-            (image1.frame_number ? image1.frame_number - image2.frame_number : 0));
-          callback(null, video, images);
-        }
-      });
-    },
-    // summarize tags, faces
-    (video, images, callback) => {
-      // Map faces, keywords, tags to their occurrences.
-      // These maps will be used to decide which tags/faces to keep for the video summary
-      let peopleNameToOccurrences = {};
-      let keywordToOccurrences = {};
+    async.waterfall([
+      // get the video document
+      (callback) => {
+        console.log(new Date(), 'Retrieving video', req.params.id);
+        mediaStorage.get(req.params.id, (err, video) => {
+          callback(err, video);
+        });
+      },
+      // get all images for this video
+      (video, callback) => {
+        console.log(new Date(), 'Retrieving images for', video._id);
+        mediaStorage.videoImages(video._id, (err, images) => {
+          if (err) {
+            callback(err);
+          } else {
+            console.log(new Date(), 'Got images', new Date());
+            images.sort((image1, image2) =>
+              (image1.frame_number ? image1.frame_number - image2.frame_number : 0));
+            callback(null, video, images);
+          }
+        });
+      },
+      // summarize tags, faces
+      (video, images, callback) => {
+        // Map faces, keywords, tags to their occurrences.
+        // These maps will be used to decide which tags/faces to keep for the video summary
+        let peopleNameToOccurrences = {};
+        let keywordToOccurrences = {};
 
-      console.log('Sorting analysis for video', video._id);
-      images.forEach((image) => {
-        if (image.analysis && image.analysis.face_detection) {
-          image.analysis.face_detection.forEach((face) => {
-            if (face.identity && face.identity.name) {
-              if (!peopleNameToOccurrences[face.identity.name]) {
-                peopleNameToOccurrences[face.identity.name] = [];
-              }
-              peopleNameToOccurrences[face.identity.name].push(face);
-              face.image_id = image._id;
-              face.image_url = `${req.protocol}://${req.hostname}/images/image/${image._id}.jpg`;
-              face.timecode = image.frame_timecode;
-            }
-          });
-        }
-
-        if (image.analysis && image.analysis.image_keywords) {
-          image.analysis.image_keywords.forEach((keyword) => {
-            if (!keywordToOccurrences[keyword.class]) {
-              keywordToOccurrences[keyword.class] = [];
-            }
-            keywordToOccurrences[keyword.class].push(keyword);
-            keyword.image_id = image._id;
-            keyword.image_url = `${req.protocol}://${req.hostname}/images/image/${image._id}.jpg`;
-            keyword.timecode = image.frame_timecode;
-          });
-        }
-      });
-
-      // Filter a list of occurrences according to the minimum requirements
-      function filterOccurrences(occurrences, accessor) {
-        Object.keys(occurrences).forEach((property) => {
-          // by default we don't keep it
-          let keepIt = false;
-
-          // but with enough occurrences
-          if (occurrences[property].length >= accessor.minimumOccurrence) {
-            // and the minimum score for at least one occurrence
-            let numberOfOccurrencesAboveThreshold = 0;
-            occurrences[property].forEach((occur) => {
-              if (accessor.score(occur) >= accessor.minimumScore) {
-                numberOfOccurrencesAboveThreshold += 1;
+        console.log('Sorting analysis for video', video._id);
+        images.forEach((image) => {
+          if (image.analysis && image.analysis.face_detection) {
+            image.analysis.face_detection.forEach((face) => {
+              if (face.identity && face.identity.name) {
+                if (!peopleNameToOccurrences[face.identity.name]) {
+                  peopleNameToOccurrences[face.identity.name] = [];
+                }
+                peopleNameToOccurrences[face.identity.name].push(face);
+                face.image_id = image._id;
+                face.image_url = `${req.protocol}://${req.hostname}/images/image/${image._id}.jpg`;
+                face.timecode = image.frame_timecode;
               }
             });
-
-            // we keep it
-            if (numberOfOccurrencesAboveThreshold >= accessor.minimumScoreOccurrence) {
-              keepIt = true;
-            }
-          } else {
-            keepIt = false;
           }
 
-          if (!keepIt) {
-            delete occurrences[property];
-          } else {
-            // sort the occurrences, higher score first
-            occurrences[property].sort((oneOccurrence, anotherOccurrence) =>
-              accessor.score(anotherOccurrence) - accessor.score(oneOccurrence)
-            );
-
-            // keep only the first one
-            occurrences[property] = occurrences[property].slice(0, 1);
+          if (image.analysis && image.analysis.image_keywords) {
+            image.analysis.image_keywords.forEach((keyword) => {
+              if (!keywordToOccurrences[keyword.class]) {
+                keywordToOccurrences[keyword.class] = [];
+              }
+              keywordToOccurrences[keyword.class].push(keyword);
+              keyword.image_id = image._id;
+              keyword.image_url = `${req.protocol}://${req.hostname}/images/image/${image._id}.jpg`;
+              keyword.timecode = image.frame_timecode;
+            });
           }
         });
 
-        const result = [];
-        Object.keys(occurrences).forEach((property) => {
-          result.push(occurrences[property][0]);
-        });
+        // Filter a list of occurrences according to the minimum requirements
+        function filterOccurrences(occurrences, accessor) {
+          Object.keys(occurrences).forEach((property) => {
+            // by default we don't keep it
+            let keepIt = false;
 
-        return result;
-      }
+            // but with enough occurrences
+            if (occurrences[property].length >= accessor.minimumOccurrence) {
+              // and the minimum score for at least one occurrence
+              let numberOfOccurrencesAboveThreshold = 0;
+              occurrences[property].forEach((occur) => {
+                if (accessor.score(occur) >= accessor.minimumScore) {
+                  numberOfOccurrencesAboveThreshold += 1;
+                }
+              });
 
-      console.log('Filtering faces for video', video._id);
-      peopleNameToOccurrences = filterOccurrences(peopleNameToOccurrences, {
-        score: face => face.identity.score,
-        minimumOccurrence: options.minimumFaceOccurrence,
-        minimumScore: options.minimumFaceScore,
-        minimumScoreOccurrence: options.minimumFaceScoreOccurrence
-      });
-
-      // filtering keywords
-      console.log('Filtering keywords for video', video._id);
-      keywordToOccurrences = filterOccurrences(keywordToOccurrences, {
-        score: label => label.score,
-        minimumOccurrence: options.minimumKeywordOccurrence,
-        minimumScore: options.minimumKeywordScore,
-        minimumScoreOccurrence: options.minimumKeywordScoreOccurrence,
-        maximumOccurrenceCount: options.maximumKeywordCount
-      });
-
-      callback(null, {
-        video,
-        images,
-        face_detection: peopleNameToOccurrences,
-        image_keywords: keywordToOccurrences,
-      });
-    },
-    // get the video transcript
-    (result, callback) => {
-      console.log('Retrieving transcript');
-      mediaStorage.videoAudio(result.video._id, (err, audio) => {
-        if (err) {
-          callback(err);
-        } else {
-          if (audio && audio.analysis && audio.analysis.nlu) {
-            if (audio.analysis.nlu.entities) {
-              audio.analysis.nlu.entities = audio.analysis.nlu.entities
-                .filter(entity => entity.relevance > options.minimumEntityScore);
-              audio.analysis.nlu.entities.sort((oneOccurrence, anotherOccurrence) =>
-                anotherOccurrence.relevance - oneOccurrence.relevance
-              );
+              // we keep it
+              if (numberOfOccurrencesAboveThreshold >= accessor.minimumScoreOccurrence) {
+                keepIt = true;
+              }
+            } else {
+              keepIt = false;
             }
-            if (audio.analysis.nlu.concepts) {
-              audio.analysis.nlu.concepts = audio.analysis.nlu.concepts
-                .filter(entity => entity.relevance > options.minimumConceptScore);
-              audio.analysis.nlu.concepts.sort((oneOccurrence, anotherOccurrence) =>
-                anotherOccurrence.relevance - oneOccurrence.relevance
+
+            if (!keepIt) {
+              delete occurrences[property];
+            } else {
+              // sort the occurrences, higher score first
+              occurrences[property].sort((oneOccurrence, anotherOccurrence) =>
+                accessor.score(anotherOccurrence) - accessor.score(oneOccurrence)
               );
+
+              // keep only the first one
+              occurrences[property] = occurrences[property].slice(0, 1);
             }
-          }
-          result.audio = audio;
-          callback(null, result);
+          });
+
+          const result = [];
+          Object.keys(occurrences).forEach((property) => {
+            result.push(occurrences[property][0]);
+          });
+
+          return result;
         }
-      });
-    }], (err, result) => {
-    if (err) {
-      res.status(500).send({
-        error: err
-      });
-    } else {
-      res.send(result);
-    }
+
+        console.log('Filtering faces for video', video._id);
+        peopleNameToOccurrences = filterOccurrences(peopleNameToOccurrences, {
+          score: face => face.identity.score,
+          minimumOccurrence: options.minimumFaceOccurrence,
+          minimumScore: options.minimumFaceScore,
+          minimumScoreOccurrence: options.minimumFaceScoreOccurrence
+        });
+
+        // filtering keywords
+        console.log('Filtering keywords for video', video._id);
+        keywordToOccurrences = filterOccurrences(keywordToOccurrences, {
+          score: label => label.score,
+          minimumOccurrence: options.minimumKeywordOccurrence,
+          minimumScore: options.minimumKeywordScore,
+          minimumScoreOccurrence: options.minimumKeywordScoreOccurrence,
+          maximumOccurrenceCount: options.maximumKeywordCount
+        });
+
+        callback(null, {
+          video,
+          images,
+          face_detection: peopleNameToOccurrences,
+          image_keywords: keywordToOccurrences,
+        });
+      },
+      // get the video transcript
+      (result, callback) => {
+        console.log(new Date(), 'Retrieving transcript');
+        mediaStorage.videoAudio(result.video._id, (err, audio) => {
+          if (err) {
+            callback(err);
+          } else {
+            if (audio && audio.analysis && audio.analysis.nlu) {
+              if (audio.analysis.nlu.entities) {
+                audio.analysis.nlu.entities = audio.analysis.nlu.entities
+                  .filter(entity => entity.relevance > options.minimumEntityScore);
+                audio.analysis.nlu.entities.sort((oneOccurrence, anotherOccurrence) =>
+                  anotherOccurrence.relevance - oneOccurrence.relevance
+                );
+              }
+              if (audio.analysis.nlu.concepts) {
+                audio.analysis.nlu.concepts = audio.analysis.nlu.concepts
+                  .filter(entity => entity.relevance > options.minimumConceptScore);
+                audio.analysis.nlu.concepts.sort((oneOccurrence, anotherOccurrence) =>
+                  anotherOccurrence.relevance - oneOccurrence.relevance
+                );
+              }
+            }
+            result.audio = audio;
+            callback(null, result);
+          }
+        });
+      }], (err, result) => {
+      // can we cache this video?
+      // yes if all of its elements have been processed
+      let canCache = false;
+      try {
+        canCache =
+          // video was extracted
+          result.video.hasOwnProperty('metadata') &&
+          // all images where analyzed
+          (result.images.filter(image => !image.hasOwnProperty('analysis')).length === 0) &&
+          // audio has been processed
+          result.audio.hasOwnProperty('analysis');
+      } catch (canCacheError) {
+        console.log('Video can not be cached yet.', canCacheError);
+      }
+      cachingCallback(err, result, canCache);
+    });
   });
 });
 
