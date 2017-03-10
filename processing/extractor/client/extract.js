@@ -34,7 +34,7 @@ const doc = payload.doc;
 
 const extractOptions = {
   videoThumbnailSize: 640,
-  speechDuration: 15 * 60 // export only the first 4 minutes of clip audio
+  speechDuration: 15 * 60 // export only the first 15 minutes of audio
 };
 
 function getFps(durationInSeconds) {
