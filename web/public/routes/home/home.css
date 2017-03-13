@@ -50,6 +50,14 @@
   max-height: 300px;
 }
 
+@media (max-width: 600px) {
+  .image-thumbnail {
+    width: 100%;
+    max-width: none;
+    max-height: none;
+  }
+}
+
 .video-box {
 }
 
