@@ -166,7 +166,7 @@ function withJsonApiCaching(req, res, cacheKey, builder /** req, callback(err, r
   } else {
     builder(req, (err, result, canCache = true) => {
       if (err) {
-        res.send(500).send({ ok: false });
+        res.status(500).send({ ok: false });
       } else {
         if (process.env.USE_API_CACHE && canCache) {
           const cachedResultStream = fs.createWriteStream(cachedResultFilename);
@@ -544,7 +544,7 @@ app.post('/api/videos/:id/reset-audio', checkForAuthentication, (req, res) => {
 app.use('/upload', checkForAuthentication);
 
 app.get('/upload', (req, res) => {
-  res.send(200);
+  res.sendStatus(200);
 });
 
 app.post('/upload', upload.single('file'), (req, res) => {
@@ -605,7 +605,7 @@ app.get('/api/status', (req, res) => {
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   mediaStorage.status((err, status) => {
     if (err) {
-      res.send(500);
+      res.sendStatus(500);
     } else {
       res.send(status);
     }
