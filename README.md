@@ -150,9 +150,11 @@ Once the transcript is stored (1), the text analysis (3) is triggered (2) to det
 
 Dark Vision comes with a default toolchain you can use to deploy the solution with few clicks. If you want to deploy it manually, you can skip this section.
 
-Click *Deploy to Bluemix* to start the Bluemix DevOps wizard:
+1. **Ensure your organization has enough quota for one web application using 256MB of memory and 4 services.**
 
-[![Deploy to Bluemix](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/button.svg)](https://console.ng.bluemix.net/devops/setup/deploy/?repository=https%3A//github.com/IBM-Bluemix/openwhisk-darkvisionapp)
+1. Click ***Deploy to Bluemix*** to start the Bluemix DevOps wizard:
+
+  [![Deploy to Bluemix](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/button.svg)](https://console.ng.bluemix.net/devops/setup/deploy/?repository=https%3A//github.com/IBM-Bluemix/openwhisk-darkvisionapp)
 
 1. Select the **GitHub** box.
 
