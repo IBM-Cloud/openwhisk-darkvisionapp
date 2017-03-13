@@ -34,6 +34,10 @@
         <md-progress-circular class="loading" md-diameter="100" md-mode="indeterminate"></md-progress-circular>
       </div>
 
+      <div ng-if="filteredVideos.length == 0">
+        No video found
+      </div>
+
       <div>
         <md-grid-list md-gutter="20px"
           md-cols="1" md-cols-sm="2" md-cols-md="3" md-cols-gt-md="5" md-row-height="16:11">
@@ -66,6 +70,10 @@
 
       <div ng-if="!controller.data.images" flex layout="row" layout-align="center center">
         <md-progress-circular class="loading" md-diameter="100" md-mode="indeterminate"></md-progress-circular>
+      </div>
+
+      <div ng-if="filteredImages.length == 0">
+        No image found
       </div>
 
       <div>
