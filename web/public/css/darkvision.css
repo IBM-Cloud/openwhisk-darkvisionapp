@@ -258,6 +258,7 @@ h4 {
   margin: 4px;
   border-radius: 4px;
   font-size: 12px;
+  outline: none;
 }
 
 .tag a md-icon {
@@ -266,6 +267,12 @@ h4 {
   height: 12px;
   min-width: 12px;
   min-height: 12px;
+}
+
+.tag-clickable {
+  outline: none;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .tag.hidden-tag {

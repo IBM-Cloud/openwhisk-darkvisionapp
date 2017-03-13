@@ -51,6 +51,37 @@
       controller.data.selectedSummary = image.analysis;
     };
 
+    controller.selectImageWithTag = function(tagType, tagName) {
+      if (!controller.isVideo()) {
+        return;
+      }
+
+      var imageWithTag = controller.data.images.find(function(image) {
+        if (image.analysis) {
+          switch (tagType) {
+            case 'face_detection':
+              return image.analysis.face_detection.find(function(face) {
+                return face.identity && face.identity.name === tagName;
+              });
+            case 'image_keywords':
+              return image.analysis.image_keywords.find(function(keyword) {
+                return keyword.class === tagName;
+              });
+          }
+        }
+        return false;
+      });
+      if (imageWithTag) {
+        controller.selectImage(imageWithTag);
+        // scroll the image to make it visible
+        var imageDom = document.getElementById(`image-${imageWithTag._id}`);
+        imageDom.scrollIntoView();
+      } else {
+        console.log('No image found matching', tagType, tagName);
+      }
+    };
+
+
     controller.isVideo = function() {
       return controller.data.selected && controller.data.selected.type === 'video';
     }

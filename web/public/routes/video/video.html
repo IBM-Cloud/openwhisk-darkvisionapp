@@ -83,7 +83,7 @@
           <input flex id="search" ng-model="search" type="search" placeholder="Filter image frame">
         </div>
         <div flex class="video-frames">
-          <div ng-class="{ 'selected-frame': image===controller.data.selected }" class="video-frame" ng-repeat="image in filteredImages" layout="row" layout-align="center center">
+          <div ng-class="{ 'selected-frame': image===controller.data.selected }" class="video-frame" ng-attr-id="image-{{image._id}}" ng-repeat="image in filteredImages" layout="row" layout-align="center center">
             <div ng-class="{first: $index===0, last: $index===filteredImages.length-1}" class="video-frame-timeline"></div>
             <div ng-if="image===controller.data.selected" class="selected-frame-indicator">
               <md-icon md-font-library="material-icons">play_arrow</md-icon>
@@ -172,7 +172,9 @@
               <span ng-if="controller.data.selectedSummary.face_detection.length == 0">No known face detected</span>
               <ul class="entry-taglist">
                 <li ng-repeat="face in controller.data.selectedSummary.face_detection" class="entry-tag">
-                  <span class="tag tag-face">
+                  <span ng-click="controller.selectImageWithTag('face_detection', face.identity.name)"
+                        class="tag tag-face"
+                        ng-class="{ 'tag-clickable': controller.isVideo() }">
                     <span class="face-overlay-text">{{$index+1}}</span>
                     <span ng-if="face.identity">{{face.identity.name}} {{face.identity.score | formatPercent}}%</span>
                     <span ng-if="face.identity">&nbsp;</span>
@@ -186,9 +188,13 @@
               <h4>Image Keywords</h4>
               <ul class="entry-taglist">
                 <li ng-repeat="keyword in controller.data.selectedSummary.image_keywords" class="entry-tag">
-                  <span ng-class="{ 'hidden-tag': $index > 15 && !controller.showMoreKeywords }" class="tag tag-keyword">{{keyword.class}} {{keyword.score | formatPercent}}%</span>
+                  <span ng-click="controller.selectImageWithTag('image_keywords', keyword.class)"
+                        ng-class="{ 'hidden-tag': $index > 15 && !controller.showMoreKeywords, 'tag-clickable': controller.isVideo() }"
+                        class="tag tag-keyword">{{keyword.class}} {{keyword.score | formatPercent}}%</span>
                 </li>
-                <li ng-if="controller.data.selectedSummary.image_keywords.length > 15" class="entry-tag more-tag-toggle" ng-click="controller.showMoreKeywords = !controller.showMoreKeywords">
+                <li ng-if="controller.data.selectedSummary.image_keywords.length > 15"
+                    class="entry-tag more-tag-toggle"
+                    ng-click="controller.showMoreKeywords = !controller.showMoreKeywords">
                   <span ng-if="!controller.showMoreKeywords">and {{controller.data.selectedSummary.image_keywords.length - 15}} more...</span>
                   <span ng-if="controller.showMoreKeywords">show less</span>
                 </li>
