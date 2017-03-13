@@ -137,7 +137,7 @@ if [ -z "$CF_APP_INSTANCES" ]; then
 fi
 
 if ! cf app $CF_APP; then
-  cf push $CF_APP -i $CF_APP_INSTANCES -hostname $CF_APP_HOSTNAME --no-start
+  cf push $CF_APP -i $CF_APP_INSTANCES --hostname $CF_APP_HOSTNAME --no-start
   cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"
   if [ ! -z "$USE_API_CACHE" ]; then
     cf set-env $CF_APP USE_API_CACHE true
