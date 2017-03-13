@@ -1,5 +1,6 @@
-# Dark Vision
-## Discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
+# OpenWhisk Dark Vision - Discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
+
+[![Build Status](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp) ![Bluemix Deployments](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/badge.svg)
 
 Think about all the videos individuals and companies (Media and Entertainment) accumulate every year. How can you keep track of what's inside of them so you can quickly search and find what you're looking for? *Show me all the videos that have Arc De Triomphe in it.* or *Show me the all the videos that talk about peaches*
 
@@ -13,8 +14,6 @@ Dark Vision is an application that processes videos to discover what's inside of
   <img src="xdocs/dv-ios-browse.png" width="200"/>
   <img src="xdocs/dv-ios-video-details.png" width="200"/>
 </p>
-
-[![Build Status](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp) ![Bluemix Deployments](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/badge.svg)
 
 ### Watch this Youtube video to learn more about the app
 
