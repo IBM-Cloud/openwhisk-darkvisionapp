@@ -160,6 +160,26 @@
   border: none;
 }
 
+::-webkit-input-placeholder {
+  font-style: italic;
+  font-size: 14px;
+}
+
+::-moz-placeholder {
+  font-style: italic;
+  font-size: 14px;
+}
+
+:-ms-input-placeholder {
+  font-style: italic;
+  font-size: 14px;
+}
+
+:-moz-placeholder {
+  font-style: italic;
+  font-size: 14px;
+}
+
 .no-frames {
   margin: 20px;
 }
@@ -167,7 +187,7 @@
 .video-frames {
   overflow-x: hidden;
   overflow-y: scroll;
-  padding-bottom: 20px;
+  position: relative;
 }
 
 .video-frame {
@@ -175,6 +195,7 @@
   padding-top: 10px;
   padding-bottom: 10px;
   padding-right: 20px;
+  height: 105px !important;
 }
 
 .video-frame-timeline {
@@ -183,6 +204,14 @@
   top: 0px;
   width: 2px;
   height: 105px;
+}
+
+.video-frame-timeline-filler {
+  position: absolute;
+  left: 47px;
+  top: 0px;
+  bottom: 0px;
+  height: auto;
 }
 
 .selected-frame-indicator {

@@ -62,7 +62,7 @@
     </div>
     <div ng-if="controller.data.video" flex layout="row">
 
-      {{ filteredImages = (controller.data.images | filter:search); "" }}
+      {{ filteredImages = ( controller.data.images | filter:search); "" }}
 
       <div class="video-navigator" layout="column">
         <div class="video-frame-count">
@@ -92,6 +92,7 @@
             <div ng-click="controller.selectImage(image);" class="video-frame-thumbnail image-cover" style="background-image: url(/images/image/{{image._id}}.jpg);">
             </div>
           </div>
+          <div class="video-frame-timeline video-frame-timeline-filler" ng-if="filteredImages.length>0"></div>
           <div class="no-frames" ng-if="filteredImages.length===0">
             No frame
           </div>

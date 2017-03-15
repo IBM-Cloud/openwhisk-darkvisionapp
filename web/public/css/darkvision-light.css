@@ -181,6 +181,22 @@ label.md-button {
   color: #ee6161;
 }
 
+::-webkit-input-placeholder {
+  color: #B8C1C1;
+}
+
+::-moz-placeholder {
+  color: #B8C1C1;
+}
+
+:-ms-input-placeholder {
+  color: #B8C1C1;
+}
+
+:-moz-placeholder {
+  color: #B8C1C1;
+}
+
 .video-frame-timeline {
   width: 2px;
   background-color: #ee6161 !important;
