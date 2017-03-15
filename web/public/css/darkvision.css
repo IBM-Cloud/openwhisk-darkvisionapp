@@ -11,6 +11,13 @@ body, html {
   -webkit-overflow-scrolling: touch;
 }
 
+md-toolbar md-icon:hover,
+a:hover md-icon,
+button:hover md-icon,
+.status-view-details:hover {
+  transition: all 0.25s ease;
+}
+
 /**
   Header
   **/

@@ -15,12 +15,23 @@ md-toolbar md-icon {
   fill: white !important;
 }
 
+md-toolbar md-icon:hover,
+button:hover md-icon,
+a:hover md-icon {
+  color: #ee6161 !important;
+  fill: #ee6161 !important;
+}
+
 .title {
   color: #ffffff;
 }
 
 .upload-button {
   color: #ffffff !important;
+}
+
+.upload-button:hover {
+  color: #ee6161 !important;
 }
 
 .upload-button[disabled] {
@@ -156,6 +167,10 @@ label.md-button {
   color: #b8c1c1;
 }
 
+.breadcrumb a:hover {
+  color: #ee6161;
+}
+
 .breadcrumb a md-icon {
   color: #ee6161;
 }
@@ -176,6 +191,10 @@ label.md-button {
 .video-overview-box {
   background-color: #f9f9f9;
   color: #ee6161;
+}
+
+.video-overview-box:hover {
+  background-color: #e6e5e9;
 }
 
 .video-overview-box.selected-frame {
@@ -200,6 +219,10 @@ label.md-button {
 
 :-moz-placeholder {
   color: #B8C1C1;
+}
+
+.video-frame:hover {
+  background-color: #e6e5e9;
 }
 
 .video-frame-timeline {

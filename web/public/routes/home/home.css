@@ -20,6 +20,7 @@
 
 .button-group:not([disabled]):hover {
   background-color: inherit !important;
+  transition: all 0.25s ease;
 }
 
 .button-group:first-of-type {

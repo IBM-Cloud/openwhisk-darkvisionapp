@@ -38,6 +38,10 @@
   font-weight: bold;
 }
 
+breadcrumb a:hover {
+  transition: all 0.25s ease;
+}
+
 /**
   Overview
   **/
@@ -127,6 +131,11 @@
 /**
   Navigator
   **/
+
+.video-overview-box:hover,
+.video-frame:hover {
+  transition: all 0.25s ease;
+}
 
 .video-frame-count {
   padding: 10px 20px;
