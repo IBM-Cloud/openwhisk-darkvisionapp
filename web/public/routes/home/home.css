@@ -11,6 +11,19 @@
 .button-group {
   text-transform: none;
   border-radius: 5px;
+  margin: 0;
+  min-width: inherit;
+  margin-left: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.button-group:not([disabled]):hover {
+  background-color: inherit !important;
+}
+
+.button-group:first-of-type {
+  margin-left: 15px;
 }
 
 .showing {
