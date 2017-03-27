@@ -36,7 +36,10 @@ OpenWhisk then triggers the video and audio extractor action (3). During its exe
 
 Object Storage can complement Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
 
-![Architecture](http://g.gravizo.com/g?
+![Architecture](https://g.gravizo.com/source/extract_frame?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Bluemix%2Fopenwhisk-darkvisionapp%2FREADME.md)
+<details>
+<summary><summary>
+extract_frame
   digraph G {
     node [fontname = "helvetica"]
     rankdir=LR
@@ -58,7 +61,9 @@ Object Storage can complement Cloudant. When doing so, video and image medadata 
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
   }
+extract_frame
 )
+</details>
 
 ### Processing frames and standalone images
 
