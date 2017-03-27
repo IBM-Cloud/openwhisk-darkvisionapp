@@ -38,7 +38,7 @@ Object Storage can complement Cloudant. When doing so, video and image medadata 
 
 ![Architecture](https://g.gravizo.com/source/extract_video?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Bluemix%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
 <details>
-<summary><summary>
+<summary></summary>
 extract_video
   digraph G {
     node [fontname = "helvetica"]
@@ -72,7 +72,7 @@ OpenWhisk triggers the analysis (3). The analysis (4) is persisted with the imag
 
 ![Architecture](https://g.gravizo.com/source/image_analysis?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Bluemix%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
 <details>
-<summary><summary>
+<summary></summary>
 image_analysis
   digraph G {
     node [fontname = "helvetica"]
@@ -110,7 +110,7 @@ Extracting the transcript from an audio track using the Speech to Text service m
 
 ![Architecture](https://g.gravizo.com/source/extract_audio?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Bluemix%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
 <details>
-<summary><summary>
+<summary></summary>
 extract_audio
   digraph G {
     node [fontname = "helvetica"]
@@ -137,7 +137,7 @@ Once the transcript is stored (1), the text analysis (3) is triggered (2) to det
 
 ![Architecture](https://g.gravizo.com/source/audio_analysis?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Bluemix%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
 <details>
-<summary><summary>
+<summary></summary>
 audio_analysis
   digraph G {
     node [fontname = "helvetica"]
