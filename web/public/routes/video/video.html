@@ -128,39 +128,60 @@
               </div>
 
               <div ng-if="controller.isVideo()">
-                <div layout="row">
-                  <div layout="column">
-                    <div class="entry-overview-counter">
-                      <span class="entry-overview-counter-title">Frames: </span>
-                      <span class="entry-overview-counter-value">{{controller.data.images.length}}</span>
-                    </div>
-                    <div class="entry-overview-counter">
-                      <span class="entry-overview-counter-title">Keywords: </span>
-                      <span class="entry-overview-counter-value">{{controller.data.selectedSummary.image_keywords.length + controller.data.summary.audio.analysis.nlu.keywords.length}}</span>
-                    </div>
-                  </div>
-                  <div layout="column">
-                    <div class="entry-overview-counter">
-                      <span class="entry-overview-counter-title">Entities: </span>
-                      <span class="entry-overview-counter-value">{{controller.data.summary.audio.analysis.nlu.entities.length + 0}}</span>
-                    </div>
-                    <div class="entry-overview-counter">
-                      <span class="entry-overview-counter-title">Concepts: </span>
-                      <span class="entry-overview-counter-value">{{controller.data.summary.audio.analysis.nlu.concepts.length + 0}}</span>
-                    </div>
-                  </div>
-                </div>
+                <table class="status-table">
+                  <tr>
+                    <td class="status-title-cell entry-overview-title-cell"><span class="status-title entry-overview-counter-title">Frames</span></td>
+                    <td class="status-title-cell entry-overview-title-cell"><span class="status-title entry-overview-counter-title">Entities</span></td>
+                  </tr>
+                  <tr>
+                    <td class="status-value-cell entry-overview-value-cell">
+                      <span class="status-value entry-overview-counter-value" ng-if="!controller.data.images.length">None</span>
+                      <div ng-if="controller.data.images.length>0">
+                        <span class="status-value entry-overview-counter-value">{{controller.data.images.length}}</span>
+                      </div>
+                    </td>
+                    <td class="status-value-cell entry-overview-value-cell">
+                      <span class="status-value entry-overview-counter-value" ng-if="!controller.data.summary.audio.analysis.nlu.entities.length">None</span>
+                      <div ng-if="controller.data.summary.audio.analysis.nlu.entities.length>0">
+                        <span class="status-value entry-overview-counter-value">{{controller.data.summary.audio.analysis.nlu.entities.length}}</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="status-title-cell entry-overview-title-cell"><span class="status-title entry-overview-counter-title">Keywords</span></td>
+                    <td class="status-title-cell entry-overview-title-cell"><span class="status-title entry-overview-counter-title">Concepts</span></td>
+                  </tr>
+                  <tr>
+                    <td class="status-value-cell entry-overview-value-cell">
+                      <span class="status-value entry-overview-counter-value" ng-if="!(controller.data.selectedSummary.image_keywords.length + controller.data.summary.audio.analysis.nlu.keywords.length)">None</span>
+                      <div ng-if="(controller.data.selectedSummary.image_keywords.length + controller.data.summary.audio.analysis.nlu.keywords.length)>0" layout="row">
+                        <span class="status-value entry-overview-counter-value">{{controller.data.selectedSummary.image_keywords.length + controller.data.summary.audio.analysis.nlu.keywords.length}}</span>
+                      </div>
+                    </td>
+                    <td class="status-value-cell entry-overview-value-cell">
+                      <span class="status-value entry-overview-counter-value" ng-if="!controller.data.summary.audio.analysis.nlu.concepts.length">None</span>
+                      <div ng-if="controller.data.summary.audio.analysis.nlu.concepts.length>0" layout="row">
+                        <span class="status-value entry-overview-counter-value">{{controller.data.summary.audio.analysis.nlu.concepts.length}}</span>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
               </div>
 
               <div ng-if="!controller.isVideo()">
-                <div layout="row">
-                  <div layout="column">
-                    <div class="entry-overview-counter">
-                      <span class="entry-overview-counter-title">Keywords: </span>
-                      <span class="entry-overview-counter-value">{{controller.data.selectedSummary.image_keywords.length}}</span>
-                    </div>
-                  </div>
-                </div>
+                <table class="status-table">
+                  <tr>
+                    <td class="status-title-cell entry-overview-title-cell"><span class="status-title entry-overview-counter-title">Keywords</span></td>
+                  </tr>
+                  <tr>
+                    <td class="status-value-cell entry-overview-value-cell">
+                      <span class="status-value entry-overview-counter-value" ng-if="!controller.data.selectedSummary.image_keywords.length">None</span>
+                      <div ng-if="controller.data.selectedSummary.image_keywords.length>0">
+                        <span class="status-value entry-overview-counter-value">{{controller.data.selectedSummary.image_keywords.length}}</span>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
               </div>
 
             </div>
