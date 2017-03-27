@@ -93,7 +93,7 @@ image_analysis
     analysis [label="analysis"]
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
-    watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\nVisual\\nRecognition"]
+    watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\nVisual\nRecognition"]
   }
 image_analysis
 )
@@ -125,7 +125,7 @@ extract_audio
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
     speechtotext [label="speechtotext"]
-    watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\nSpeech to Text"]
+    watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\nSpeech to Text"]
   }
 extract_audio
 )
@@ -153,7 +153,7 @@ audio_analysis
     textanalysis [label="textanalysis"]
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
-    nlu [shape=circle style=filled color="%234E96DB" fontcolor=white label="Natural\\nLanguage\\nUnderstanding"]
+    nlu [shape=circle style=filled color="%234E96DB" fontcolor=white label="Natural\nLanguage\nUnderstanding"]
   }
 )
 audio_analysis
