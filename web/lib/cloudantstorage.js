@@ -273,6 +273,63 @@ function CloudandStorage(options) {
     ], deleteCallback);
   };
 
+  // delete a video and its related documents (images, audios)
+  self.videoDelete = function(videoId, videoCallback/* err*/) {
+    // remove all analysis for the give video
+    async.waterfall([
+      // get the video
+      (callback) => {
+        console.log('Retrieving video', videoId);
+        visionDb.get(videoId, (err, video) => {
+          if (err) {
+            callback(err);
+          } else {
+            callback(null, video);
+          }
+        });
+      },
+      // get all related content for this video
+      (video, callback) => {
+        console.log('Retrieving related documents for', video._id);
+        visionDb.find({
+          selector: {
+            video_id: video._id
+          }
+        }, (err, related) => {
+          callback(err, video, related ? related.docs : []);
+        });
+      },
+      // delete related medias
+      (video, related, callback) => {
+        // mark all related medias to be deleted
+        const toBeDeleted = {
+          docs: related.map(doc => ({
+            _id: doc._id,
+            _rev: doc._rev,
+            _deleted: true
+          }))
+        };
+        // add the video too
+        toBeDeleted.docs.push({
+          _id: video._id,
+          _rev: video._rev,
+          _deleted: true,
+        });
+
+        // delete all attachments for related medias
+        related.forEach(removeFileStoreAttachments);
+        // and for the video
+        removeFileStoreAttachments(video);
+
+        // and the documents
+        console.log('Deleting', toBeDeleted.docs.length, 'medias...');
+        visionDb.bulk(toBeDeleted, (err) => {
+          callback(err);
+        });
+      }
+    ], videoCallback);
+  };
+
   // get all videos
   self.videos = function(videosCallback/* err, videos*/) {
     visionDb.view('videos', 'all', {

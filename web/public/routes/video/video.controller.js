@@ -136,8 +136,8 @@
       } else {
         console.log('Deleting video', controller.data.video._id);
         VideosService.delete(controller.data.video._id).then(function (reset) {
-          // reload the page, it will show empty
-          $state.reload();
+          // go back home
+          $state.go('home');
         });
       }
     };

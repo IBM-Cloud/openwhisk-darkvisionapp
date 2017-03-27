@@ -539,6 +539,22 @@ app.post('/api/videos/:id/reset-audio', checkForAuthentication, (req, res) => {
   });
 });
 
+/**
+ * Deletes a video and its related objects
+ */
+app.delete('/api/videos/:id', checkForAuthentication, (req, res) => {
+  mediaStorage.videoDelete(req.params.id, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send({
+        error: err
+      });
+    } else {
+      console.log('Done');
+      res.send(result);
+    }
+  });
+});
 
 // Protects the upload zone with login and password if they are configured
 app.use('/upload', checkForAuthentication);

@@ -60,6 +60,15 @@
           deferred.reject();
         });
         return deferred.promise;
+      },
+      delete: function (videoId) {
+        var deferred = $q.defer();
+        $http.delete("/api/videos/" + encodeURIComponent(videoId)).then(function(response) { return response.data; }).then(function (data) {
+          deferred.resolve(data);
+        }).catch(function () {
+          deferred.reject();
+        });
+        return deferred.promise;
       }
     };
   }
