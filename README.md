@@ -36,10 +36,10 @@ OpenWhisk then triggers the video and audio extractor action (3). During its exe
 
 Object Storage can complement Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
 
-![Architecture](https://g.gravizo.com/source/extract_frame?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Bluemix%2Fopenwhisk-darkvisionapp%2FREADME.md)
+![Architecture](https://g.gravizo.com/source/extract_video?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Bluemix%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
 <details>
 <summary><summary>
-extract_frame
+extract_video
   digraph G {
     node [fontname = "helvetica"]
     rankdir=LR
@@ -61,7 +61,7 @@ extract_frame
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
   }
-extract_frame
+extract_video
 )
 </details>
 
@@ -70,7 +70,10 @@ extract_frame
 Whenever a frame is created and uploaded (1), Cloudant emits a change event (2) and
 OpenWhisk triggers the analysis (3). The analysis (4) is persisted with the image (5).
 
-![Architecture](http://g.gravizo.com/g?
+![Architecture](https://g.gravizo.com/source/image_analysis?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Bluemix%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
+<details>
+<summary><summary>
+image_analysis
   digraph G {
     node [fontname = "helvetica"]
     /* stores a image */
@@ -92,7 +95,9 @@ OpenWhisk triggers the analysis (3). The analysis (4) is persisted with the imag
     openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
     watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\nVisual\\nRecognition"]
   }
+image_analysis
 )
+</details>
 
 ### Processing audio
 
@@ -103,7 +108,10 @@ OpenWhisk triggers the audio analysis (3).
 
 Extracting the transcript from an audio track using the Speech to Text service may take more than 5 minutes depending on the video. Because OpenWhisk actions have a 5 minutes limit, waiting in the action for the audio processing to complete is not possible for longer videos. Fortunately the Speech to Text service has a very nice [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods). Instead of waiting for Speech to Text to process the audio, Dark Vision sends the audio file to Speech to Text (4) and Speech to Text will notify Dark Vision with the transcript when it is done processing the audio (5). The result is attached to the audio document (6).
 
-![Architecture](http://g.gravizo.com/g?
+![Architecture](https://g.gravizo.com/source/extract_audio?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Bluemix%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
+<details>
+<summary><summary>
+extract_audio
   digraph G {
     node [fontname = "helvetica"]
     audio -> storage [label="1"]
@@ -119,13 +127,18 @@ Extracting the transcript from an audio track using the Speech to Text service m
     speechtotext [label="speechtotext"]
     watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\\nSpeech to Text"]
   }
+extract_audio
 )
+</details>
 
 #### Analyze the transcript
 
 Once the transcript is stored (1), the text analysis (3) is triggered (2) to detect concepts, entities and emotion (4). The result is attached to the audio (5).
 
-![Architecture](http://g.gravizo.com/g?
+![Architecture](https://g.gravizo.com/source/audio_analysis?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Bluemix%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
+<details>
+<summary><summary>
+audio_analysis
   digraph G {
     node [fontname = "helvetica"]
     transcript -> storage [label="1"]
@@ -143,6 +156,8 @@ Once the transcript is stored (1), the text analysis (3) is triggered (2) to det
     nlu [shape=circle style=filled color="%234E96DB" fontcolor=white label="Natural\\nLanguage\\nUnderstanding"]
   }
 )
+audio_analysis
+</details>
 
 ## Prerequisites
 
