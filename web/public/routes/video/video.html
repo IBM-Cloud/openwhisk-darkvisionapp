@@ -191,90 +191,76 @@
           <div class="width-wrapper">
             <div>
               <h4>Face Detection</h4>
-              <span ng-if="controller.data.selectedSummary.face_detection.length == 0">No known face detected</span>
+              <span class="no-tag" ng-if="controller.data.selectedSummary.face_detection.length == 0">No known face detected</span>
               <ul class="entry-taglist">
-                <li ng-repeat="face in controller.data.selectedSummary.face_detection" class="entry-tag">
-                  <span ng-click="controller.selectImageWithTag('face_detection', face.identity.name)"
-                        class="tag tag-face"
-                        ng-class="{ 'tag-clickable': controller.isVideo() }">
+                <li ng-repeat="face in controller.data.selectedSummary.face_detection" class="entry-tag"><span
+                      ng-click="controller.selectImageWithTag('face_detection', face.identity.name)"
+                      class="tag tag-face"
+                      ng-class="{ 'tag-clickable': controller.isVideo() }">
                     <span class="face-overlay-text">{{$index+1}}</span>
                     <span ng-if="face.identity">{{face.identity.name}} {{face.identity.score | formatPercent}}%</span>
                     <span ng-if="face.identity">&nbsp;</span>
                     <span>{{face.gender.gender}} {{face.age.min}}-{{face.age.max}} {{face.age.score | formatPercent}}%</span>
-                  </span>
-                </li>
+                  </span></li>
               </ul>
             </div>
 
             <div>
               <h4>Image Keywords</h4>
               <ul class="entry-taglist">
-                <li ng-repeat="keyword in controller.data.selectedSummary.image_keywords" class="entry-tag">
-                  <span ng-click="controller.selectImageWithTag('image_keywords', keyword.class)"
+                <li ng-repeat="keyword in controller.data.selectedSummary.image_keywords" class="entry-tag"><span
+                        ng-click="controller.selectImageWithTag('image_keywords', keyword.class)"
                         ng-class="{ 'hidden-tag': $index > 15 && !controller.showMoreKeywords, 'tag-clickable': controller.isVideo() }"
-                        class="tag tag-keyword">{{keyword.class}} {{keyword.score | formatPercent}}%</span>
-                </li>
+                        class="tag tag-keyword">{{keyword.class}} {{keyword.score | formatPercent}}%</span></li>
                 <li ng-if="controller.data.selectedSummary.image_keywords.length > 15"
                     class="entry-tag more-tag-toggle"
-                    ng-click="controller.showMoreKeywords = !controller.showMoreKeywords">
-                  <span ng-if="!controller.showMoreKeywords">and {{controller.data.selectedSummary.image_keywords.length - 15}} more...</span>
-                  <span ng-if="controller.showMoreKeywords">show less</span>
-                </li>
+                    ng-click="controller.showMoreKeywords = !controller.showMoreKeywords"><span
+                      ng-if="!controller.showMoreKeywords">and {{controller.data.selectedSummary.image_keywords.length - 15}} more...</span><span ng-if="controller.showMoreKeywords">show less</span></li>
               </ul>
             </div>
 
             <div ng-if="controller.isVideo() && controller.data.summary.audio.analysis.nlu.keywords">
               <h4>Audio Keywords</h4>
               <ul class="entry-taglist">
-                <li ng-repeat="keyword in controller.data.summary.audio.analysis.nlu.keywords" class="entry-tag">
-                  <span ng-class="{ 'hidden-tag': $index > 15 && !controller.showMoreAudio }" class="tag tag-keyword">{{keyword.text}} {{keyword.relevance | formatPercent}}%</span>
-                </li>
-                <li ng-if="controller.data.summary.audio.analysis.nlu.keywords.length > 15" class="entry-tag more-tag-toggle" ng-click="controller.showMoreAudio = !controller.showMoreAudio">
-                  <span ng-if="!controller.showMoreAudio">and {{controller.data.summary.audio.analysis.nlu.keywords.length - 15}} more...</span>
-                  <span ng-if="controller.showMoreAudio">show less</span>
-                </li>
+                <li ng-repeat="keyword in controller.data.summary.audio.analysis.nlu.keywords" class="entry-tag"><span
+                  ng-class="{ 'hidden-tag': $index > 15 && !controller.showMoreAudio }" class="tag tag-keyword">{{keyword.text}} {{keyword.relevance | formatPercent}}%</span></li>
+                <li ng-if="controller.data.summary.audio.analysis.nlu.keywords.length > 15" class="entry-tag more-tag-toggle" ng-click="controller.showMoreAudio = !controller.showMoreAudio"><span
+                    ng-if="!controller.showMoreAudio">and {{controller.data.summary.audio.analysis.nlu.keywords.length - 15}} more...</span><span ng-if="controller.showMoreAudio">show less</span></li>
               </ul>
             </div>
 
             <div ng-if="controller.isVideo() && controller.data.summary.audio.analysis.nlu.entities">
               <h4>Entities</h4>
-              <span ng-if="controller.data.summary.audio.analysis.nlu.entities.length === 0">
+              <span class="no-tag" ng-if="controller.data.summary.audio.analysis.nlu.entities.length === 0">
                 No entity found
               </span>
               <ul class="entry-taglist" ng-if="controller.data.summary.audio.analysis.nlu.entities.length > 0">
-                <li ng-repeat="entity in controller.data.summary.audio.analysis.nlu.entities" class="entry-tag">
-                  <span ng-class="{ 'hidden-tag': $index > 15 && !controller.showMoreEntities }" ng-if="entity.disambiguation.dbpedia_resource" class="tag"><a href="{{entity.disambiguation.dbpedia_resource}}">{{entity.text}} ({{entity.type}}) {{entity.relevance | formatPercent}}% <md-icon md-font-library="material-icons">open_in_new</md-icon></a></span>
-                  <span ng-class="{ 'hidden-tag': $index > 15 && !controller.showMoreEntities }" ng-if="!entity.disambiguation.dbpedia_resource" class="tag">{{entity.text}} ({{entity.type}}) {{entity.relevance | formatPercent}}%</span>
-                </li>
-                <li ng-if="controller.data.summary.audio.analysis.nlu.entities.length > 15" class="entry-tag more-tag-toggle" ng-click="controller.showMoreEntities = !controller.showMoreEntities">
-                  <span ng-if="!controller.showMoreEntities">and {{controller.data.summary.audio.analysis.nlu.entities.length - 15}} more...</span>
-                  <span ng-if="controller.showMoreEntities">show less</span>
-                </li>
+                <li ng-repeat="entity in controller.data.summary.audio.analysis.nlu.entities" class="entry-tag"><span
+                    ng-class="{ 'hidden-tag': $index > 15 && !controller.showMoreEntities }" ng-if="entity.disambiguation.dbpedia_resource" class="tag"><a href="{{entity.disambiguation.dbpedia_resource}}">{{entity.text}} ({{entity.type}}) {{entity.relevance | formatPercent}}% <md-icon md-font-library="material-icons">open_in_new</md-icon></a></span>
+                  <span ng-class="{ 'hidden-tag': $index > 15 && !controller.showMoreEntities }" ng-if="!entity.disambiguation.dbpedia_resource" class="tag">{{entity.text}} ({{entity.type}}) {{entity.relevance | formatPercent}}%</span></li>
+                <li ng-if="controller.data.summary.audio.analysis.nlu.entities.length > 15" class="entry-tag more-tag-toggle" ng-click="controller.showMoreEntities = !controller.showMoreEntities"><span
+                    ng-if="!controller.showMoreEntities">and {{controller.data.summary.audio.analysis.nlu.entities.length - 15}} more...</span><span ng-if="controller.showMoreEntities">show less</span></li>
               </ul>
             </div>
 
             <div ng-if="controller.isVideo() && controller.data.summary.audio.analysis.nlu.concepts">
               <h4>Concepts</h4>
-              <span ng-if="controller.data.summary.audio.analysis.nlu.concepts.length === 0">
+              <span class="no-tag" ng-if="controller.data.summary.audio.analysis.nlu.concepts.length === 0">
                 No concept found
               </span>
               <ul class="entry-taglist" ng-if="controller.data.summary.audio.analysis.nlu.concepts.length > 0">
-                <li ng-repeat="concept in controller.data.summary.audio.analysis.nlu.concepts" class="entry-tag">
-                  <span ng-class="{ 'hidden-tag': $index > 15 && !controller.showMoreConcepts }" class="tag"><a href="{{concept.dbpedia_resource}}">{{concept.text}} {{concept.relevance | formatPercent}}% <md-icon md-font-library="material-icons">open_in_new</md-icon></a></span>
-                </li>
-                <li ng-if="controller.data.summary.audio.analysis.nlu.concepts.length > 15" class="entry-tag more-tag-toggle" ng-click="controller.showMoreConcepts = !controller.showMoreConcepts">
-                  <span ng-if="!controller.showMoreConcepts">and {{controller.data.summary.audio.analysis.nlu.concepts.length - 15}} more...</span>
-                  <span ng-if="controller.showMoreConcepts">show less</span>
-                </li>
+                <li ng-repeat="concept in controller.data.summary.audio.analysis.nlu.concepts" class="entry-tag"><span
+                  ng-class="{ 'hidden-tag': $index > 15 && !controller.showMoreConcepts }" class="tag"><a href="{{concept.dbpedia_resource}}">{{concept.text}} {{concept.relevance | formatPercent}}% <md-icon md-font-library="material-icons">open_in_new</md-icon></a></span></li>
+                <li ng-if="controller.data.summary.audio.analysis.nlu.concepts.length > 15" class="entry-tag more-tag-toggle" ng-click="controller.showMoreConcepts = !controller.showMoreConcepts"><span
+                  ng-if="!controller.showMoreConcepts">and {{controller.data.summary.audio.analysis.nlu.concepts.length - 15}} more...</span><span ng-if="controller.showMoreConcepts">show less</span></li>
               </ul>
             </div>
 
             <div ng-if="controller.isVideo() && controller.data.summary.audio.analysis.nlu.emotion">
               <h4>Emotion Analysis</h4>
               <ul class="entry-taglist">
-                <li ng-repeat="(key, value) in controller.data.summary.audio.analysis.nlu.emotion.document.emotion" class="entry-tag">
-                  <span class="tag">{{key}} {{value | formatPercent}}%</span>
-                </li>
+                <li ng-repeat="(key, value) in controller.data.summary.audio.analysis.nlu.emotion.document.emotion" class="entry-tag"><span
+                  class="tag">{{key}} {{value | formatPercent}}%</span></li>
               </ul>
             </div>
 

@@ -48,7 +48,7 @@ breadcrumb a:hover {
 .overview {
   padding-top: 20px;
   border-bottom: 1px solid;
-  padding-bottom: 10px;
+  padding-bottom: 20px;
   padding-left: 20px;
   padding-right: 20px;
 }
@@ -115,6 +115,7 @@ breadcrumb a:hover {
   **/
 .insights {
   overflow-y: auto;
+  padding-top: 10px;
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 40px;
@@ -131,7 +132,7 @@ breadcrumb a:hover {
 
 .transcript-break {
  display: block;
- margin-top: 10px;
+ margin-top: 5px;
 }
 
 .transcript-sentence::first-letter {
