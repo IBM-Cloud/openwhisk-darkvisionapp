@@ -170,7 +170,7 @@ function withJsonApiCaching(req, res, cacheKey, builder /** req, callback(err, r
       } else {
         if (process.env.USE_API_CACHE && canCache) {
           const cachedResultStream = fs.createWriteStream(cachedResultFilename);
-          cachedResultStream.write(JSON.stringify(result), 'utf8');
+          cachedResultStream.write(JSON.stringify(result, null, '  '), 'utf8');
           cachedResultStream.end();
           console.log('Cached', cacheKey, 'at', cachedResultFilename);
         }
