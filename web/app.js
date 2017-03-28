@@ -434,6 +434,13 @@ app.get('/api/videos/:id', (req, res) => {
             callback(err);
           } else {
             if (audio && audio.analysis && audio.analysis.nlu) {
+              if (audio.analysis.nlu.keywords) {
+                audio.analysis.nlu.keywords = audio.analysis.nlu.keywords
+                  .filter(keyword => keyword.relevance > options.minimumKeywordScore);
+                audio.analysis.nlu.keywords.sort((oneOccurrence, anotherOccurrence) =>
+                  anotherOccurrence.relevance - oneOccurrence.relevance
+                );
+              }
               if (audio.analysis.nlu.entities) {
                 audio.analysis.nlu.entities = audio.analysis.nlu.entities
                   .filter(entity => entity.relevance > options.minimumEntityScore);
