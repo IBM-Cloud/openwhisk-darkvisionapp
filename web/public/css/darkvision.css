@@ -309,11 +309,8 @@ h4 {
 .more-tag-toggle span {
   display: inline-block;
   font-size: 12px;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-top: 3px;
-  padding-bottom: 3px;
-  margin: 4px;
+  padding: 5px;
+  margin: 0px;
   border: 1px solid;
   border-radius: 4px;
 }
