@@ -36,7 +36,7 @@
           <span class="title ow">OpenWhisk</span>&nbsp;<span class="title dv">Dark Vision</span>
         </a>
         <span flex></span>
-        <md-button class="upload-button" ng-disabled="isUploading" type="file" ngf-select="uploadFile($file, $invalidFiles)" accept="image/*,video/mp4">
+        <md-button class="upload-button" ng-click="showUploadForm()" ng-disabled="isUploading">
           Upload
           <md-icon ng-if="!isUploading" md-font-library="material-icons">backup</md-icon>
           <md-progress-circular ng-if="isUploading && uploadProgress < 100" md-diameter="22" md-mode="determinate" value="{{uploadProgress}}"></md-progress-circular>

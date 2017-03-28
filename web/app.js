@@ -170,7 +170,7 @@ function withJsonApiCaching(req, res, cacheKey, builder /** req, callback(err, r
       } else {
         if (process.env.USE_API_CACHE && canCache) {
           const cachedResultStream = fs.createWriteStream(cachedResultFilename);
-          cachedResultStream.write(JSON.stringify(result), 'utf8');
+          cachedResultStream.write(JSON.stringify(result, null, '  '), 'utf8');
           cachedResultStream.end();
           console.log('Cached', cacheKey, 'at', cachedResultFilename);
         }
@@ -434,6 +434,13 @@ app.get('/api/videos/:id', (req, res) => {
             callback(err);
           } else {
             if (audio && audio.analysis && audio.analysis.nlu) {
+              if (audio.analysis.nlu.keywords) {
+                audio.analysis.nlu.keywords = audio.analysis.nlu.keywords
+                  .filter(keyword => keyword.relevance > options.minimumKeywordScore);
+                audio.analysis.nlu.keywords.sort((oneOccurrence, anotherOccurrence) =>
+                  anotherOccurrence.relevance - oneOccurrence.relevance
+                );
+              }
               if (audio.analysis.nlu.entities) {
                 audio.analysis.nlu.entities = audio.analysis.nlu.entities
                   .filter(entity => entity.relevance > options.minimumEntityScore);
@@ -571,7 +578,8 @@ app.post('/upload', upload.single('file'), (req, res) => {
       type: 'video',
       source: req.file.originalname,
       // remove extension from the filename to build the title
-      title: path.parse(req.file.originalname).name,
+      title: req.body.title || path.parse(req.file.originalname).name,
+      language_model: req.body.language_model,
       createdAt: new Date()
     };
     uploadDocument(videoDocument, 'video.mp4', req, res);

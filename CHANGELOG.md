@@ -1,4 +1,8 @@
 
+## 2017-03-28
+
+  * New upload dialog. The dialog allows to set the video title and to pick the video language so that Speech to Text can correctly process a non-US English video.
+
 ## 2017-03-10
 
   * Dark Vision now processes audio from videos too. It uses Watson Speech to Text to extract the audio track. Then the audio is processed by Natural Language Understanding to extract concepts, entities, emotion.
