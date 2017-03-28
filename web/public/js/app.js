@@ -98,7 +98,7 @@
     }
     ]);
 
-  app.controller('MainController', ['$scope', '$rootScope', '$state', '$http', 'Upload', function($scope, $rootScope, $state, $http, Upload) {
+  app.controller('MainController', ['$scope', '$rootScope', '$state', '$http', '$mdDialog', 'Upload', function($scope, $rootScope, $state, $http, $mdDialog, Upload) {
     $scope.lightTheme = true;
     $scope.toggleLight = function() {
       $scope.lightTheme = !$scope.lightTheme;
@@ -109,22 +109,33 @@
     $scope.isUploading = false;
     $scope.uploadProgress = 0;
 
-    $scope.uploadFile = function(file, errFiles) {
-      console.log('Uploading', file, errFiles);
-      $scope.f = file;
-      $scope.errFile = errFiles && errFiles[0];
-      if (file) {
+    $scope.showUploadForm = function(ev) {
+      $mdDialog.show({
+        controller: UploadDialogController,
+        templateUrl: 'routes/upload-dialog.tmpl.html',
+        parent: angular.element(document.body),
+        targetEvent: ev,
+        clickOutsideToClose: true
+      })
+      .then(function(upload) {
+        uploadFile(upload)
+      }, function() {
+      });
+    };
+
+    function uploadFile(fileData) {
+      console.log('Uploading', fileData);
         $scope.isUploading = true;
         $scope.uploadProgress = 0;
 
-        file.upload = Upload.upload({
+        fileData.file.upload = Upload.upload({
           url: '/upload',
-          data: { file: file }
+          data: fileData
         });
 
         // this should trigger the basic auth login/password
         $http.get('/upload').then(function(response) {
-          file.upload.then(function(response) {
+          fileData.file.upload.then(function(response) {
             $scope.isUploading = false;
             console.log('Upload complete', response.data);
           }, function(response) {
@@ -136,8 +147,33 @@
         }).catch(function () {
           $scope.isUploading = false;
         });
-      }
     };
+
+    function UploadDialogController($scope, $mdDialog) {
+
+      $scope.upload = {
+        file: null,
+        title: null,
+        language_model: 'en-US_BroadbandModel'
+      };
+
+      $scope.selectFile = function(file) {
+        console.log('Select file to upload', file);
+        if (file && !$scope.upload.title && file.type === 'video/mp4') {
+          // initialize the title, removing the extension
+          $scope.upload.title = file.name.substr(0, file.name.lastIndexOf('.')) || file.name;
+        }
+        $scope.upload.file = file;
+      }
+
+      $scope.cancel = function() {
+        $mdDialog.cancel();
+      };
+
+      $scope.submit = function() {
+        $mdDialog.hide($scope.upload);
+      };
+    }
   }]);
 
 }());

@@ -571,7 +571,8 @@ app.post('/upload', upload.single('file'), (req, res) => {
       type: 'video',
       source: req.file.originalname,
       // remove extension from the filename to build the title
-      title: path.parse(req.file.originalname).name,
+      title: req.body.title || path.parse(req.file.originalname).name,
+      language_model: req.body.language_model,
       createdAt: new Date()
     };
     uploadDocument(videoDocument, 'video.mp4', req, res);

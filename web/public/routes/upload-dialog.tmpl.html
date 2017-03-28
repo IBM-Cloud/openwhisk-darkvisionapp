@@ -1,0 +1,72 @@
+<md-dialog class="upload-dialog" aria-label="Upload">
+  <form name="uploadForm" ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Upload</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-font-library="material-icons" aria-label="Close dialog">close</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content" layout="column">
+
+        <p>
+          Dark Vision supports video files (.mp4) or images.
+          The upload might be password-protected.
+          If you don't have the permissions to upload in this application,
+          you can <a target="_blank" href="https://console.ng.bluemix.net/devops/setup/deploy/?repository=https%3A//github.com/IBM-Bluemix/openwhisk-darkvisionapp">deploy your own copy of Dark Vision</a>.
+        </p>
+
+        <md-input-container layout="row" layout-align="none center">
+          <md-button class="md-raised" required ngf-select="selectFile($file, $invalidFiles)" accept="image/*,video/mp4">
+            Select File
+          </md-button>
+          <div class="md-caption" ng-if="upload.file" flex>
+            {{upload.file.name}}
+            ({{upload.file.size}} bytes)
+          </div>
+        </md-input-container>
+
+        <md-input-container>
+          <label>Title (for video only)</label>
+          <input ng-disabled="upload.file.type!=='video/mp4'" name="title" ng-model="upload.title">
+        </md-input-container>
+
+        <md-input-container class="md-block">
+          <label>Language (for video only)</label>
+          <md-select ng-disabled="upload.file.type!=='video/mp4'" name="type" ng-model="upload.language_model">
+            <md-option value="ar-AR_BroadbandModel">Modern Standard Arabic 16 KHz</md-option>
+            <md-option value="en-UK_BroadbandModel">UK English	16 KHz</md-option>
+            <md-option value="en-UK_NarrowbandModel">UK English	8 KHz</md-option>
+            <md-option value="en-US_BroadbandModel">US English	16 KHz</md-option>
+            <md-option value="en-US_NarrowbandModel">US English 8 KHz</md-option>
+            <md-option value="es-ES_BroadbandModel">Spanish 16 KHz</md-option>
+            <md-option value="es-ES_NarrowbandModel">Spanish 8 KHz</md-option>
+            <md-option value="fr-FR_BroadbandModel">French 16 KHz</md-option>
+            <md-option value="ja-JP_BroadbandModel">Japanese 16 KHz</md-option>
+            <md-option value="ja-JP_NarrowbandModel">Japanese 8 KHz</md-option>
+            <md-option value="pt-BR_BroadbandModel">Brazilian Portuguese 16 KHz</md-option>
+            <md-option value="pt-BR_NarrowbandModel">Brazilian Portuguese 8 KHz</md-option>
+            <md-option value="zh-CN_BroadbandModel">Mandarin Chinese 16 KHz</md-option>
+            <md-option value="zh-CN_NarrowbandModel">Mandarin Chinese 8 KHz</md-option>
+          </md-select>
+          <div class="hint md-caption">Refer to <a href="https://www.ibm.com/watson/developercloud/doc/speech-to-text/input.shtml" target="_blank">Speech to Text</a> for more information on the language models.</div>
+        </md-input-container>
+
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="cancel()">
+       Cancel
+      </md-button>
+      <md-button ng-disabled="!uploadForm.$valid" ng-click="submit()">
+        Continue
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

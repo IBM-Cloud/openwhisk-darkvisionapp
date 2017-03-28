@@ -33,6 +33,17 @@ button:hover md-icon,
   font-weight: 500;
 }
 
+.upload-dialog {
+  width: 40%;
+}
+
+.hint {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+
 .upload-button {
   height: 50px;
   text-transform: capitalize;
