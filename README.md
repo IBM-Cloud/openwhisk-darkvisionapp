@@ -328,6 +328,11 @@ Please create a pull request with your desired changes.
 
 ## Troubleshooting
 
+### Dark Vision correctly processes video frames but does not process the audio track
+
+This has been reported several times when using the toolchain.
+It is tracked as [issue 51](https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/issues/51). Make sure to look at the toolchain DEPLOY log to confirm the problem. Locate the line *Registering Speech to Text callback...* to identify the error.
+
 ### OpenWhisk
 
 Polling activations is good start to debug the OpenWhisk action execution. Run
