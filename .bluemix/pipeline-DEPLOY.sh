@@ -104,7 +104,9 @@ SPACE_KEY=`echo $OPENWHISK_KEYS | jq -r '.namespaces[] | select(.name == '\""${O
 SPACE_UUID=`echo $OPENWHISK_KEYS | jq -r '.namespaces[] | select(.name == '\""${OPENWHISK_NAMESPACE}"\"') | .uuid'`
 OPENWHISK_AUTH=$SPACE_UUID:$SPACE_KEY
 
-export STT_CALLBACK_URL=https://${OPENWHISK_API_HOST}/api/v1/experimental/web/${OPENWHISK_NAMESPACE}/vision/speechtotext.http
+uriencode() { node -p "encodeURIComponent('${1}')"; }
+ENCODED_OPENWHISK_NAMESPACE=$(uriencode "${OPENWHISK_NAMESPACE}")
+export STT_CALLBACK_URL=https://${OPENWHISK_API_HOST}/api/v1/experimental/web/${ENCODED_OPENWHISK_NAMESPACE}/vision/speechtotext.http
 echo 'Speech to Text OpenWhisk action is accessible at '$STT_CALLBACK_URL
 
 # Deploy the actions
