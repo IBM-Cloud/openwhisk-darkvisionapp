@@ -186,6 +186,8 @@ Dark Vision comes with a default toolchain you can use to deploy the solution wi
 
 1. Select the region, organization and space where you want to deploy the web application.
 
+  > :warning: Make sure the organization and the space have no *space* in their names. There is [an open issue around this](https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/issues/54).
+
   > :warning: Dark Vision is made of two main components: the web application to upload media and view results and the OpenWhisk actions to process the media. OpenWhisk in Bluemix is currently only available in the US South region. If you decide to deploy the web application in another region than US South, make sure to create a space with the same name in the US South region too. The OpenWhisk actions will be deployed to this space in the US South region.
 
 1. Set the name of the Dark Vision web application. Pick a unique name to avoid conflicts.
