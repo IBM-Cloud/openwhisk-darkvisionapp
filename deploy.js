@@ -105,7 +105,8 @@ if (argv.install) {
 }
 
 function registerCallback() {
-  WARN('Registering Speech to Text callback...');
+  const url = `${process.env.STT_URL}/v1/register_callback?callback_url=${encodeURIComponent(process.env.STT_CALLBACK_URL)}&user_secret=${encodeURIComponent(process.env.STT_CALLBACK_SECRET)}`;
+  WARN(`Registering Speech to Text callback with ${url}`);
   waterfall([
     (callback) => {
       request({
@@ -114,7 +115,7 @@ function registerCallback() {
           username: process.env.STT_USERNAME,
           password: process.env.STT_PASSWORD,
         },
-        url: `${process.env.STT_URL}/v1/register_callback?callback_url=${encodeURIComponent(process.env.STT_CALLBACK_URL)}&user_secret=${encodeURIComponent(process.env.STT_CALLBACK_SECRET)}`
+        url
       }, (err, response, body) => {
         if (!err) {
           WARN(body);
