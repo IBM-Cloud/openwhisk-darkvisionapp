@@ -114,7 +114,7 @@ function registerCallback() {
           username: process.env.STT_USERNAME,
           password: process.env.STT_PASSWORD,
         },
-        url: `${process.env.STT_URL}/v1/register_callback?callback_url=${process.env.STT_CALLBACK_URL}&user_secret=${process.env.STT_CALLBACK_SECRET}`
+        url: `${process.env.STT_URL}/v1/register_callback?callback_url=${encodeURIComponent(process.env.STT_CALLBACK_URL)}&user_secret=${encodeURIComponent(process.env.STT_CALLBACK_SECRET)}`
       }, (err, response, body) => {
         if (!err) {
           WARN(body);
