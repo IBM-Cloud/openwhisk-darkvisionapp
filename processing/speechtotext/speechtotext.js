@@ -30,23 +30,23 @@
 function main(args) {
   // we are being challenged by Watson Speech To Text through HTTP
   // verify the signature against our secret and reply
-  if (args.__ow_meta_verb === 'get' && args.challenge_string) {
+  if (args.__ow_method === 'get' && args.challenge_string) {
     return onChallengeRequest(
       args.challenge_string,
       args.sttCallbackSecret,
-      args.__ow_meta_headers['x-callback-signature']
+      args.__ow_headers['x-callback-signature']
     );
   }
 
   // we are receiving transcripts from Speech To Text
-  if (args.__ow_meta_verb === 'post' &&
-      args.__ow_meta_headers['x-callback-signature'] &&
+  if (args.__ow_method === 'post' &&
+      args.__ow_headers['x-callback-signature'] &&
       args.user_token && args.results) {
     return onResultsReceived(args);
   }
 
   // we should not reach this point
-  if (args.__ow_meta_verb) {
+  if (args.__ow_method) {
     console.log('[OK] ignored HTTP verb', args.__ow_meta_verb);
     return { ok: false };
   }
