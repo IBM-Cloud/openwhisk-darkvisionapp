@@ -171,12 +171,14 @@ function CloudandStorage(options) {
   };
 
   // read a file attached to a document or a URL as a string pointing to the content
-  self.read = function(docOrId, attachmentName) {
+  self.read = function(docOrId, attachmentName, readOptions = {}) {
      // this is a real doc and we detect and external storage, stream from the storage
     if (docOrId.attachments) {
       return require('request').get(docOrId.attachments[attachmentName].url);
     } else if (fileStore) {
       return fileStore.read(`${docOrId}-${attachmentName}`);
+    } else if (readOptions.useRetry) {
+      return visionDb.attachment.get(docOrId._id || docOrId, attachmentName);
     } else { // eslint-disable-line no-else-return
       return uploadDb.attachment.get(docOrId._id || docOrId, attachmentName);
     }

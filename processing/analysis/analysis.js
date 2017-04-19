@@ -66,7 +66,11 @@ function mainImpl(args, mainCallback) {
       },
       // get the image binary
       (image, callback) => {
-        mediaStorage.read(image, 'image.jpg').pipe(fs.createWriteStream(fileName))
+        mediaStorage.read(image, 'image.jpg', {
+          // as we analyze images in batch it means, a lot of load on Cloudant
+          // so we may get rate-limited if using Cloudant for attachments
+          useRetry: true
+        }).pipe(fs.createWriteStream(fileName))
           .on('finish', () => {
             callback(null, image);
           })
