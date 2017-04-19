@@ -103,7 +103,7 @@ SPACE_KEY=`echo $OPENWHISK_KEYS | jq -r '.namespaces[] | select(.name == "'$CF_O
 SPACE_UUID=`echo $OPENWHISK_KEYS | jq -r '.namespaces[] | select(.name == "'$CF_ORG'_'$CF_SPACE'") | .uuid'`
 OPENWHISK_AUTH=$SPACE_UUID:$SPACE_KEY
 
-export STT_CALLBACK_URL=https://${OPENWHISK_API_HOST}/api/v1/experimental/web/${CF_ORG}_${CF_SPACE}/vision/speechtotext.http
+export STT_CALLBACK_URL=https://${OPENWHISK_API_HOST}/api/v1/web/${CF_ORG}_${CF_SPACE}/vision/speechtotext
 echo 'Speech to Text OpenWhisk action is accessible at '$STT_CALLBACK_URL
 
 # Deploy the actions
