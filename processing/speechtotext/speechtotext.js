@@ -47,7 +47,7 @@ function main(args) {
 
   // we should not reach this point
   if (args.__ow_method) {
-    console.log('[OK] ignored HTTP verb', args.__ow_meta_verb);
+    console.log('[OK] ignored HTTP verb', args.__ow_method);
     return { ok: false };
   }
 
