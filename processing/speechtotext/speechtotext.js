@@ -66,8 +66,7 @@ function onChallengeRequest(challenge, secret, signature) {
     console.log('[OK] Challenge accepted!');
     return {
       headers: {
-        // force Content-Type as JSON as Watson sends an Accept: application/json
-        'Content-Type': 'application/json'
+        'Content-Type': 'text/plain'
       },
       // but sends the body as raw data as Watson expects plain text
       body: new Buffer(challenge).toString('base64')
