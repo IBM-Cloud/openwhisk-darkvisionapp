@@ -68,14 +68,16 @@ function onChallengeRequest(challenge, secret, signature) {
       headers: {
         'Content-Type': 'text/plain'
       },
-      // but sends the body as raw data as Watson expects plain text
-      body: new Buffer(challenge).toString('base64')
+      body: challenge
     };
   }
 
   console.log('[KO] Signature does not match');
   return {
     code: 500,
+    headers: {
+      'Content-Type': 'text/plain'
+    },
     body: 'Bad signature'
   };
 }
