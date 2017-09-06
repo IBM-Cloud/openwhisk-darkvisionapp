@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp) ![Bluemix Deployments](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/badge.svg)
 
+> Dark Vision is a technology demonstration leveraging OpenWhisk and Watson services. If you are looking for an official and supported IBM offering head over to the [Watson Video Enrichment product](https://www.ibm.com/watson/media/). This product uses Watson APIs and additional technology to enrich video assets.
+
 Think about all the videos individuals and companies (Media and Entertainment) accumulate every year. How can you keep track of what's inside of them so you can quickly search and find what you're looking for? *Show me all the videos that have Arc De Triomphe in it.* or *Show me the all the videos that talk about peaches*
 
 What if we used artificial intelligence to process these videos to tell us which video has what we're looking for without us having to watch all of them.
@@ -242,7 +244,7 @@ The web app exposes an API to list all videos and retrieve the results.
   and of tags returned by Watson.
   The tags with the highest confidence score are shown.
   Tap a tag or a face to change the main image to the
-  frame where this tag or face was detected.  
+  frame where this tag or face was detected.
 
 ## Code Structure
 
