@@ -40,7 +40,7 @@ function main(args) {
 
   // we are receiving transcripts from Speech To Text
   if (args.__ow_method === 'post' &&
-      args.__ow_headers['x-callback-signature'] &&
+      // args.__ow_headers['x-callback-signature'] &&
       args.user_token && args.results) {
     return onResultsReceived(args);
   }
