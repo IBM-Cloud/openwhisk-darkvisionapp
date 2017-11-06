@@ -99,11 +99,14 @@ fi
 OPENWHISK_KEYS=`curl -XPOST -k -d "{ \"accessToken\" : \"$CF_ACCESS_TOKEN\", \"refreshToken\" : \"$CF_ACCESS_TOKEN\" }" \
   -H 'Content-Type:application/json' https://$OPENWHISK_API_HOST/bluemix/v2/authenticate`
 
-SPACE_KEY=`echo $OPENWHISK_KEYS | jq -r '.namespaces[] | select(.name == "'$CF_ORG'_'$CF_SPACE'") | .key'`
-SPACE_UUID=`echo $OPENWHISK_KEYS | jq -r '.namespaces[] | select(.name == "'$CF_ORG'_'$CF_SPACE'") | .uuid'`
+SPACE_KEY=`echo $OPENWHISK_KEYS | jq -r ".namespaces[] | select(.name == \"${CF_ORG}_${CF_SPACE}\") | .key"`
+SPACE_UUID=`echo $OPENWHISK_KEYS | jq -r ".namespaces[] | select(.name == \"${CF_ORG}_${CF_SPACE}\") | .uuid"`
 OPENWHISK_AUTH=$SPACE_UUID:$SPACE_KEY
 
-export STT_CALLBACK_URL=https://${OPENWHISK_API_HOST}/api/v1/web/${CF_ORG}_${CF_SPACE}/vision/speechtotext
+SAFE_CF_ORG=$(echo ${CF_ORG} | sed 's/ /+/g')
+SAFE_CF_SPACE=$(echo ${CF_SPACE} | sed 's/ /+/g')
+
+export STT_CALLBACK_URL="https://${OPENWHISK_API_HOST}/api/v1/web/${SAFE_CF_ORG}_${SAFE_CF_SPACE}/vision/speechtotext"
 echo 'Speech to Text OpenWhisk action is accessible at '$STT_CALLBACK_URL
 
 # Deploy the actions
