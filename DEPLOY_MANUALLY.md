@@ -69,7 +69,7 @@ You will need to restage the application for the change to take effect:
 
 ## Build the Frame Extractor Docker image
 
-Extracting frames and audio from a video is achieved with ffmpeg. ffmpeg is not available to an OpenWhisk action written in JavaScript or Swift. Fortunately OpenWhisk allows to write an action as a Docker image and can retrieve this image from Docker Hub.
+Extracting frames and audio from a video is achieved with ffmpeg. ffmpeg is not available to an Cloud Functions action written in JavaScript or Swift. Fortunately Cloud Functions allows to write an action as a Docker image and can retrieve this image from Docker Hub.
 
 To build the extractor image, follow these steps:
 
@@ -84,9 +84,9 @@ To build the extractor image, follow these steps:
   ```
   > Note: On some systems this command needs to be run with `sudo`.
 
-1. After a while, your image will be available in Docker Hub, ready for OpenWhisk.
+1. After a while, your image will be available in Docker Hub, ready for Cloud Functions.
 
-## Deploy OpenWhisk Actions
+## Deploy Cloud Functions Actions
 
 1. Change to the **root directory of the checkout**.
 
@@ -102,18 +102,18 @@ a package so that all actions can get access to the services.
 
   > If you configured an Object Storage service, specify its properties in this file too but uncommenting the placeholder variables.
 
-1. Update the value of ***STT_CALLBACK_URL*** with the organization and space where the OpenWhisk actions will be deployed.
+1. Update the value of ***STT_CALLBACK_URL*** with the organization and space where the Cloud Functions actions will be deployed.
 
 1. Update the value of ***DOCKER_EXTRACTOR_NAME*** with the name of the Docker
 image you created in the previous section.
 
-1. Ensure your [OpenWhisk command line interface](https://new-console.ng.bluemix.net/openwhisk/cli) is property configured with:
+1. Ensure your [Cloud Functions command line interface](https://console.bluemix.net/openwhisk/cli) is property configured with:
 
   ```
-  wsk list
+  bx wsk list
   ```
 
-  This shows the packages, actions, triggers and rules currently deployed in your OpenWhisk namespace.
+  This shows the packages, actions, triggers and rules currently deployed in your Cloud Functions namespace.
 
 1. Get dependencies used by the deployment script
 
@@ -129,7 +129,7 @@ image you created in the previous section.
   node deploy.js --install
   ```
 
-  > The script can also be used to *--uninstall* the OpenWhisk artifacts to
+  > The script can also be used to *--uninstall* the Cloud Functions artifacts to
   *--update* the artifacts if you change the action code.
 
 ### Register the speechtotext action as a callback for Speech to Text service
@@ -165,5 +165,5 @@ We need to tell the Speech to Text service where to call back when it has comple
   Note: To find the Cloudant database (and Object Storage) to connect to when running locally,
   the application uses the environment variables defined in **local.env** in previous steps.
 
-1. Upload videos through the web user interface. Wait for OpenWhisk to process the videos.
+1. Upload videos through the web user interface. Wait for Cloud Functions to process the videos.
 Refresh the page to look at the results.

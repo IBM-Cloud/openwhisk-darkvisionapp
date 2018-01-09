@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "OpenWhisk Dark Vision",
+  "title": "Cloud Functions Dark Vision",
   "description": "",
-  "longDescription": "The Delivery Pipeline automates the continuous deployment of OpenWhisk Dark Vision including its web user interface and the OpenWhisk artifacts.",
+  "longDescription": "The Delivery Pipeline automates the continuous deployment of Cloud Functions Dark Vision including its web user interface and the Cloud Functions artifacts.",
   "type": "object",
   "properties": {
     "darkvision-region": {

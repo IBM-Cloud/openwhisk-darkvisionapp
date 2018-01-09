@@ -82,13 +82,13 @@ if [ -z "$DOCKER_EXTRACTOR_NAME" ]; then
 fi
 
 ################################################################
-# OpenWhisk artifacts
+# Cloud Functions artifacts
 ################################################################
-figlet 'OpenWhisk'
+figlet 'Cloud Functions'
 
-echo 'Retrieving OpenWhisk authorization key...'
+echo 'Retrieving Cloud Functions authorization key...'
 
-# Retrieve the OpenWhisk authorization key
+# Retrieve the Cloud Functions authorization key
 CF_ACCESS_TOKEN=`cat ~/.cf/config.json | jq -r .AccessToken | awk '{print $2}'`
 
 # Docker image should be set by the pipeline, use a default if not set
@@ -107,7 +107,7 @@ SAFE_CF_ORG=$(echo ${CF_ORG} | sed 's/ /+/g')
 SAFE_CF_SPACE=$(echo ${CF_SPACE} | sed 's/ /+/g')
 
 export STT_CALLBACK_URL="https://${OPENWHISK_API_HOST}/api/v1/web/${SAFE_CF_ORG}_${SAFE_CF_SPACE}/vision/speechtotext"
-echo 'Speech to Text OpenWhisk action is accessible at '$STT_CALLBACK_URL
+echo 'Speech to Text Cloud Functions action is accessible at '$STT_CALLBACK_URL
 
 # Deploy the actions
 figlet -f small 'Uninstall'

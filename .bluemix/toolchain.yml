@@ -1,6 +1,6 @@
 ---
-name: "OpenWhisk Dark Vision"
-description: "Deploy your own OpenWhisk Dark Vision environment."
+name: "Cloud Functions Dark Vision"
+description: "Deploy your own Cloud Functions Dark Vision environment."
 required:
  - deploy
  - darkvision-repo

@@ -21,20 +21,20 @@ const async = require('async');
 const request = require('request');
 
 const argv = require('yargs')
-  .command('install', 'Install OpenWhisk actions')
-  .command('uninstall', 'Uninstall OpenWhisk actions')
+  .command('install', 'Install Cloud Functions actions')
+  .command('uninstall', 'Uninstall Cloud Functions actions')
   .command('disable', 'Disable video and image processing')
   .command('enable', 'Enable video and image processing')
   .command('update', 'Update action code')
   .command('register_callback', 'Register the Speech to Text action as callback')
   .option('apihost', {
     alias: 'a',
-    describe: 'OpenWhisk API host',
+    describe: 'Cloud Functions API host',
     type: 'string'
   })
   .option('auth', {
     alias: 'u',
-    describe: 'OpenWhisk authorization key',
+    describe: 'Cloud Functions authorization key',
     type: 'string'
   })
   .count('verbose')
@@ -59,19 +59,19 @@ if (!argv.install &&
   process.exit(1);
 }
 
-// load OpenWhisk CLI configuration if it exists
+// load Cloud Functions CLI configuration if it exists
 const wskCliPropsPath = path.join(os.homedir(), '.wskprops');
 if (fs.existsSync(wskCliPropsPath)) {
   require('dotenv').config({ path: wskCliPropsPath });
-  WARN('Initialized OpenWhisk host and key from', wskCliPropsPath);
+  WARN('Initialized Cloud Functions host and key from', wskCliPropsPath);
 }
 
 if (argv.apihost) {
-  WARN('OpenWhisk host is set on command line.');
+  WARN('Cloud Functions host is set on command line.');
 }
 
 if (argv.auth) {
-  WARN('OpenWhisk authorization key is set on command line.');
+  WARN('Cloud Functions authorization key is set on command line.');
 }
 
 // load configuration options
@@ -377,7 +377,7 @@ function update(ow) {
   ]);
 }
 
-// call the OpenWhisk client API dynamically
+// call the Cloud Functions client API dynamically
 function call(ow, resource, verb, callOptions, callback) {
   let params = callOptions;
   if (typeof callOptions === 'string') {

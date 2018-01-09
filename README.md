@@ -1,8 +1,8 @@
-# OpenWhisk Dark Vision - Discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
+# Cloud Functions Dark Vision - Discover dark data in videos with IBM Watson and IBM Cloud Functions
 
 [![Build Status](https://travis-ci.org/IBM-Cloud/openwhisk-darkvisionapp.svg?branch=master)](https://travis-ci.org/IBM-Cloud/openwhisk-darkvisionapp)
 
-> Dark Vision is a technology demonstration leveraging OpenWhisk and Watson services. If you are looking for an official and supported IBM offering head over to the [Watson Video Enrichment product](https://www.ibm.com/watson/media/). This product uses Watson APIs and additional technology to enrich video assets.
+> Dark Vision is a technology demonstration leveraging Cloud Functions and Watson services. If you are looking for an official and supported IBM offering head over to the [Watson Video Enrichment product](https://www.ibm.com/watson/media/). This product uses Watson APIs and additional technology to enrich video assets.
 
 Think about all the videos individuals and companies (Media and Entertainment) accumulate every year. How can you keep track of what's inside of them so you can quickly search and find what you're looking for? *Show me all the videos that have Arc De Triomphe in it.* or *Show me the all the videos that talk about peaches*
 
@@ -24,17 +24,17 @@ Dark Vision is an application that processes videos to discover what's inside of
 ## Overview and Architecture
 
  Built using IBM Bluemix, the application uses:
-  * [Visual Recognition](https://console.ng.bluemix.net/catalog/services/watson_vision_combined)
-  * [Speech to Text](https://console.ng.bluemix.net/catalog/services/speech_to_text)
-  * [Natural Language Understanding](https://console.ng.bluemix.net/catalog/services/natural-language-understanding)
-  * [OpenWhisk](console.ng.bluemix.net/openwhisk/)
-  * [Cloudant](https://console.ng.bluemix.net/catalog/services/cloudantNoSQLDB)
-  * [Object Storage](https://console.ng.bluemix.net/catalog/services/Object-Storage) (optional component)
+  * [Visual Recognition](https://console.bluemix.net/catalog/services/watson_vision_combined)
+  * [Speech to Text](https://console.bluemix.net/catalog/services/speech_to_text)
+  * [Natural Language Understanding](https://console.bluemix.net/catalog/services/natural-language-understanding)
+  * [Cloud Functions](console.bluemix.net/openwhisk/)
+  * [Cloudant](https://console.bluemix.net/catalog/services/cloudantNoSQLDB)
+  * [Object Storage](https://console.bluemix.net/catalog/services/Object-Storage) (optional component)
 
 ### Extracting frames and audio from a video
 
-The user uploads a video or image using the Dark Vision web application, which stores it in a Cloudant Database (1). Once the video is uploaded, OpenWhisk detects the new video (2) by listening to Cloudant changes (trigger).
-OpenWhisk then triggers the video and audio extractor action (3). During its execution, the extractor produces frames (images) (4), captures the audio track (5) and stores them in Cloudant (6, 7). The frames are then processed using Watson Visual Recognition, the audio with Watson Speech to Text and Natural Language Understanding. The results are stored in the same Cloudant DB. They can be viewed using Dark Vision web application or the iOS application.
+The user uploads a video or image using the Dark Vision web application, which stores it in a Cloudant Database (1). Once the video is uploaded, Cloud Functions detects the new video (2) by listening to Cloudant changes (trigger).
+Cloud Functions then triggers the video and audio extractor action (3). During its execution, the extractor produces frames (images) (4), captures the audio track (5) and stores them in Cloudant (6, 7). The frames are then processed using Watson Visual Recognition, the audio with Watson Speech to Text and Natural Language Understanding. The results are stored in the same Cloudant DB. They can be viewed using Dark Vision web application or the iOS application.
 
 Object Storage can complement Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
 
@@ -61,7 +61,7 @@ extract_video
     frames [label="Image Frames"]
     audio [label="Audio Track"]
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
-    openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
+    openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="Cloud Functions"]
   }
 extract_video
 )
@@ -70,7 +70,7 @@ extract_video
 ### Processing frames and standalone images
 
 Whenever a frame is created and uploaded (1), Cloudant emits a change event (2) and
-OpenWhisk triggers the analysis (3). The analysis (4) is persisted with the image (5).
+Cloud Functions triggers the analysis (3). The analysis (4) is persisted with the image (5).
 
 ![Architecture](https://g.gravizo.com/source/image_analysis?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Cloud%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
 <details>
@@ -94,7 +94,7 @@ image_analysis
     frame [label="Image Frame"]
     analysis [label="analysis"]
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
-    openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
+    openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="Cloud Functions"]
     watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\nVisual\nRecognition"]
   }
 image_analysis
@@ -104,11 +104,11 @@ image_analysis
 ### Processing audio
 
 Whenever the audio track is extracted (1), Cloudant emits a change event (2) and
-OpenWhisk triggers the audio analysis (3).
+Cloud Functions triggers the audio analysis (3).
 
 #### Extract the audio transcript
 
-Extracting the transcript from an audio track using the Speech to Text service may take more than 5 minutes depending on the video. Because OpenWhisk actions have a 5 minutes limit, waiting in the action for the audio processing to complete is not possible for longer videos. Fortunately the Speech to Text service has a very nice [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods). Instead of waiting for Speech to Text to process the audio, Dark Vision sends the audio file to Speech to Text (4) and Speech to Text will notify Dark Vision with the transcript when it is done processing the audio (5). The result is attached to the audio document (6).
+Extracting the transcript from an audio track using the Speech to Text service may take more than 5 minutes depending on the video. Because Cloud Functions actions have a 5 minutes limit, waiting in the action for the audio processing to complete is not possible for longer videos. Fortunately the Speech to Text service has a very nice [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods). Instead of waiting for Speech to Text to process the audio, Dark Vision sends the audio file to Speech to Text (4) and Speech to Text will notify Dark Vision with the transcript when it is done processing the audio (5). The result is attached to the audio document (6).
 
 ![Architecture](https://g.gravizo.com/source/extract_audio?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Cloud%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
 <details>
@@ -125,7 +125,7 @@ extract_audio
     audio [label="Audio Track"]
     {rank=same; audio -> storage -> openwhisk -> speechtotext -> watson [style=invis] }
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
-    openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
+    openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="Cloud Functions"]
     speechtotext [label="speechtotext"]
     watson [shape=circle style=filled color="%234E96DB" fontcolor=white label="Watson\nSpeech to Text"]
   }
@@ -154,7 +154,7 @@ audio_analysis
     transcript [label="Transcript"]
     textanalysis [label="textanalysis"]
     storage [shape=circle style=filled color="%234E96DB" fontcolor=white label="Data Store"]
-    openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="OpenWhisk"]
+    openwhisk [shape=circle style=filled color="%2324B643" fontcolor=white label="Cloud Functions"]
     nlu [shape=circle style=filled color="%234E96DB" fontcolor=white label="Natural\nLanguage\nUnderstanding"]
   }
 )
@@ -190,7 +190,7 @@ Dark Vision comes with a default toolchain you can use to deploy the solution wi
 
   > :warning: Make sure the organization and the space have no *space* in their names. There is [an open issue around this](https://github.com/IBM-Cloud/openwhisk-darkvisionapp/issues/54).
 
-  > :warning: Dark Vision is made of two main components: the web application to upload media and view results and the OpenWhisk actions to process the media. OpenWhisk in Bluemix is currently only available in the US South region. If you decide to deploy the web application in another region than US South, make sure to create a space with the same name in the US South region too. The OpenWhisk actions will be deployed to this space in the US South region.
+  > :warning: Dark Vision is made of two main components: the web application to upload media and view results and the Cloud Functions actions to process the media. If you decide to deploy the web application in another region than US South, make sure to create a space with the same name in the US South region too. The Cloud Functions actions will be deployed to this space in the US South region.
 
 1. Set the name of the Dark Vision web application. Pick a unique name to avoid conflicts.
 
@@ -248,21 +248,21 @@ The web app exposes an API to list all videos and retrieve the results.
 
 ## Code Structure
 
-### OpenWhisk - Deployment script
+### Cloud Functions - Deployment script
 
 | File | Description |
 | ---- | ----------- |
-|[**deploy.js**](deploy.js)|Helper script to install, uninstall, update the OpenWhisk trigger, actions, rules used by Dark Vision.|
+|[**deploy.js**](deploy.js)|Helper script to install, uninstall, update the Cloud Functions trigger, actions, rules used by Dark Vision.|
 
-### OpenWhisk - Change listener
+### Cloud Functions - Change listener
 
 | File | Description |
 | ---- | ----------- |
 |[**changelistener.js**](processing/changelistener/changelistener.js)|Processes Cloudant change events and calls the right actions. It controls the processing flow for videos and frames.|
 
-### OpenWhisk - Frame extraction
+### Cloud Functions - Frame extraction
 
-The **frame extractor** runs as a Docker action created with the [OpenWhisk Docker SDK](https://console.ng.bluemix.net/docs/openwhisk/openwhisk_reference.html#openwhisk_ref_docker):
+The **frame extractor** runs as a Docker action created with the [Cloud Functions Docker SDK](https://console.ng.bluemix.net/docs/openwhisk/openwhisk_reference.html#openwhisk_ref_docker):
   * It uses *ffmpeg* to extract frames and audio from the video.
   * It is written as a nodejs app to benefit from several nodejs helper packages (Cloudant, ffmpeg, imagemagick)
 
@@ -270,9 +270,9 @@ The **frame extractor** runs as a Docker action created with the [OpenWhisk Dock
 | ---- | ----------- |
 |[**Dockerfile**](processing/extractor/Dockerfile)|Docker file to build the extractor image. It pulls ffmpeg into the image together with node. It also runs npm install for both the server and client.|
 |[**extract.js**](processing/extractor/client/extract.js)|The core of the frame extractor. It downloads the video stored in Cloudant, uses ffmpeg to extract frames and video metadata, produces a thumbnail for the video. By default it produces around 15 images for a video. This can be changed by modifying the implementation of **getFps**. First 15 min of audio is also exported.|
-|[**app.js**](processing/extractor/server/app.js)|Adapted from the OpenWhisk Docker SDK to call the extract.js node script.|
+|[**app.js**](processing/extractor/server/app.js)|Adapted from the Cloud Functions Docker SDK to call the extract.js node script.|
 
-### OpenWhisk - Frame analysis
+### Cloud Functions - Frame analysis
 
 [**analysis.js**](processing/analysis/analysis.js) holds the JavaScript code to perform the image analysis:
 
@@ -287,7 +287,7 @@ The action runs asynchronously.
 
 The code is very similar to the one used in the [Vision app](https://github.com/IBM-Cloud/openwhisk-visionapp).
 
-### OpenWhisk - Audio analysis
+### Cloud Functions - Audio analysis
 
 | File | Description |
 | ---- | ----------- |
@@ -306,9 +306,9 @@ It shows the video and image catalog and for each video the extracted frames.
 |[**Home page**](web/public/routes/home)|Controller and view for the home page|
 |[**Video page**](web/public/routes/video)|Controller and view for the video detail page|
 
-### Shared code between OpenWhisk actions and web app
+### Shared code between Cloud Functions actions and web app
 
-These files are used by the web application and the OpenWhisk actions. They are automatically injected in the OpenWhisk actions by the [**deploy.js**](deploy.js) script and during the [**build**](processing/extractor/buildAndPush.sh) of the Docker image. These scripts have dependencies on *Cloudant, async, pkgcloud* which are provided by default in OpenWhisk Node.js actions.
+These files are used by the web application and the Cloud Functions actions. They are automatically injected in the Cloud Functions actions by the [**deploy.js**](deploy.js) script and during the [**build**](processing/extractor/buildAndPush.sh) of the Docker image. These scripts have dependencies on *Cloudant, async, pkgcloud* which are provided by default in Cloud Functions Node.js actions.
 
 | File | Description |
 | ---- | ----------- |
@@ -337,9 +337,9 @@ Please create a pull request with your desired changes.
 This has been reported several times when using the toolchain.
 It is tracked as [issue 51](https://github.com/IBM-Cloud/openwhisk-darkvisionapp/issues/51). Make sure to look at the toolchain DEPLOY log to confirm the problem. Locate the line *Registering Speech to Text callback...* to identify the error.
 
-### OpenWhisk
+### Cloud Functions
 
-Polling activations is good start to debug the OpenWhisk action execution. Run
+Polling activations is good start to debug the Cloud Functions action execution. Run
 ```
 wsk activation poll
 ```

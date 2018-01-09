@@ -1,7 +1,7 @@
 {
   "name": "extractor-server",
   "version": "1.0.0",
-  "description": "Listens for invocation from OpenWhisk and calls the extractor client",
+  "description": "Listens for invocation from Cloud Functions and calls the extractor client",
   "dependencies": {
     "body-parser": "1.15.2",
     "express": "4.14.0"
