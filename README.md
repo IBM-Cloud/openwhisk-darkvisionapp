@@ -1,6 +1,6 @@
 # OpenWhisk Dark Vision - Discover dark data in videos with IBM Watson and IBM Bluemix OpenWhisk
 
-[![Build Status](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/openwhisk-darkvisionapp) ![Bluemix Deployments](https://deployment-tracker.mybluemix.net/stats/ad94d1daf817a5fd818f977c0a7cf632/badge.svg)
+[![Build Status](https://travis-ci.org/IBM-Cloud/openwhisk-darkvisionapp.svg?branch=master)](https://travis-ci.org/IBM-Cloud/openwhisk-darkvisionapp)
 
 > Dark Vision is a technology demonstration leveraging OpenWhisk and Watson services. If you are looking for an official and supported IBM offering head over to the [Watson Video Enrichment product](https://www.ibm.com/watson/media/). This product uses Watson APIs and additional technology to enrich video assets.
 
@@ -38,7 +38,7 @@ OpenWhisk then triggers the video and audio extractor action (3). During its exe
 
 Object Storage can complement Cloudant. When doing so, video and image medadata are stored in Cloudant and the media files are stored in Object Storage.
 
-![Architecture](https://g.gravizo.com/source/extract_video?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Bluemix%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
+![Architecture](https://g.gravizo.com/source/extract_video?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Cloud%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
 <details>
 <summary></summary>
 extract_video
@@ -72,7 +72,7 @@ extract_video
 Whenever a frame is created and uploaded (1), Cloudant emits a change event (2) and
 OpenWhisk triggers the analysis (3). The analysis (4) is persisted with the image (5).
 
-![Architecture](https://g.gravizo.com/source/image_analysis?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Bluemix%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
+![Architecture](https://g.gravizo.com/source/image_analysis?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Cloud%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
 <details>
 <summary></summary>
 image_analysis
@@ -110,7 +110,7 @@ OpenWhisk triggers the audio analysis (3).
 
 Extracting the transcript from an audio track using the Speech to Text service may take more than 5 minutes depending on the video. Because OpenWhisk actions have a 5 minutes limit, waiting in the action for the audio processing to complete is not possible for longer videos. Fortunately the Speech to Text service has a very nice [asynchronous API](https://www.ibm.com/watson/developercloud/speech-to-text/api/v1/?curl#async_methods). Instead of waiting for Speech to Text to process the audio, Dark Vision sends the audio file to Speech to Text (4) and Speech to Text will notify Dark Vision with the transcript when it is done processing the audio (5). The result is attached to the audio document (6).
 
-![Architecture](https://g.gravizo.com/source/extract_audio?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Bluemix%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
+![Architecture](https://g.gravizo.com/source/extract_audio?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Cloud%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
 <details>
 <summary></summary>
 extract_audio
@@ -137,7 +137,7 @@ extract_audio
 
 Once the transcript is stored (1), the text analysis (3) is triggered (2) to detect concepts, entities and emotion (4). The result is attached to the audio (5).
 
-![Architecture](https://g.gravizo.com/source/audio_analysis?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Bluemix%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
+![Architecture](https://g.gravizo.com/source/audio_analysis?https%3A%2F%2Fraw.githubusercontent.com%2FIBM-Cloud%2Fopenwhisk-darkvisionapp%2Fmaster%2FREADME.md)
 <details>
 <summary></summary>
 audio_analysis
@@ -176,7 +176,7 @@ Dark Vision comes with a default toolchain you can use to deploy the solution wi
 
 1. Click ***Deploy to Bluemix*** to start the Bluemix DevOps wizard:
 
-  [![Deploy to Bluemix](https://console.bluemix.net/devops/graphics/create_toolchain_button.png)](https://console.ng.bluemix.net/devops/setup/deploy/?repository=https%3A//github.com/IBM-Bluemix/openwhisk-darkvisionapp)
+  [![Deploy to Bluemix](https://console.bluemix.net/devops/graphics/create_toolchain_button.png)](https://console.ng.bluemix.net/devops/setup/deploy/?repository=https%3A//github.com/IBM-Cloud/openwhisk-darkvisionapp)
 
 1. Select the **GitHub** box.
 
@@ -188,7 +188,7 @@ Dark Vision comes with a default toolchain you can use to deploy the solution wi
 
 1. Select the region, organization and space where you want to deploy the web application.
 
-  > :warning: Make sure the organization and the space have no *space* in their names. There is [an open issue around this](https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/issues/54).
+  > :warning: Make sure the organization and the space have no *space* in their names. There is [an open issue around this](https://github.com/IBM-Cloud/openwhisk-darkvisionapp/issues/54).
 
   > :warning: Dark Vision is made of two main components: the web application to upload media and view results and the OpenWhisk actions to process the media. OpenWhisk in Bluemix is currently only available in the US South region. If you decide to deploy the web application in another region than US South, make sure to create a space with the same name in the US South region too. The OpenWhisk actions will be deployed to this space in the US South region.
 
@@ -285,7 +285,7 @@ The data has been attached by the *frame extractor* as an attachment named "imag
 
 The action runs asynchronously.
 
-The code is very similar to the one used in the [Vision app](https://github.com/IBM-Bluemix/openwhisk-visionapp).
+The code is very similar to the one used in the [Vision app](https://github.com/IBM-Cloud/openwhisk-visionapp).
 
 ### OpenWhisk - Audio analysis
 
@@ -335,7 +335,7 @@ Please create a pull request with your desired changes.
 ### Dark Vision correctly processes video frames but does not process the audio track
 
 This has been reported several times when using the toolchain.
-It is tracked as [issue 51](https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/issues/51). Make sure to look at the toolchain DEPLOY log to confirm the problem. Locate the line *Registering Speech to Text callback...* to identify the error.
+It is tracked as [issue 51](https://github.com/IBM-Cloud/openwhisk-darkvisionapp/issues/51). Make sure to look at the toolchain DEPLOY log to confirm the problem. Locate the line *Registering Speech to Text callback...* to identify the error.
 
 ### OpenWhisk
 

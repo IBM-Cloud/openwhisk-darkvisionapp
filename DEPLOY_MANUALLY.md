@@ -5,10 +5,10 @@
 * Clone the app to your local environment from your terminal using the following command:
 
   ```
-  git clone https://github.com/IBM-Bluemix/openwhisk-darkvisionapp.git
+  git clone https://github.com/IBM-Cloud/openwhisk-darkvisionapp.git
   ```
 
-* or Download and extract the source code from [this archive](https://github.com/IBM-Bluemix/openwhisk-darkvisionapp/archive/master.zip)
+* or Download and extract the source code from [this archive](https://github.com/IBM-Cloud/openwhisk-darkvisionapp/archive/master.zip)
 
 ## Create the Bluemix Services
 

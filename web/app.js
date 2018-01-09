@@ -48,9 +48,6 @@ const checkForAuthentication = (req, res, next) => {
   }
 };
 
-// ---Deployment Tracker---------------------------------------------------------
-require('cf-deployment-tracker-client').track();
-
 // initialize local VCAP configuration
 let vcapLocal = null;
 if (!fs.existsSync('../local.env')) {
