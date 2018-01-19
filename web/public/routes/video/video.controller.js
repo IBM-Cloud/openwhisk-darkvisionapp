@@ -68,7 +68,7 @@
                 return keyword.class === tagName;
               });
             case 'custom_keywords':
-                return image.analysis.custom_keywords.find(function(keyword) {
+                return image.analysis.custom_keywords.find(function(customKeyword) {
                   return keyword.class === tagName;
               });  
           }
