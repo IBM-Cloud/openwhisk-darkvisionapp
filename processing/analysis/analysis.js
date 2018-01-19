@@ -270,8 +270,10 @@ function analyzeImage(args, fileName, analyzeCallback) {
           }, (err, response, body) => {
             if (err) {
               console.log('Custom Keywords', err);
-            } else if (body.images.length > 0 && body.images[0].classifiers[0].classes > 0) {
-              analysis.custom_keywords = body.images[0].classifiers[0].classes;
+            } else if (body.images && body.images.length > 0) {
+            	  if (body.images[0].classifiers){
+            		  analysis.custom_keywords = body.images[0].classifiers[0].classes;  
+            	  }
             }
             callback(null);
           }));
