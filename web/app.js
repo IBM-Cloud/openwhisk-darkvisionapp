@@ -345,6 +345,19 @@ app.get('/api/videos/:id', (req, res) => {
               keyword.timecode = image.frame_timecode;
             });
           }
+          
+          if (image.analysis && image.analysis.custom_keywords) {
+              image.analysis.custom_keywords.forEach((keyword) => {
+                if (!keywordToOccurrences[keyword.class]) {
+                  keywordToOccurrences[keyword.class] = [];
+                }
+                keywordToOccurrences[keyword.class].push(keyword);
+                keyword.image_id = image._id;
+                keyword.image_url = `${req.protocol}://${req.hostname}/images/image/${image._id}.jpg`;
+                keyword.timecode = image.frame_timecode;
+            });
+          }
+          
         });
 
         // Filter a list of occurrences according to the minimum requirements

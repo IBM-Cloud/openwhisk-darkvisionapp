@@ -239,7 +239,6 @@ function analyzeImage(args, fileName, analyzeCallback) {
           method: 'POST',
           url: 'https://gateway-a.watsonplatform.net/visual-recognition/api/v3/classify' + // eslint-disable-line
             '?api_key=' + args.watsonApiKey +
-            '&classifier_ids=default,SewerSpy_880630111' +
             '&version=2016-05-20',
           headers: {
             'Content-Length': fs.statSync(fileName).size
@@ -253,7 +252,30 @@ function analyzeImage(args, fileName, analyzeCallback) {
           }
           callback(null);
         }));
-    }
+    },
+    (callback) => {
+        // Call Classify passing the image in the request
+        // http://www.ibm.com/watson/developercloud/visual-recognition/api/v3/?curl#classify_an_image
+        fs.createReadStream(fileName).pipe(
+          request({
+            method: 'POST',
+            url: 'https://gateway-a.watsonplatform.net/visual-recognition/api/v3/classify' + // eslint-disable-line
+              '?api_key=' + args.watsonApiKey +
+              '&classifier_ids=SewerSpy_880630111' +
+              '&version=2016-05-20',
+            headers: {
+              'Content-Length': fs.statSync(fileName).size
+            },
+            json: true
+          }, (err, response, body) => {
+            if (err) {
+              console.log('Custom Keywords', err);
+            } else if (body.images && body.images.length > 0) {
+              analysis.custom_keywords = body.images[0].classifiers[0].classes;
+            }
+            callback(null);
+          }));
+      }
   ],
   (err) => {
     analyzeCallback(err, analysis);
