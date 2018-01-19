@@ -224,6 +224,20 @@
                       ng-if="!controller.showMoreKeywords">and {{controller.data.selectedSummary.image_keywords.length - 15}} more...</span><span ng-if="controller.showMoreKeywords">show less</span></li>
               </ul>
             </div>
+            
+            <div>
+              <h4>Custom Keywords</h4>
+              <ul class="entry-taglist">
+                <li ng-repeat="keyword in controller.data.selectedSummary.custom_keywords" class="entry-custom"><span
+                        ng-click="controller.selectImageWithTag('custom_keywords', keyword.class)"
+                        ng-class="{ 'hidden-tag': $index > 15 && !controller.showMoreKeywords, 'tag-clickable': controller.isVideo() }"
+                        class="tag tag-keyword">{{keyword.class}} {{keyword.score | formatPercent}}%</span></li>
+                <li ng-if="controller.data.selectedSummary.custom_keywords.length > 15"
+                    class="entry-tag more-tag-toggle"
+                    ng-click="controller.showMoreKeywords = !controller.showMoreKeywords"><span
+                      ng-if="!controller.showMoreKeywords">and {{controller.data.selectedSummary.image_keywords.length - 15}} more...</span><span ng-if="controller.showMoreKeywords">show less</span></li>
+              </ul>
+            </div>
 
             <div ng-if="controller.isVideo() && controller.data.summary.audio.analysis.nlu.keywords">
               <h4>Audio Keywords</h4>
