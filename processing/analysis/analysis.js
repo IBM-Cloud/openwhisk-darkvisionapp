@@ -271,7 +271,7 @@ function analyzeImage(args, fileName, analyzeCallback) {
             if (err) {
               console.log('Custom Keywords', err);
             } else if (body.images && body.images.length > 0) {
-            	  if (body.images[0].classifiers){
+            	  if (body.images[0].classifiers && body.images[0].classifiers.length > 0){
             		  analysis.custom_keywords = body.images[0].classifiers[0].classes;  
             	  }
             }
