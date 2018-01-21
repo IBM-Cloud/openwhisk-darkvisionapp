@@ -229,7 +229,7 @@
               <h4>Custom Keywords</h4>
               <span class="no-tag" ng-if="controller.data.selectedSummary.custom_keywords.length == 0">No custom keyword detected</span>
               <ul class="entry-customlist">
-                <li ng-repeat="customKeyword in controller.data.selectedSummary.custom_keywords" class="entry-custom"><span
+                <li ng-repeat="customKeyword in controller.data.selectedSummary.image_keywords" class="entry-custom"><span
                         ng-click="controller.selectImageWithTag('custom_keywords', customKeyword.class)"
                         class="tag tag-customKeyword">{{customKeyword.class}} {{customKeyword.score | formatPercent}}%</span></li>
                 </ul>
