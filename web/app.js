@@ -317,6 +317,7 @@ app.get('/api/videos/:id', (req, res) => {
         // These maps will be used to decide which tags/faces to keep for the video summary
         let peopleNameToOccurrences = {};
         let keywordToOccurrences = {};
+        let customKeywordToOccurrences = {};
 
         console.log('Sorting analysis for video', video._id);
         images.forEach((image) => {
@@ -348,10 +349,10 @@ app.get('/api/videos/:id', (req, res) => {
           
           if (image.analysis && image.analysis.custom_keywords) {
               image.analysis.custom_keywords.forEach((keyword) => {
-                if (!keywordToOccurrences[keyword.class]) {
-                  keywordToOccurrences[keyword.class] = [];
+                if (!customKeywordToOccurrences[keyword.class]) {
+                	customKeywordToOccurrences[keyword.class] = [];
                 }
-                keywordToOccurrences[keyword.class].push(keyword);
+                customKeywordToOccurrences[keyword.class].push(keyword);
                 keyword.image_id = image._id;
                 keyword.image_url = `${req.protocol}://${req.hostname}/images/image/${image._id}.jpg`;
                 keyword.timecode = image.frame_timecode;
@@ -434,6 +435,7 @@ app.get('/api/videos/:id', (req, res) => {
           images,
           face_detection: peopleNameToOccurrences,
           image_keywords: keywordToOccurrences,
+          custom_keywords: customKeywordToOccurrences,
         });
       },
       // get the video transcript
