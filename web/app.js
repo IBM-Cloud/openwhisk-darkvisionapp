@@ -429,6 +429,16 @@ app.get('/api/videos/:id', (req, res) => {
         });
         // remove the color tags from the overview, they are not interesting in this context
         keywordToOccurrences = keywordToOccurrences.filter(keyword => !keyword.class.endsWith(' color'));
+        
+     // filtering custom keywords
+        console.log('Filtering custom keywords for video', video._id);
+        customKeywordToOccurrences = filterOccurrences(customKeywordToOccurrences, {
+          score: label => label.score,
+          minimumOccurrence: options.minimumKeywordOccurrence,
+          minimumScore: options.minimumKeywordScore,
+          minimumScoreOccurrence: options.minimumKeywordScoreOccurrence,
+          maximumOccurrenceCount: options.maximumKeywordCount
+        });
 
         callback(null, {
           video,
