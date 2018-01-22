@@ -261,7 +261,7 @@ function analyzeImage(args, fileName, analyzeCallback) {
             method: 'POST',
             url: 'https://gateway-a.watsonplatform.net/visual-recognition/api/v3/classify' + // eslint-disable-line
               '?api_key=' + args.watsonApiKey +
-              '&classifier_ids=SewerSpy_880630111' +
+              '&classifier_ids=food' +
               '&version=2016-05-20',
             headers: {
               'Content-Length': fs.statSync(fileName).size
@@ -277,7 +277,7 @@ function analyzeImage(args, fileName, analyzeCallback) {
             }
             callback(null);
           }));
-      }
+    }
   ],
   (err) => {
     analyzeCallback(err, analysis);
