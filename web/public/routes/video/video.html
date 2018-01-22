@@ -230,7 +230,7 @@
               <ul class="entry-taglist">
                 <li ng-repeat="keyword in controller.data.selectedSummary.image_keywords" class="entry-tag"><span
                         ng-click="controller.selectImageWithTag('custom_keywords', keyword.class)"
-                        class="tag tag-keyword">{{customKeyword.class}} {{customKeyword.score | formatPercent}}%</span></li>
+                        class="tag tag-keyword">{{keyword.class}} {{keyword.score | formatPercent}}%</span></li>
                 </ul>
             </div>
 
