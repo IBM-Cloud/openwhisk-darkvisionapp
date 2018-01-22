@@ -95,13 +95,13 @@
                   class="tag tag-keyword">{{keyword.class}} {{keyword.score | formatPercent}}%</span></li>
               </ul>
             </div>
-            <div flex class="entry-custom">
+            <div flex class="entry-tags">
               <h4>Custom Keywords</h4>
               <span class="no-tag" ng-if="!image.analysis.custom_keywords">No data yet</span>
               <span class="no-tag" ng-if="image.analysis.custom_keywords.length == 0">No custom tag detected</span>
-              <ul class="entry-customlist">
-                <li ng-repeat="customKeyword in image.analysis.custom_keywords" class="entry-custom"><span
-                  class="tag tag-customKeyword">{{customKeyword.class}} {{customKeyword.score | formatPercent}}%</span></li>
+              <ul class="entry-taglist">
+                <li ng-repeat="keyword in image.analysis.custom_keywords" class="entry-tag"><span
+                  class="tag tag-keyword">{{keyword.class}} {{keyword.score | formatPercent}}%</span></li>
               </ul>
             </div>
             <div flex class="entry-faces">
