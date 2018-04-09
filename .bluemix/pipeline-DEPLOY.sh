@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 ################################################################
 # Install dependencies
@@ -35,7 +36,7 @@ figlet -f small 'Cloudant'
 bx cf create-service cloudantNoSQLDB Lite cloudant-for-darkvision
 bx cf create-service-key cloudant-for-darkvision for-darkvision
 
-CLOUDANT_CREDENTIALS=`bx cf service-key cloudant-for-darkvision for-darkvision | tail -n +2`
+CLOUDANT_CREDENTIALS=`bx cf service-key cloudant-for-darkvision for-darkvision | tail -n +5`
 export CLOUDANT_username=`echo $CLOUDANT_CREDENTIALS | jq -r .username`
 export CLOUDANT_password=`echo $CLOUDANT_CREDENTIALS | jq -r .password`
 export CLOUDANT_host=`echo $CLOUDANT_CREDENTIALS | jq -r .host`
@@ -55,7 +56,7 @@ if [ -z "$WATSON_API_KEY" ]; then
   bx cf create-service watson_vision_combined free visualrecognition-for-darkvision
   bx cf create-service-key visualrecognition-for-darkvision for-darkvision
 
-  VISUAL_RECOGNITION_CREDENTIALS=`bx cf service-key visualrecognition-for-darkvision for-darkvision | tail -n +2`
+  VISUAL_RECOGNITION_CREDENTIALS=`bx cf service-key visualrecognition-for-darkvision for-darkvision | tail -n +5`
   export WATSON_API_KEY=`echo $VISUAL_RECOGNITION_CREDENTIALS | jq -r .api_key`
 else
   echo 'Using configured API key for Watson Visual Recognition service'
@@ -66,7 +67,7 @@ figlet -f small 'Speech to Text'
 bx cf create-service speech_to_text standard speechtotext-for-darkvision
 bx cf create-service-key speechtotext-for-darkvision for-darkvision
 
-STT_CREDENTIALS=`bx cf service-key speechtotext-for-darkvision for-darkvision | tail -n +2`
+STT_CREDENTIALS=`bx cf service-key speechtotext-for-darkvision for-darkvision | tail -n +5`
 export STT_USERNAME=`echo $STT_CREDENTIALS | jq -r .username`
 export STT_PASSWORD=`echo $STT_CREDENTIALS | jq -r .password`
 export STT_URL=`echo $STT_CREDENTIALS | jq -r .url`
@@ -76,7 +77,7 @@ figlet -f small 'Natural Language Understanding'
 bx cf create-service natural-language-understanding free nlu-for-darkvision
 bx cf create-service-key nlu-for-darkvision for-darkvision
 
-NLU_CREDENTIALS=`bx cf service-key nlu-for-darkvision for-darkvision | tail -n +2`
+NLU_CREDENTIALS=`bx cf service-key nlu-for-darkvision for-darkvision | tail -n +5`
 export NLU_USERNAME=`echo $NLU_CREDENTIALS | jq -r .username`
 export NLU_PASSWORD=`echo $NLU_CREDENTIALS | jq -r .password`
 export NLU_URL=`echo $NLU_CREDENTIALS | jq -r .url`
