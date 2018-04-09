@@ -261,7 +261,7 @@ function makeSpeechToTextTask(ow, isCreate) {
 }
 
 function makeActionTask(ow, actionName, isCreate, options = {}) {
-  //   wsk action create vision/speechtotext --kind nodejs:6 speechtotext/speechtotext.zip
+  //   wsk action create vision/speechtotext --kind nodejs:8 speechtotext/speechtotext.zip
   return (callback) => {
     const files = {
       'package.json': `processing/${actionName}/package.json`,
@@ -276,7 +276,7 @@ function makeActionTask(ow, actionName, isCreate, options = {}) {
       actionName: `vision/${actionName}`,
       action: {
         exec: {
-          kind: 'nodejs:6',
+          kind: 'nodejs:8',
           code: actionCode,
           binary: true
         },
@@ -290,7 +290,7 @@ function makeActionTask(ow, actionName, isCreate, options = {}) {
 }
 
 function makeChangeListenerTask(ow, isCreate) {
-  //   wsk action create vision-cloudant-changelistener --kind nodejs:6 changelistener/changelistener.zip\
+  //   wsk action create vision-cloudant-changelistener --kind nodejs:8 changelistener/changelistener.zip\
   //     -p cloudantUrl https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host\
   //     -p cloudantDbName $CLOUDANT_db
   return (callback) => {
@@ -305,7 +305,7 @@ function makeChangeListenerTask(ow, isCreate) {
       actionName: 'vision-cloudant-changelistener',
       action: {
         exec: {
-          kind: 'nodejs:6',
+          kind: 'nodejs:8',
           code: actionCode,
           binary: true
         },
