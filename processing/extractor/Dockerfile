@@ -19,7 +19,7 @@ apt-get install -y ffmpeg
 
 # install nodejs and npm
 # based on https://github.com/nodejs/docker-node
-ENV NODE_VERSION 6.9.1
+ENV NODE_VERSION 8.11.1
 RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" \
   && tar -xzf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
   && rm "node-v$NODE_VERSION-linux-x64.tar.gz"
