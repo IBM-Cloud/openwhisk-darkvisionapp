@@ -85,6 +85,18 @@ if (!fs.existsSync('../local.env')) {
         }
       ];
     }
+
+    if (process.env.COS_API_KEY) {
+      vcapLocal.services['cloud-object-storage'] = [
+        {
+          credentials: {
+            apikey: process.env.COS_API_KEY,
+            resource_instance_id: process.env.COS_INSTANCE_ID,
+          }
+        }
+      ];
+    }
+
     console.log('Loaded local VCAP', vcapLocal);
   } catch (e) {
     console.error(e);
@@ -98,7 +110,15 @@ const appEnvOpts = vcapLocal ? {
 const appEnv = cfenv.getAppEnv(appEnvOpts);
 
 let fileStore;
-if (appEnv.services['Object-Storage']) {
+if (appEnv.services['cloud-object-storage']) {
+  const cosCreds = appEnv.services['cloud-object-storage'][0].credentials;
+  fileStore = require('./lib/cloudobjectstorage')({
+    endpoint: process.env.COS_ENDPOINT,
+    apikey: cosCreds.apikey,
+    instanceId: cosCreds.resource_instance_id,
+    bucket: process.env.COS_BUCKET,
+  });
+} else if (appEnv.services['Object-Storage']) {
   const osCreds = appEnv.services['Object-Storage'][0].credentials;
   const osConfig = {
     provider: 'openstack',
@@ -192,25 +212,24 @@ app.get('/images/:type/:id.jpg', (req, res) => {
   } else {
     const mediaStream = mediaStorage.read(req.params.id, `${req.params.type}.jpg`);
     const imageFile = fs.createWriteStream(imageFilename);
-    mediaStream.on('response', (response) => {
-      // get the image from the storage
-      if (response.statusCode !== 200) {
-        res.status(response.statusCode).send({ ok: false });
-      } else {
-        // save the image to disk
-        mediaStream
-          .pipe(imageFile)
-          .on('finish', () => {
-            console.log('Image cached at', imageFilename);
-            res.sendFile(imageFilename);
-            imageCache.set(cacheKey, true);
-          })
-          .on('error', (err) => {
-            console.log('Can not cache image', err);
-            res.status(500).send({ ok: false });
-          });
-      }
-    });
+
+    mediaStream
+      .on('response', (response) => {
+        // get the image from the storage
+        if (response.statusCode !== 200) {
+          res.status(response.statusCode).send({ ok: false });
+        }
+      })
+      .pipe(imageFile)
+      .on('finish', () => {
+        console.log('Image cached at', imageFilename);
+        res.sendFile(imageFilename);
+        imageCache.set(cacheKey, true);
+      })
+      .on('error', (err) => {
+        console.log('Can not cache image', err);
+        res.status(500).send({ ok: false });
+      });
   }
 });
 

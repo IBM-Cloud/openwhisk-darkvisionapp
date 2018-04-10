@@ -72,10 +72,20 @@ const inputFilename = `${workingDirectory.name}/video.mp4`;
 async.waterfall([
   // establish the storage connection if configured in payload
   function(callback) {
-    if (!payload.osPassword) {
-      console.log('Media files are stored in Cloudant.');
-      callback(null, null);
-    } else {
+    if (payload.cosApiKey) {
+      require('./lib/cloudobjectstorage')({
+        endpoint: payload.cosEndpoint,
+        apikey: payload.cosApiKey,
+        instanceId: payload.cosInstanceId,
+        bucket: payload.cosBucket,
+      }, (err, fileStore) => {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, fileStore);
+        }
+      });
+    } else if (payload.osPassword) {
       const osConfig = {
         provider: 'openstack',
         useServiceCatalog: true,
@@ -95,6 +105,9 @@ async.waterfall([
           callback(null, fileStore);
         }
       });
+    } else {
+      console.log('Media files are stored in Cloudant.');
+      callback(null, null);
     }
   },
   // connect to the database
