@@ -128,20 +128,9 @@ function registerCallback() {
 function install(ow) {
   WARN('Installing artifacts...');
   waterfall([
-    //   wsk package create vision
     (callback) => {
       call(ow, 'package', 'create', 'vision', callback);
     },
-    //   wsk package update vision\
-    //     -p cloudantUrl https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host\
-    //     -p watsonApiKey \
-    //     -p cloudantDbName \
-    //     -p osAuthUrl "$OS_AUTH_URL"\
-    //     -p osProjectId "$OS_PROJECT_ID"\
-    //     -p osRegion "$OS_REGION"\
-    //     -p osUsername "$OS_USERNAME"\
-    //     -p osPassword "$OS_PASSWORD"\
-    //     -p osDomainId "$OS_DOMAIN_ID"
     (callback) => {
       const keyAndValues = {
         cloudantUrl: `https://${process.env.CLOUDANT_username}:${process.env.CLOUDANT_password}@${process.env.CLOUDANT_host}`,
@@ -161,6 +150,10 @@ function install(ow) {
         osUsername: process.env.OS_USERNAME || '',
         osPassword: process.env.OS_PASSWORD || '',
         osDomainId: process.env.OS_DOMAIN_ID || '',
+        cosEndpoint: process.env.COS_ENDPOINT || '',
+        cosApiKey: process.env.COS_API_KEY || '',
+        cosBucket: process.env.COS_BUCKET || '',
+        cosInstanceId: process.env.COS_INSTANCE_ID || '',
       };
       call(ow, 'package', 'update', {
         packageName: 'vision',
@@ -267,6 +260,7 @@ function makeActionTask(ow, actionName, isCreate, options = {}) {
       'package.json': `processing/${actionName}/package.json`,
       'lib/cloudantstorage.js': 'web/lib/cloudantstorage.js',
       'lib/objectstorage.js': 'web/lib/objectstorage.js',
+      'lib/cloudobjectstorage.js': 'web/lib/cloudobjectstorage.js',
       'lib/cloudant-designs.json': 'web/lib/cloudant-designs.json'
     };
     files[`${actionName}.js`] = `processing/${actionName}/${actionName}.js`;
@@ -299,6 +293,7 @@ function makeChangeListenerTask(ow, isCreate) {
       'changelistener.js': 'processing/changelistener/changelistener.js',
       'lib/cloudantstorage.js': 'web/lib/cloudantstorage.js',
       'lib/objectstorage.js': 'web/lib/objectstorage.js',
+      'lib/cloudobjectstorage.js': 'web/lib/cloudobjectstorage.js',
       'lib/cloudant-designs.json': 'web/lib/cloudant-designs.json'
     });
     call(ow, 'action', isCreate ? 'create' : 'update', {
