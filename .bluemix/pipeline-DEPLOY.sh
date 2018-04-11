@@ -91,14 +91,16 @@ else
     bx cf create-service cloud-object-storage $COS_PLAN cloudobjectstorage-for-darkvision
     bx cf create-service-key cloudobjectstorage-for-darkvision for-darkvision
     COS_CREDENTIALS=`bx cf service-key cloudobjectstorage-for-darkvision for-darkvision | tail -n +5`
+    # COS_ENDPOINT and COS_BUCKET are set from the pipeline, export the others
     export COS_API_KEY=`echo $COS_CREDENTIALS | jq -r .apikey`
     export COS_INSTANCE_ID=`echo $COS_CREDENTIALS | jq -r .resource_instance_id`
-    # COS_ENDPOINT and COS_BUCKET are set from the pipeline
+    # and let the rest know we created this service
+    export USING_TOOLCHAIN_COS=true
   fi
 
   # create the bucket
   BX_IAM_TOKEN=`bx iam oauth-tokens | grep IAM | awk '{print $4}'`
-  curl -v -X PUT "https://$COS_ENDPOINT/$COS_BUCKET" -H "Authorization: bearer $BX_IAM_TOKEN" -H "ibm-service-instance-id: $COS_INSTANCE_ID"
+  curl -X PUT "https://$COS_ENDPOINT/$COS_BUCKET" -H "Authorization: bearer $BX_IAM_TOKEN" -H "ibm-service-instance-id: $COS_INSTANCE_ID"
 fi
 
 # Docker image should be set by the pipeline, use a default if not set
@@ -154,6 +156,10 @@ if ! bx cf app $CF_APP; then
   bx cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"
   bx cf set-env $CF_APP COS_ENDPOINT "${COS_ENDPOINT}"
   bx cf set-env $CF_APP COS_BUCKET "${COS_BUCKET}"
+  # if the COS was created by the toolchain bind it to the app
+  if [ ! -z "$USING_TOOLCHAIN_COS" ]; then
+    bx cf bind-service $CF_APP cloudobjectstorage-for-darkvision
+  fi
   if [ ! -z "$USE_API_CACHE" ]; then
     bx cf set-env $CF_APP USE_API_CACHE true
   fi
@@ -183,6 +189,10 @@ else
   bx cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"
   bx cf set-env $CF_APP COS_ENDPOINT "${COS_ENDPOINT}"
   bx cf set-env $CF_APP COS_BUCKET "${COS_BUCKET}"
+    # if the COS was created by the toolchain bind it to the app
+  if [ ! -z "$USING_TOOLCHAIN_COS" ]; then
+    bx cf bind-service $CF_APP cloudobjectstorage-for-darkvision
+  fi
   if [ ! -z "$USE_API_CACHE" ]; then
     bx cf set-env $CF_APP USE_API_CACHE true
   fi
