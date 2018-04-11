@@ -31,7 +31,9 @@ function CloudObjectStorage(cosConfig, initializeStorageCallback) {
   self.bucket = cosConfig.bucket;
 
   // PENDING(fredL) create the bucket if it does not exist
-  initializeStorageCallback(null, self);
+  if (initializeStorageCallback) {
+    initializeStorageCallback(null, self);
+  }
 
   self.storageUrl = function() {
     return `https://${self.cosConfig.endpoint}/${self.bucket}`;
