@@ -18,9 +18,6 @@ const COS = require('ibm-cos-sdk');
 const stream = require('stream');
 
 function CloudObjectStorage(cosConfig, initializeStorageCallback) {
-
-  console.log(cosConfig);
-
   const self = this;
   self.cosConfig = cosConfig;
   self.cos = new COS.S3({
