@@ -36,6 +36,8 @@ stages:
     value: ${COS_ENDPOINT}
   - name: COS_BUCKET
     value: ${COS_BUCKET}
+  - name: COS_PLAN
+    value: "Lite"
   jobs:
   - name: Deploy
     type: deployer

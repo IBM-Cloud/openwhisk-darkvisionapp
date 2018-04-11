@@ -87,7 +87,7 @@ if [ -z "$COS_BUCKET" ]; then
   echo 'No Cloud Object Storage configured, medias will be stored in Cloudant but will be limited in size'
 else
   if [ -z "$COS_API_KEY" ]; then
-    bx cf create-service cloud-object-storage Lite cloudobjectstorage-for-darkvision
+    bx cf create-service cloud-object-storage $COS_PLAN cloudobjectstorage-for-darkvision
     bx cf create-service-key cloudobjectstorage-for-darkvision for-darkvision
     COS_CREDENTIALS=`bx cf service-key cloudobjectstorage-for-darkvision for-darkvision | tail -n +5`
     export COS_API_KEY=`echo $COS_CREDENTIALS | jq -r .apikey`
