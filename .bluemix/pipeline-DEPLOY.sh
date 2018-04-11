@@ -151,6 +151,8 @@ fi
 if ! bx cf app $CF_APP; then
   bx cf push $CF_APP -i $CF_APP_INSTANCES --hostname $CF_APP_HOSTNAME --no-start
   bx cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"
+  bx cf set-env $CF_APP COS_ENDPOINT "${COS_ENDPOINT}"
+  bx cf set-env $CF_APP COS_BUCKET "${COS_BUCKET}"
   if [ ! -z "$USE_API_CACHE" ]; then
     bx cf set-env $CF_APP USE_API_CACHE true
   fi
@@ -178,6 +180,8 @@ else
   bx cf rename $CF_APP $OLD_CF_APP
   bx cf push $CF_APP -i $CF_APP_INSTANCES --hostname $CF_APP_HOSTNAME --no-start
   bx cf set-env $CF_APP CLOUDANT_db "${CLOUDANT_db}"
+  bx cf set-env $CF_APP COS_ENDPOINT "${COS_ENDPOINT}"
+  bx cf set-env $CF_APP COS_BUCKET "${COS_BUCKET}"
   if [ ! -z "$USE_API_CACHE" ]; then
     bx cf set-env $CF_APP USE_API_CACHE true
   fi
