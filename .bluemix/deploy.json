@@ -5,6 +5,10 @@
   "longDescription": "The Delivery Pipeline automates the continuous deployment of Cloud Functions Dark Vision including its web user interface and the Cloud Functions artifacts.",
   "type": "object",
   "properties": {
+    "ibmcloud-api-key": {
+      "description": "IBM Cloud Platform API Key",
+      "type": "string"
+    },    
     "darkvision-region": {
       "description": "The bluemix region",
       "type": "string"
@@ -55,6 +59,7 @@
     }
   },
   "required": [
+    "ibmcloud-api-key",
     "darkvision-region",
     "darkvision-organization",
     "darkvision-space",
@@ -65,6 +70,12 @@
     {
       "type": "validator",
       "url": "/devops/setup/bm-helper/helper.html"
+    },
+    {
+      "type": "password",
+      "readonly": false,
+      "title": "IBM Cloud Platform API Key",
+      "key": "ibmcloud-api-key"
     },
     {
       "type": "table",
