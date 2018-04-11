@@ -83,6 +83,7 @@ export NLU_PASSWORD=`echo $NLU_CREDENTIALS | jq -r .password`
 export NLU_URL=`echo $NLU_CREDENTIALS | jq -r .url`
 
 # Create Cloud Object Storage service
+figlet -f small 'Cloud Object Storage'
 if [ -z "$COS_BUCKET" ]; then
   echo 'No Cloud Object Storage configured, medias will be stored in Cloudant but will be limited in size'
 else
