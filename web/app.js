@@ -220,16 +220,16 @@ app.get('/images/:type/:id.jpg', (req, res) => {
           res.status(response.statusCode).send({ ok: false });
         }
       })
-      .pipe(imageFile)
+      .on('error', (err) => {
+        console.log('Can not cache image', err);
+        res.status(500).send({ ok: false });
+      })
       .on('finish', () => {
         console.log('Image cached at', imageFilename);
         res.sendFile(imageFilename);
         imageCache.set(cacheKey, true);
       })
-      .on('error', (err) => {
-        console.log('Can not cache image', err);
-        res.status(500).send({ ok: false });
-      });
+      .pipe(imageFile);
   }
 });
 
