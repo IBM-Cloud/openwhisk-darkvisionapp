@@ -82,6 +82,24 @@ export NLU_USERNAME=`echo $NLU_CREDENTIALS | jq -r .username`
 export NLU_PASSWORD=`echo $NLU_CREDENTIALS | jq -r .password`
 export NLU_URL=`echo $NLU_CREDENTIALS | jq -r .url`
 
+# Create Cloud Object Storage service
+if [ -z "$COS_BUCKET" ]; then
+  echo 'No Cloud Object Storage configured, medias will be stored in Cloudant but will be limited in size'
+else
+  if [ -z "$COS_API_KEY" ]; then
+    bx cf create-service cloud-object-storage Lite cloudobjectstorage-for-darkvision
+    bx cf create-service-key cloudobjectstorage-for-darkvision for-darkvision
+    COS_CREDENTIALS=`bx cf service-key cloudobjectstorage-for-darkvision for-darkvision | tail -n +5`
+    export COS_API_KEY=`echo $COS_CREDENTIALS | jq -r .apikey`
+    export COS_INSTANCE_ID=`echo $COS_CREDENTIALS | jq -r .resource_instance_id`
+    # COS_ENDPOINT and COS_BUCKET are set from the pipeline
+  fi
+
+  # create the bucket
+  BX_IAM_TOKEN=`bx iam oauth-tokens | grep IAM | awk '{print $4}'`
+  curl -v -X PUT "https://$COS_ENDPOINT/$COS_BUCKET" -H "Authorization: bearer $BX_IAM_TOKEN" -H "ibm-service-instance-id: $COS_INSTANCE_ID"
+fi
+
 # Docker image should be set by the pipeline, use a default if not set
 if [ -z "$DOCKER_EXTRACTOR_NAME" ]; then
   echo 'DOCKER_EXTRACTOR_NAME was not set in the pipeline. Using default value.'

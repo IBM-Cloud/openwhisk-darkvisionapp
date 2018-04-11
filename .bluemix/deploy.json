@@ -36,17 +36,44 @@
     "darkvision-cloudant-db": {
       "description": "Name of the database used by Dark Vision in the Cloudant service instance.",
       "type": "string"
+    },
+    "darkvision-cos-endpoint": {
+      "description": "Cloud Object Storage Cross Region Endpoint",
+      "type": "string"
+    },
+    "darkvision-cos-api-key": {
+      "description": "Cloud Object Storage API key.",
+      "type": "string"
+    },
+    "darkvision-cos-instance-id": {
+      "description": "Cloud Object Storage Instance ID.",
+      "type": "string"
+    },
+    "darkvision-cos-bucket": {
+      "description": "Cloud Object Storage Bucket Name",
+      "type": "string"
     }
   },
-  "required": ["darkvision-region", "darkvision-organization", "darkvision-space", "darkvision-app-name", "darkvision-cloudant-db"],
-  "form": [{
+  "required": [
+    "darkvision-region",
+    "darkvision-organization",
+    "darkvision-space",
+    "darkvision-app-name",
+    "darkvision-cloudant-db"
+  ],
+  "form": [
+    {
       "type": "validator",
       "url": "/devops/setup/bm-helper/helper.html"
     },
     {
       "type": "table",
       "columnCount": 3,
-      "widths": ["33%", "33%", "33%"],
+      "widths": [
+        "33%",
+        "33%",
+        "33%"
+      ],
       "items": [
         {
           "type": "label",
@@ -88,7 +115,7 @@
       "key": "darkvision-admin-username"
     },
     {
-      "type": "text",
+      "type": "password",
       "readonly": false,
       "title": "Admin password",
       "key": "darkvision-admin-password"
@@ -104,6 +131,30 @@
       "readonly": false,
       "title": "Name of the database in the Cloudant service instance",
       "key": "darkvision-cloudant-db"
+    },
+    {
+      "type": "text",
+      "readonly": false,
+      "title": "(Optional) Cloud Object Storage Instance ID. Leave it empty to create a new service instance",
+      "key": "darkvision-cos-instance-id"
+    },
+    {
+      "type": "password",
+      "readonly": false,
+      "title": "(Optional) Cloud Object Storage API key. Leave it empty to create a new service instance.",
+      "key": "darkvision-cos-api-key"
+    },
+    {
+      "type": "text",
+      "readonly": false,
+      "title": "(Optional) Cloud Object Storage Cross Region Endpoint",
+      "key": "darkvision-cos-endpoint"
+    },
+    {
+      "type": "text",
+      "readonly": false,
+      "title": "(Optional) Cloud Object Storage Bucket Name",
+      "key": "darkvision-cos-bucket"
     }
   ]
 }

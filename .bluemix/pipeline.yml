@@ -28,6 +28,14 @@ stages:
     value: ASecret{{name}}4Dv
   - name: USE_API_CACHE
     value: ""
+  - name: COS_API_KEY
+    value: ${COS_API_KEY}
+  - name: COS_INSTANCE_ID
+    value: ${COS_INSTANCE_ID}
+  - name: COS_ENDPOINT
+    value: ${COS_ENDPOINT}
+  - name: COS_BUCKET
+    value: ${COS_BUCKET}
   jobs:
   - name: Deploy
     type: deployer

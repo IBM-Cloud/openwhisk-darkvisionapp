@@ -1,7 +1,7 @@
 applications:
 - services:
   - cloudant-for-darkvision
-#  - objectstorage-for-darkvision
+  # - cloudobjectstorage-for-darkvision
   name: openwhisk-darkvision
   memory: 256M
   instances: 1
