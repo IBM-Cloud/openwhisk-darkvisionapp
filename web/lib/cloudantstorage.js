@@ -34,7 +34,7 @@ function CloudandStorage(options) {
 
   let visionDb;
   let uploadDb;
-  const fileStore = options.fileStore;
+  const fileStore = self.fileStore = options.fileStore;
 
   if (!options.initializeDatabase) {
     visionDb = cloudant.use(options.cloudantDbName);
