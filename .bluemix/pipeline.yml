@@ -16,6 +16,7 @@ stages:
     value: ${ADMIN_USERNAME}
   - name: ADMIN_PASSWORD
     value: ${ADMIN_PASSWORD}
+    type: secure
   - name: CLOUDANT_db
     value: ${CLOUDANT_db}
   - name: OPENWHISK_API_HOST
@@ -30,6 +31,7 @@ stages:
     value: ""
   - name: COS_API_KEY
     value: ${COS_API_KEY}
+    type: secure
   - name: COS_INSTANCE_ID
     value: ${COS_INSTANCE_ID}
   - name: COS_ENDPOINT
@@ -40,6 +42,7 @@ stages:
     value: "Lite"
   - name: IBMCLOUD_API_KEY
     value: ${IBMCLOUD_API_KEY}
+    type: secure
   jobs:
   - name: Deploy
     type: deployer
