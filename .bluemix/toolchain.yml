@@ -55,5 +55,5 @@ deploy:
     darkvision-cos-api-key: ""
     darkvision-cos-instance-id: ""
     darkvision-cos-endpoint: "s3-api.us-geo.objectstorage.softlayer.net"
-    darkvision-cos-bucket: "openwhisk-darkvision-{{timestamp}}"
+    darkvision-cos-bucket: ""
     ibmcloud-api-key: ""

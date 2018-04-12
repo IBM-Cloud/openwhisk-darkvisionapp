@@ -6,7 +6,7 @@
   "type": "object",
   "properties": {
     "ibmcloud-api-key": {
-      "description": "IBM Cloud Platform API Key",
+      "description": "Used to interact with IBM Cloud. Obtain one from IAM user interface",
       "type": "string"
     },    
     "darkvision-region": {
@@ -54,7 +54,7 @@
       "type": "string"
     },
     "darkvision-cos-bucket": {
-      "description": "Cloud Object Storage Bucket Name",
+      "description": "The bucket name must be unique across all users of IBM Cloud",
       "type": "string"
     }
   },
@@ -146,14 +146,8 @@
     {
       "type": "text",
       "readonly": false,
-      "title": "(Optional) Cloud Object Storage Instance ID. Leave it empty to create a new service instance",
-      "key": "darkvision-cos-instance-id"
-    },
-    {
-      "type": "password",
-      "readonly": false,
-      "title": "(Optional) Cloud Object Storage API key. Leave it empty to create a new service instance.",
-      "key": "darkvision-cos-api-key"
+      "title": "(Optional) Cloud Object Storage Bucket Name. Leave it empty if you don't want to use Cloud Object Storage.",
+      "key": "darkvision-cos-bucket"
     },
     {
       "type": "text",
@@ -164,8 +158,14 @@
     {
       "type": "text",
       "readonly": false,
-      "title": "(Optional) Cloud Object Storage Bucket Name",
-      "key": "darkvision-cos-bucket"
+      "title": "(Optional) Cloud Object Storage Instance ID. Leave it empty to create a new service instance",
+      "key": "darkvision-cos-instance-id"
+    },
+    {
+      "type": "password",
+      "readonly": false,
+      "title": "(Optional) Cloud Object Storage API key. Leave it empty to create a new service instance.",
+      "key": "darkvision-cos-api-key"
     }
   ]
 }
