@@ -181,23 +181,30 @@ app.get('/images/:type/:id.jpg', (req, res) => {
     const mediaStream = mediaStorage.read(req.params.id, `${req.params.type}.jpg`);
     const imageFile = fs.createWriteStream(imageFilename);
 
-    mediaStream
-      .on('response', (response) => {
-        // get the image from the storage
-        if (response.statusCode !== 200) {
-          res.status(response.statusCode).send({ ok: false });
-        }
-      })
-      .on('error', (err) => {
-        console.log('Can not cache image', err);
-        res.status(500).send({ ok: false });
-      })
-      .on('finish', () => {
-        console.log('Image cached at', imageFilename);
-        res.sendFile(imageFilename);
-        imageCache.set(cacheKey, true);
-      })
-      .pipe(imageFile);
+    let flow = mediaStream.on('response', (response) => {
+      // get the image from the storage
+      if (response.statusCode !== 200) {
+        res.status(response.statusCode).send({ ok: false });
+      }
+    });
+
+    if (!mediaStorage.fileStore) {
+      flow = flow.pipe(imageFile);
+    }
+
+    flow = flow.on('error', (err) => {
+      console.log('Can not cache image', err);
+      res.status(500).send({ ok: false });
+    })
+    .on('finish', () => {
+      console.log('Image cached at', imageFilename);
+      res.sendFile(imageFilename);
+      imageCache.set(cacheKey, true);
+    });
+
+    if (mediaStorage.fileStore) {
+      flow.pipe(imageFile);
+    }
   }
 });
 
