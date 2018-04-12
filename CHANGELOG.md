@@ -1,7 +1,7 @@
 
 ## 2018-04-12
 
-  * Add support for [IBM Cloud Object Storage](hhttps://console.bluemix.net/catalog/services/cloud-object-storage) for media files.
+  * Add support for [IBM Cloud Object Storage](https://console.bluemix.net/catalog/services/cloud-object-storage) for media files.
 
 ## 2017-03-28
 
