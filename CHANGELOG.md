@@ -1,4 +1,8 @@
 
+## 2018-04-12
+
+  * Add support for [IBM Cloud Object Storage](https://console.bluemix.net/catalog/services/cloud-object-storage) for media files.
+
 ## 2017-03-28
 
   * New upload dialog. The dialog allows to set the video title and to pick the video language so that Speech to Text can correctly process a non-US English video.

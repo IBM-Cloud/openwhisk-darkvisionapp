@@ -9,6 +9,7 @@
     "rimraf": "2.5.4",
     "tmp": "0.0.31",
     "request": "2.79.0",
+    "ibm-cos-sdk": "1.2.0",
     "pkgcloud": "1.4.0"
   },
   "repository": {

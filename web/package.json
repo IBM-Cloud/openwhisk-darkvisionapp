@@ -3,19 +3,18 @@
   "version": "1.0.0",
   "description": "Web front-end for Dark Vision app",
   "scripts": {
-    "start": "node app.js",
-    "postinstall": "bower install --allow-root"
+    "start": "node app.js"
   },
   "author": "IBM",
   "license": "Apache-2.0",
   "dependencies": {
     "async": "2.1.4",
-    "bower": "1.8.0",
     "cfenv": "1.0.3",
     "cloudant": "1.6.2",
     "compression": "1.6.2",
     "express": "4.14.0",
     "http-auth": "3.1.1",
+    "ibm-cos-sdk": "1.2.0",
     "mkdirp": "0.5.1",
     "multer": "1.2.1",
     "node-cache": "4.1.1",

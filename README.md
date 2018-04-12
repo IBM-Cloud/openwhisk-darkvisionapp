@@ -313,7 +313,7 @@ These files are used by the web application and the Cloud Functions actions. The
 | File | Description |
 | ---- | ----------- |
 |[**cloudantstorage.js**](web/lib/cloudantstorage.js)|Implements API on top of Cloudant to create/read/update/delete video/image metadata and to upload files|
-|[**objectstorage.js**](web/lib/objectstorage.js)|Implements the file upload operations on top of Object Storage. Used by [**cloudantstorage.js**](web/lib/cloudantstorage.js) when Object Storage is configured.|
+|[**cloudobjectstorage.js**](web/lib/cloudobjectstorage.js)|Implements the file upload operations on top of Cloud Object Storage. Used by [**cloudantstorage.js**](web/lib/cloudantstorage.js) when Cloud Object Storage is configured.|
 |[**cloudant-designs.json**](web/lib/cloudant-designs.json)|Design documents used by the API to expose videos and images. They are automatically loaded into the database when the web app starts for the first time.|
 
 ### iOS

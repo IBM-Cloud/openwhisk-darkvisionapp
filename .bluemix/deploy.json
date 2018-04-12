@@ -5,6 +5,10 @@
   "longDescription": "The Delivery Pipeline automates the continuous deployment of Cloud Functions Dark Vision including its web user interface and the Cloud Functions artifacts.",
   "type": "object",
   "properties": {
+    "ibmcloud-api-key": {
+      "description": "Used to interact with IBM Cloud. Obtain one from IAM user interface",
+      "type": "string"
+    },    
     "darkvision-region": {
       "description": "The bluemix region",
       "type": "string"
@@ -36,17 +40,51 @@
     "darkvision-cloudant-db": {
       "description": "Name of the database used by Dark Vision in the Cloudant service instance.",
       "type": "string"
+    },
+    "darkvision-cos-endpoint": {
+      "description": "Cloud Object Storage Cross Region Endpoint",
+      "type": "string"
+    },
+    "darkvision-cos-api-key": {
+      "description": "Cloud Object Storage API key.",
+      "type": "string"
+    },
+    "darkvision-cos-instance-id": {
+      "description": "Cloud Object Storage Instance ID.",
+      "type": "string"
+    },
+    "darkvision-cos-bucket": {
+      "description": "The bucket name must be unique across all users of IBM Cloud",
+      "type": "string"
     }
   },
-  "required": ["darkvision-region", "darkvision-organization", "darkvision-space", "darkvision-app-name", "darkvision-cloudant-db"],
-  "form": [{
+  "required": [
+    "ibmcloud-api-key",
+    "darkvision-region",
+    "darkvision-organization",
+    "darkvision-space",
+    "darkvision-app-name",
+    "darkvision-cloudant-db"
+  ],
+  "form": [
+    {
       "type": "validator",
       "url": "/devops/setup/bm-helper/helper.html"
     },
     {
+      "type": "password",
+      "readonly": false,
+      "title": "IBM Cloud Platform API Key",
+      "key": "ibmcloud-api-key"
+    },
+    {
       "type": "table",
       "columnCount": 3,
-      "widths": ["33%", "33%", "33%"],
+      "widths": [
+        "33%",
+        "33%",
+        "33%"
+      ],
       "items": [
         {
           "type": "label",
@@ -88,7 +126,7 @@
       "key": "darkvision-admin-username"
     },
     {
-      "type": "text",
+      "type": "password",
       "readonly": false,
       "title": "Admin password",
       "key": "darkvision-admin-password"
@@ -104,6 +142,30 @@
       "readonly": false,
       "title": "Name of the database in the Cloudant service instance",
       "key": "darkvision-cloudant-db"
+    },
+    {
+      "type": "text",
+      "readonly": false,
+      "title": "(Optional) Cloud Object Storage Bucket Name. Leave it empty if you don't want to use Cloud Object Storage.",
+      "key": "darkvision-cos-bucket"
+    },
+    {
+      "type": "text",
+      "readonly": false,
+      "title": "(Optional) Cloud Object Storage Cross Region Endpoint",
+      "key": "darkvision-cos-endpoint"
+    },
+    {
+      "type": "text",
+      "readonly": false,
+      "title": "(Optional) Cloud Object Storage Instance ID. Leave it empty to create a new service instance",
+      "key": "darkvision-cos-instance-id"
+    },
+    {
+      "type": "password",
+      "readonly": false,
+      "title": "(Optional) Cloud Object Storage API key. Leave it empty to create a new service instance.",
+      "key": "darkvision-cos-api-key"
     }
   ]
 }

@@ -4,9 +4,9 @@
 
 * Clone the app to your local environment from your terminal using the following command:
 
-  ```
-  git clone https://github.com/IBM-Cloud/openwhisk-darkvisionapp.git
-  ```
+   ```
+   git clone https://github.com/IBM-Cloud/openwhisk-darkvisionapp.git
+   ```
 
 * or Download and extract the source code from [this archive](https://github.com/IBM-Cloud/openwhisk-darkvisionapp/archive/master.zip)
 
@@ -27,9 +27,9 @@ You can simply reuse the existing ones.*
 
 1. Create a Natural Language Understanding instance named **nlu-for-darkvision**
 
-1. Optionally create a Object Storage service instance named **objectstorage-for-darkvision**
+1. (optional) Create a Cloud Object Storage service instance named **cloudobjectstorage-for-darkvision**
 
-  > If configured, media files will be stored in Object Storage instead of Cloudant. A container named *openwhisk-darkvision* will be automatically created.
+1. (optional) Inside the Cloud Object Storage, create a bucket where the media files will be stored.
 
 ## Deploy the web interface to upload videos and images
 
@@ -38,34 +38,39 @@ visualize the results of each frame analysis.
 
 1. Change to the **web** directory.
 
-  ```
-  cd openwhisk-darkvisionapp/web
-  ```
+   ```
+   cd openwhisk-darkvisionapp/web
+   ```
 
 1. If in the previous section you decided to use existing services instead of creating new ones, open **manifest.yml** and update the Cloudant service name.
 
-1. If you configured an Object Storage service, make sure to add its name to the list of services in the **manifest.yml** *services* section or to uncomment the existing **objectstorage-for-darkvision** entry.
+1. If you configured a Cloud Object Storage service, make sure to add its name to the list of services in the **manifest.yml** *services* section or to uncomment the existing **cloudobjectstorage-for-darkvision** entry.
 
 1. Push the application to Bluemix:
 
-  ```
-  cf push
-  ```
+   ```
+   bx cf push --nostart
+   ```
 
-### Protecting the upload, delete and reset actions (optional)
+1. By default, anyone can upload/delete/reset videos and images. You can restrict access to these actions by defining the environment variables *ADMIN_USERNAME* and *ADMIN_PASSWORD* on your application. This can be done in the Bluemix console or with the command line:
 
-By default, anyone can upload/delete/reset videos and images. You can restrict access to these actions by defining the environment variables *ADMIN_USERNAME* and *ADMIN_PASSWORD* on your application. This can be done in the Bluemix console or with the command line:
+   ```
+   bx cf set-env openwhisk-darkvision ADMIN_USERNAME admin
+   bx cf set-env openwhisk-darkvision ADMIN_PASSWORD aNotTooSimplePassword
+   ```
 
-  ```
-  cf set-env openwhisk-darkvision ADMIN_USERNAME admin
-  cf set-env openwhisk-darkvision ADMIN_PASSWORD aNotTooSimplePassword
-  ```
+1. If you configured Cloud Object Storage service, set the endpoint and bucket name
 
-You will need to restage the application for the change to take effect:
+   ```
+   bx cf set-env openwhisk-darkvision COS_ENDPOINT s3-api.us-geo.objectstorage.softlayer.net
+   bx cf set-env openwhisk-darkvision COS_BUCKET aUniqueBucketName
+   ```
 
-  ```
-  cf restage openwhisk-darkvision
-  ```
+1. Start the app
+
+   ```
+   bx cf start openwhisk-darkvision
+   ```
 
 ## Build the Frame Extractor Docker image
 

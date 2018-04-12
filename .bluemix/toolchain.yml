@@ -32,6 +32,11 @@ darkvision-build:
       ADMIN_PASSWORD: "{{deploy.parameters.darkvision-admin-password}}"
       WATSON_API_KEY: "{{deploy.parameters.darkvision-watson-api-key}}"
       CLOUDANT_db: "{{deploy.parameters.darkvision-cloudant-db}}"
+      COS_API_KEY: "{{deploy.parameters.darkvision-cos-api-key}}"
+      COS_INSTANCE_ID: "{{deploy.parameters.darkvision-cos-instance-id}}"
+      COS_ENDPOINT: "{{deploy.parameters.darkvision-cos-endpoint}}"
+      COS_BUCKET: "{{deploy.parameters.darkvision-cos-bucket}}"
+      IBMCLOUD_API_KEY: "{{deploy.parameters.ibmcloud-api-key}}"
      execute: true
     services: ["darkvision-repo"]
   hidden: [form, description]
@@ -47,3 +52,8 @@ deploy:
     darkvision-admin-password: ""
     darkvision-watson-api-key: ""
     darkvision-cloudant-db: "openwhisk-darkvision"
+    darkvision-cos-api-key: ""
+    darkvision-cos-instance-id: ""
+    darkvision-cos-endpoint: "s3-api.us-geo.objectstorage.softlayer.net"
+    darkvision-cos-bucket: ""
+    ibmcloud-api-key: ""

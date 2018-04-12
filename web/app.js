@@ -69,22 +69,17 @@ if (!fs.existsSync('../local.env')) {
       }
     };
 
-    if (process.env.OS_PASSWORD) {
-      vcapLocal.services['Object-Storage'] = [
+    if (process.env.COS_API_KEY) {
+      vcapLocal.services['cloud-object-storage'] = [
         {
           credentials: {
-            auth_url: process.env.OS_AUTH_URL,
-            projectId: process.env.OS_PROJECT_ID,
-            region: process.env.OS_REGION,
-            username: process.env.OS_USERNAME,
-            password: process.env.OS_PASSWORD,
-            domainId: process.env.OS_DOMAIN_ID
-          },
-          label: 'Object-Storage',
-          name: 'objectstorage-for-darkvision'
+            apikey: process.env.COS_API_KEY,
+            resource_instance_id: process.env.COS_INSTANCE_ID,
+          }
         }
       ];
     }
+
     console.log('Loaded local VCAP', vcapLocal);
   } catch (e) {
     console.error(e);
@@ -98,21 +93,14 @@ const appEnvOpts = vcapLocal ? {
 const appEnv = cfenv.getAppEnv(appEnvOpts);
 
 let fileStore;
-if (appEnv.services['Object-Storage']) {
-  const osCreds = appEnv.services['Object-Storage'][0].credentials;
-  const osConfig = {
-    provider: 'openstack',
-    useServiceCatalog: true,
-    useInternal: false,
-    keystoneAuthVersion: 'v3',
-    authUrl: osCreds.auth_url,
-    tenantId: osCreds.projectId,
-    domainId: osCreds.domainId,
-    username: osCreds.username,
-    password: osCreds.password,
-    region: osCreds.region
-  };
-  fileStore = require('./lib/objectstorage')(osConfig);
+if (appEnv.services['cloud-object-storage']) {
+  const cosCreds = appEnv.services['cloud-object-storage'][0].credentials;
+  fileStore = require('./lib/cloudobjectstorage')({
+    endpoint: process.env.COS_ENDPOINT,
+    apikey: cosCreds.apikey,
+    instanceId: cosCreds.resource_instance_id,
+    bucket: process.env.COS_BUCKET,
+  });
 }
 
 const mediaStorage = require('./lib/cloudantstorage')(
@@ -192,25 +180,31 @@ app.get('/images/:type/:id.jpg', (req, res) => {
   } else {
     const mediaStream = mediaStorage.read(req.params.id, `${req.params.type}.jpg`);
     const imageFile = fs.createWriteStream(imageFilename);
-    mediaStream.on('response', (response) => {
+
+    let flow = mediaStream.on('response', (response) => {
       // get the image from the storage
       if (response.statusCode !== 200) {
         res.status(response.statusCode).send({ ok: false });
-      } else {
-        // save the image to disk
-        mediaStream
-          .pipe(imageFile)
-          .on('finish', () => {
-            console.log('Image cached at', imageFilename);
-            res.sendFile(imageFilename);
-            imageCache.set(cacheKey, true);
-          })
-          .on('error', (err) => {
-            console.log('Can not cache image', err);
-            res.status(500).send({ ok: false });
-          });
       }
     });
+
+    if (!mediaStorage.fileStore) {
+      flow = flow.pipe(imageFile);
+    }
+
+    flow = flow.on('error', (err) => {
+      console.log('Can not cache image', err);
+      res.status(500).send({ ok: false });
+    })
+    .on('finish', () => {
+      console.log('Image cached at', imageFilename);
+      res.sendFile(imageFilename);
+      imageCache.set(cacheKey, true);
+    });
+
+    if (mediaStorage.fileStore) {
+      flow.pipe(imageFile);
+    }
   }
 });
 
