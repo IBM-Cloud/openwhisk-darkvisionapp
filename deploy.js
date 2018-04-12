@@ -259,7 +259,6 @@ function makeActionTask(ow, actionName, isCreate, options = {}) {
     const files = {
       'package.json': `processing/${actionName}/package.json`,
       'lib/cloudantstorage.js': 'web/lib/cloudantstorage.js',
-      'lib/objectstorage.js': 'web/lib/objectstorage.js',
       'lib/cloudobjectstorage.js': 'web/lib/cloudobjectstorage.js',
       'lib/cloudant-designs.json': 'web/lib/cloudant-designs.json'
     };
@@ -292,7 +291,6 @@ function makeChangeListenerTask(ow, isCreate) {
       'package.json': 'processing/changelistener/package.json',
       'changelistener.js': 'processing/changelistener/changelistener.js',
       'lib/cloudantstorage.js': 'web/lib/cloudantstorage.js',
-      'lib/objectstorage.js': 'web/lib/objectstorage.js',
       'lib/cloudobjectstorage.js': 'web/lib/cloudobjectstorage.js',
       'lib/cloudant-designs.json': 'web/lib/cloudant-designs.json'
     });

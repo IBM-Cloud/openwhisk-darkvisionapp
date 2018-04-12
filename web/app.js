@@ -69,23 +69,6 @@ if (!fs.existsSync('../local.env')) {
       }
     };
 
-    if (process.env.OS_PASSWORD) {
-      vcapLocal.services['Object-Storage'] = [
-        {
-          credentials: {
-            auth_url: process.env.OS_AUTH_URL,
-            projectId: process.env.OS_PROJECT_ID,
-            region: process.env.OS_REGION,
-            username: process.env.OS_USERNAME,
-            password: process.env.OS_PASSWORD,
-            domainId: process.env.OS_DOMAIN_ID
-          },
-          label: 'Object-Storage',
-          name: 'objectstorage-for-darkvision'
-        }
-      ];
-    }
-
     if (process.env.COS_API_KEY) {
       vcapLocal.services['cloud-object-storage'] = [
         {
@@ -118,21 +101,6 @@ if (appEnv.services['cloud-object-storage']) {
     instanceId: cosCreds.resource_instance_id,
     bucket: process.env.COS_BUCKET,
   });
-} else if (appEnv.services['Object-Storage']) {
-  const osCreds = appEnv.services['Object-Storage'][0].credentials;
-  const osConfig = {
-    provider: 'openstack',
-    useServiceCatalog: true,
-    useInternal: false,
-    keystoneAuthVersion: 'v3',
-    authUrl: osCreds.auth_url,
-    tenantId: osCreds.projectId,
-    domainId: osCreds.domainId,
-    username: osCreds.username,
-    password: osCreds.password,
-    region: osCreds.region
-  };
-  fileStore = require('./lib/objectstorage')(osConfig);
 }
 
 const mediaStorage = require('./lib/cloudantstorage')(

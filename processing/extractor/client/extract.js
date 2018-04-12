@@ -85,26 +85,7 @@ async.waterfall([
           callback(null, fileStore);
         }
       });
-    } else if (payload.osPassword) {
-      const osConfig = {
-        provider: 'openstack',
-        useServiceCatalog: true,
-        useInternal: false,
-        keystoneAuthVersion: 'v3',
-        authUrl: payload.osAuthUrl,
-        tenantId: payload.osProjectId,
-        domainId: payload.osDomainId,
-        username: payload.osUsername,
-        password: payload.osPassword,
-        region: payload.osRegion
-      };
-      require('./lib/objectstorage')(osConfig, (err, fileStore) => {
-        if (err) {
-          callback(err);
-        } else {
-          callback(null, fileStore);
-        }
-      });
+      console.log('Media files are stored in Cloud Object Storage.');
     } else {
       console.log('Media files are stored in Cloudant.');
       callback(null, null);
