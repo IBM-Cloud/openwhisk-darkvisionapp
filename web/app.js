@@ -181,18 +181,14 @@ app.get('/images/:type/:id.jpg', (req, res) => {
     const mediaStream = mediaStorage.read(req.params.id, `${req.params.type}.jpg`);
     const imageFile = fs.createWriteStream(imageFilename);
 
-    let flow = mediaStream.on('response', (response) => {
+    mediaStream.on('response', (response) => {
       // get the image from the storage
       if (response.statusCode !== 200) {
         res.status(response.statusCode).send({ ok: false });
       }
-    });
-
-    if (!mediaStorage.fileStore) {
-      flow = flow.pipe(imageFile);
-    }
-
-    flow = flow.on('error', (err) => {
+    })
+    .pipe(imageFile)
+    .on('error', (err) => {
       console.log('Can not cache image', err);
       res.status(500).send({ ok: false });
     })
@@ -201,11 +197,18 @@ app.get('/images/:type/:id.jpg', (req, res) => {
       res.sendFile(imageFilename);
       imageCache.set(cacheKey, true);
     });
-
-    if (mediaStorage.fileStore) {
-      flow.pipe(imageFile);
-    }
   }
+});
+
+/**
+ * Returns the video attachment for embedded player
+ */
+app.get('/videos/stream/:id.mp4', (req, res) => {
+  const mediaStream = mediaStorage.read(req.params.id, 'video.mp4');
+  mediaStream.pipe(res).on('error', (err) => {
+    console.log('Can not read video', err);
+    res.status(500).send({ ok: false });
+  });
 });
 
 /**
