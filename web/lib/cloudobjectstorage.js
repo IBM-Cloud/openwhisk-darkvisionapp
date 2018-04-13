@@ -68,10 +68,7 @@ function CloudObjectStorage(cosConfig, initializeStorageCallback) {
   self.read = function(filename) {
     console.log('[cloudobjectstorage]', 'Read', filename);
 
-    return self.cos.getObject({
-      Bucket: self.bucket,
-      Key: filename
-    }).createReadStream();
+    return require('request').get(`${self.storageUrl()}/${filename}`);
   };
 
   self.delete = function(filename, callback) {
