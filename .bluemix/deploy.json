@@ -10,15 +10,15 @@
       "type": "string"
     },    
     "darkvision-region": {
-      "description": "The bluemix region",
+      "description": "The IBM Cloud region",
       "type": "string"
     },
     "darkvision-organization": {
-      "description": "The bluemix org",
+      "description": "The Cloud Foundry org",
       "type": "string"
     },
     "darkvision-space": {
-      "description": "The bluemix space",
+      "description": "The Cloud Foundry space",
       "type": "string"
     },
     "darkvision-app-name": {

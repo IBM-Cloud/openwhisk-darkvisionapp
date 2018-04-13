@@ -23,7 +23,7 @@ Dark Vision is an application that processes videos to discover what's inside of
 
 ## Overview and Architecture
 
- Built using IBM Bluemix, the application uses:
+ Built using IBM Cloud, the application uses:
   * [Visual Recognition](https://console.bluemix.net/catalog/services/watson_vision_combined)
   * [Speech to Text](https://console.bluemix.net/catalog/services/speech_to_text)
   * [Natural Language Understanding](https://console.bluemix.net/catalog/services/natural-language-understanding)
@@ -163,20 +163,20 @@ audio_analysis
 
 ## Prerequisites
 
-* IBM Bluemix account. [Sign up][bluemix_signup_url] for Bluemix, or use an existing account.
+* IBM Cloud account. [Sign up][bluemix_signup_url] for Bluemix, or use an existing account.
 * Docker Hub account. [Sign up](https://hub.docker.com/) for Docker Hub, or use an existing account.
 * Node.js >= 6.9.1
 * XCode 8.0, iOS 10, Swift 3 (For iOS application)
 
-## Deploying Dark Vision automatically in Bluemix
+## Deploying Dark Vision automatically in IBM Cloud
 
 Dark Vision comes with a default toolchain you can use to deploy the solution with few clicks. If you want to deploy it manually, you can skip this section.
 
 1. **Ensure your organization has enough quota for one web application using 256MB of memory and 4 services.**
 
-1. Click ***Deploy to Bluemix*** to start the Bluemix DevOps wizard:
+1. Click ***Deploy to IBM Cloud*** to start the IBM Cloud DevOps wizard:
 
-  [![Deploy to Bluemix](https://console.bluemix.net/devops/graphics/create_toolchain_button.png)](https://console.ng.bluemix.net/devops/setup/deploy/?repository=https%3A%2F%2Fgithub.com/IBM-Cloud/openwhisk-darkvisionapp)
+  [![Deploy to IBM Cloud](https://console.bluemix.net/devops/graphics/create_toolchain_button.png)](https://console.bluemix.net/devops/setup/deploy/?repository=https%3A%2F%2Fgithub.com/IBM-Cloud/openwhisk-darkvisionapp)
 
 1. Select the **GitHub** box.
 
@@ -206,7 +206,7 @@ Dark Vision comes with a default toolchain you can use to deploy the solution wi
 
 1. Access the Dark Vision app when it's ready and start uploading videos and images!
 
-## Deploying Dark Vision manually in Bluemix
+## Deploying Dark Vision manually in IBM Cloud
 
 The automatic approach should be the best option for most users as it does everything for you automatically. But if you want to go through all the steps manually or if you want to run the web application locally we've got your covered. Follow [these instructions](./DEPLOY_MANUALLY.md).
 
@@ -262,7 +262,7 @@ The web app exposes an API to list all videos and retrieve the results.
 
 ### Cloud Functions - Frame extraction
 
-The **frame extractor** runs as a Docker action created with the [Cloud Functions Docker SDK](https://console.ng.bluemix.net/docs/openwhisk/openwhisk_reference.html#openwhisk_ref_docker):
+The **frame extractor** runs as a Docker action created with the [Cloud Functions Docker SDK](https://console.bluemix.net/docs/openwhisk/openwhisk_reference.html#openwhisk_ref_docker):
   * It uses *ffmpeg* to extract frames and audio from the video.
   * It is written as a nodejs app to benefit from several nodejs helper packages (Cloudant, ffmpeg, imagemagick)
 
@@ -353,7 +353,7 @@ cf logs <appname>
 ```
 to look at the live logs for the web application
 
-[bluemix_signup_url]: https://console.ng.bluemix.net/?cm_mmc=GitHubReadMe
+[bluemix_signup_url]: https://console.bluemix.net/?cm_mmc=GitHubReadMe
 
 ## License
 

@@ -1,4 +1,4 @@
-# Deploy Dark Vision manually in Bluemix
+# Deploy Dark Vision manually in IBM Cloud
 
 ## Get the code
 
@@ -10,12 +10,12 @@
 
 * or Download and extract the source code from [this archive](https://github.com/IBM-Cloud/openwhisk-darkvisionapp/archive/master.zip)
 
-## Create the Bluemix Services
+## Create the IBM Cloud Services
 
 ***Note***: *if you have existing instances of these services, you don't need to create new instances.
 You can simply reuse the existing ones.*
 
-1. Open the IBM Bluemix console
+1. Open the IBM Cloud console
 
 1. Create a Cloudant NoSQL DB service instance named **cloudant-for-darkvision**
 
@@ -46,13 +46,13 @@ visualize the results of each frame analysis.
 
 1. If you configured a Cloud Object Storage service, make sure to add its name to the list of services in the **manifest.yml** *services* section or to uncomment the existing **cloudobjectstorage-for-darkvision** entry.
 
-1. Push the application to Bluemix:
+1. Push the application to IBM Cloud:
 
    ```
    bx cf push --nostart
    ```
 
-1. By default, anyone can upload/delete/reset videos and images. You can restrict access to these actions by defining the environment variables *ADMIN_USERNAME* and *ADMIN_PASSWORD* on your application. This can be done in the Bluemix console or with the command line:
+1. By default, anyone can upload/delete/reset videos and images. You can restrict access to these actions by defining the environment variables *ADMIN_USERNAME* and *ADMIN_PASSWORD* on your application. This can be done in the IBM Cloud console or with the command line:
 
    ```
    bx cf set-env openwhisk-darkvision ADMIN_USERNAME admin
