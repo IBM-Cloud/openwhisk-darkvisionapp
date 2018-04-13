@@ -19,8 +19,6 @@ stages:
     type: secure
   - name: CLOUDANT_db
     value: ${CLOUDANT_db}
-  - name: OPENWHISK_API_HOST
-    value: "openwhisk.ng.bluemix.net"
   - name: DOCKER_EXTRACTOR_NAME
     value: "l2fprod/darkvision-extractor-master"
   - name: WATSON_API_KEY
