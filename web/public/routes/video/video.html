@@ -113,7 +113,15 @@
                           left: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).left}}%;
                           width: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).width}}%;
                           height: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).height}}%;"><span class="face-overlay-text">{{$index+1}}</span></div>
-              <img ng-if="controller.isVideo()" class="video-thumbnail" ng-src="/images/thumbnail/{{controller.data.selected._id}}.jpg" />
+              <!-- <img ng-if="controller.isVideo()" class="video-thumbnail" ng-src="/images/thumbnail/{{controller.data.selected._id}}.jpg" /> -->
+              <video ng-if="controller.isVideo()"
+                class="video-thumbnail"
+                poster="/images/thumbnail/{{controller.data.videoId}}.jpg"
+                id="player"
+                playsinline controls
+                data-plyr-config='{ "controls": [ "play", "current-time", "progress" ], "hideControls": true }'>
+                <source src="/videos/stream/{{controller.data.videoId}}.mp4" type="video/mp4">
+              </video>    
               <img ng-if="!controller.isVideo()" class="video-thumbnail" ng-src="/images/image/{{controller.data.selected._id}}.jpg" />
               <div ng-if="controller.isVideo()"class="video-box-tags" ng-repeat="stream in controller.data.video.metadata.streams">
                 <div ng-if="stream.codec_type == 'video'" class="text-muted">
@@ -121,7 +129,7 @@
                   <span class="video-box-tag">{{stream.duration | formatSeconds }}</span>
                 </div>
               </div>
-              <div ng-if="!controller.isVideo()"class="video-box-tags" ng-repeat="stream in controller.data.video.metadata.streams">
+              <div ng-if="!controller.isVideo()" class="video-box-tags" ng-repeat="stream in controller.data.video.metadata.streams">
                 <div class="text-muted">
                   <span class="video-box-tag">{{controller.data.selected.frame_timecode | formatSeconds }}</span>
                 </div>
