@@ -57,7 +57,7 @@ if [ -z "$WATSON_API_KEY" ]; then
   bx cf create-service-key visualrecognition-for-darkvision for-darkvision
 
   VISUAL_RECOGNITION_CREDENTIALS=`bx cf service-key visualrecognition-for-darkvision for-darkvision | tail -n +5`
-  export WATSON_API_KEY=`echo $VISUAL_RECOGNITION_CREDENTIALS | jq -r .api_key`
+  export WATSON_API_KEY=`echo $VISUAL_RECOGNITION_CREDENTIALS | jq -r .apikey`
 else
   echo 'Using configured API key for Watson Visual Recognition service'
 fi
