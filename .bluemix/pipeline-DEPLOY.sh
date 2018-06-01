@@ -53,7 +53,7 @@ curl -s -X PUT "https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host/$CL
 # Create Watson Visual Recognition service unless WATSON_API_KEY is defined in the service
 figlet -f small 'Visual Recognition'
 if [ -z "$WATSON_API_KEY" ]; then
-  bx cf create-service watson_vision_combined free visualrecognition-for-darkvision
+  bx cf create-service watson_vision_combined lite visualrecognition-for-darkvision
   bx cf create-service-key visualrecognition-for-darkvision for-darkvision
 
   VISUAL_RECOGNITION_CREDENTIALS=`bx cf service-key visualrecognition-for-darkvision for-darkvision | tail -n +5`
