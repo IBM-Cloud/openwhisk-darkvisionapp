@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
+# Limit deployments to US South
+if [ "$CF_TARGET_URL" != "https://api.ng.bluemix.net" ];
+then
+  echo "Dark Vision can currently only be deployed to US South region."
+  exit 1
+fi
+
 ################################################################
 # Install dependencies
 ################################################################

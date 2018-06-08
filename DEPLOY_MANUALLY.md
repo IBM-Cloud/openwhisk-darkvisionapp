@@ -1,5 +1,7 @@
 # Deploy Dark Vision manually in IBM Cloud
 
+> :warning: Dark Vision can currently only be deployed in the US South region.
+
 ## Get the code
 
 * Clone the app to your local environment from your terminal using the following command:
