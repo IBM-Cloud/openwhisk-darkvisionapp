@@ -146,7 +146,7 @@
     {
       "type": "text",
       "readonly": false,
-      "title": "(Optional) Cloud Object Storage Bucket Name. Leave it empty if you don't want to use Cloud Object Storage.",
+      "title": "(Optional) Cloud Object Storage Bucket Name. Must start and end in alphanumeric characters (from 3 to 63 ) limited to: lowercase, numbers and non-consecutive dots, and hyphens. Leave it empty if you don't want to use Cloud Object Storage.",
       "key": "darkvision-cos-bucket"
     },
     {
