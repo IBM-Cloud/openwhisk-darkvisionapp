@@ -23,6 +23,8 @@ stages:
     value: "l2fprod/darkvision-extractor-master"
   - name: WATSON_API_KEY
     value: ${WATSON_API_KEY}
+  - name: VISUAL_RECOGNITION_PLAN
+    value: "lite"
   - name: STT_CALLBACK_SECRET
     value: ASecret{{name}}4Dv
   - name: USE_API_CACHE
@@ -49,6 +51,7 @@ stages:
       organization: ${ORG_NAME}
       space: ${SPACE_NAME}
       application: ${CF_APP_NAME}
+      api_key: ${IBMCLOUD_API_KEY}
     script: |-
       #!/bin/bash
       ./.bluemix/pipeline-DEPLOY.sh

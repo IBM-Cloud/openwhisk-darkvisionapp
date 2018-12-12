@@ -60,7 +60,11 @@ curl -s -X PUT "https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host/$CL
 # Create Watson Visual Recognition service unless WATSON_API_KEY is defined in the service
 figlet -f small 'Visual Recognition'
 if [ -z "$WATSON_API_KEY" ]; then
-  bx cf create-service watson_vision_combined lite visualrecognition-for-darkvision
+  if [ -z "$VISUAL_RECOGNITION_PLAN" ]; then
+    echo 'VISUAL_RECOGNITION_PLAN was not set in the pipeline. Using default value.'
+    VISUAL_RECOGNITION_PLAN=lite
+  fi
+  bx cf create-service watson_vision_combined $VISUAL_RECOGNITION_PLAN visualrecognition-for-darkvision
   bx cf create-service-key visualrecognition-for-darkvision for-darkvision
 
   VISUAL_RECOGNITION_CREDENTIALS=`bx cf service-key visualrecognition-for-darkvision for-darkvision | tail -n +5`
@@ -75,8 +79,8 @@ bx cf create-service speech_to_text standard speechtotext-for-darkvision
 bx cf create-service-key speechtotext-for-darkvision for-darkvision
 
 STT_CREDENTIALS=`bx cf service-key speechtotext-for-darkvision for-darkvision | tail -n +5`
-export STT_USERNAME=`echo $STT_CREDENTIALS | jq -r .username`
-export STT_PASSWORD=`echo $STT_CREDENTIALS | jq -r .password`
+export STT_USERNAME=apikey
+export STT_PASSWORD=`echo $STT_CREDENTIALS | jq -r .apikey`
 export STT_URL=`echo $STT_CREDENTIALS | jq -r .url`
 
 # Create Watson Natural Language Understanding
@@ -85,8 +89,8 @@ bx cf create-service natural-language-understanding free nlu-for-darkvision
 bx cf create-service-key nlu-for-darkvision for-darkvision
 
 NLU_CREDENTIALS=`bx cf service-key nlu-for-darkvision for-darkvision | tail -n +5`
-export NLU_USERNAME=`echo $NLU_CREDENTIALS | jq -r .username`
-export NLU_PASSWORD=`echo $NLU_CREDENTIALS | jq -r .password`
+export NLU_USERNAME=apikey
+export NLU_PASSWORD=`echo $NLU_CREDENTIALS | jq -r .apikey`
 export NLU_URL=`echo $NLU_CREDENTIALS | jq -r .url`
 
 # Create Cloud Object Storage service
@@ -130,6 +134,7 @@ echo 'Speech to Text Cloud Functions action will be accessible at '$STT_CALLBACK
 
 # Deploy the actions
 figlet -f small 'Uninstall'
+bx wsk list
 node deploy.js --uninstall
 figlet -f small 'Install'
 node deploy.js --install

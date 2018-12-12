@@ -1,4 +1,9 @@
 
+## 2018-12-12
+
+  * Update calls to Speech to Text and Natural Language Understanding to use `apikey` instead of `username` and `password`.
+  * Fixed issue in toolchain where Cloud Functions authentication was not set.
+
 ## 2018-04-12
 
   * Add support for [IBM Cloud Object Storage](https://console.bluemix.net/catalog/services/cloud-object-storage) for media files.
