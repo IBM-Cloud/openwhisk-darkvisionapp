@@ -14,8 +14,7 @@
 
 ## Create the IBM Cloud Services
 
-***Note***: *if you have existing instances of these services, you don't need to create new instances.
-You can simply reuse the existing ones.*
+***Note***: *if you have existing instances of these services, you don't need to create new instances. You can simply reuse the existing ones.*
 
 1. Open the IBM Cloud console
 
@@ -29,9 +28,11 @@ You can simply reuse the existing ones.*
 
 1. Create a Natural Language Understanding instance named **nlu-for-darkvision**
 
-1. (optional) Create a Cloud Object Storage service instance named **cloudobjectstorage-for-darkvision**
+**(Optional) To upload images and videos larger than 1MB, you need to use Cloud Object Storage to store the media files**:
 
-1. (optional) Inside the Cloud Object Storage, create a bucket where the media files will be stored.
+1. Create a Cloud Object Storage service instance named **cloudobjectstorage-for-darkvision**
+
+1. Inside the Cloud Object Storage, create a bucket where the media files will be stored.
 
 ## Deploy the web interface to upload videos and images
 
