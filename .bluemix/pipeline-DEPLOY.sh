@@ -134,6 +134,7 @@ echo 'Speech to Text Cloud Functions action will be accessible at '$STT_CALLBACK
 
 # Deploy the actions
 figlet -f small 'Uninstall'
+bx wsk list
 node deploy.js --uninstall
 figlet -f small 'Install'
 node deploy.js --install
