@@ -49,6 +49,7 @@ stages:
       organization: ${ORG_NAME}
       space: ${SPACE_NAME}
       application: ${CF_APP_NAME}
+      api_key: ${IBMCLOUD_API_KEY}
     script: |-
       #!/bin/bash
       ./.bluemix/pipeline-DEPLOY.sh
