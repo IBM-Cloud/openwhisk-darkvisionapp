@@ -79,8 +79,8 @@ bx cf create-service speech_to_text standard speechtotext-for-darkvision
 bx cf create-service-key speechtotext-for-darkvision for-darkvision
 
 STT_CREDENTIALS=`bx cf service-key speechtotext-for-darkvision for-darkvision | tail -n +5`
-export STT_USERNAME=`echo $STT_CREDENTIALS | jq -r .username`
-export STT_PASSWORD=`echo $STT_CREDENTIALS | jq -r .password`
+export STT_USERNAME=apikey
+export STT_PASSWORD=`echo $STT_CREDENTIALS | jq -r .apikey`
 export STT_URL=`echo $STT_CREDENTIALS | jq -r .url`
 
 # Create Watson Natural Language Understanding
@@ -89,8 +89,8 @@ bx cf create-service natural-language-understanding free nlu-for-darkvision
 bx cf create-service-key nlu-for-darkvision for-darkvision
 
 NLU_CREDENTIALS=`bx cf service-key nlu-for-darkvision for-darkvision | tail -n +5`
-export NLU_USERNAME=`echo $NLU_CREDENTIALS | jq -r .username`
-export NLU_PASSWORD=`echo $NLU_CREDENTIALS | jq -r .password`
+export NLU_USERNAME=apikey
+export NLU_PASSWORD=`echo $NLU_CREDENTIALS | jq -r .apikey`
 export NLU_URL=`echo $NLU_CREDENTIALS | jq -r .url`
 
 # Create Cloud Object Storage service
