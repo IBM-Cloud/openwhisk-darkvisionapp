@@ -176,7 +176,7 @@ Dark Vision comes with a default toolchain you can use to deploy the solution wi
 
 1. Click ***Deploy to IBM Cloud*** to start the IBM Cloud DevOps wizard:
 
-  [![Deploy to IBM Cloud](https://console.bluemix.net/devops/graphics/create_toolchain_button.png)](https://console.bluemix.net/devops/setup/deploy/?repository=https%3A%2F%2Fgithub.com/IBM-Cloud/openwhisk-darkvisionapp)
+  [![Deploy to IBM Cloud](https://cloud.ibm.com/devops/graphics/create_toolchain_button.png)](https://cloud.ibm.com/devops/setup/deploy/?repository=https%3A%2F%2Fgithub.com/IBM-Cloud/openwhisk-darkvisionapp)
 
   > :warning: Dark Vision can currently only be deployed in the US South region.
 
@@ -190,7 +190,7 @@ Dark Vision comes with a default toolchain you can use to deploy the solution wi
 
 1. Select the region, organization and space where you want to deploy the web application.
 
-  > :warning: Make sure the organization and the space have no *space* in their names. There is [an open issue around this](https://github.com/IBM-Cloud/openwhisk-darkvisionapp/issues/54).
+   > :warning: Make sure the organization and the space have no *space* in their names. There is [an open issue around this](https://github.com/IBM-Cloud/openwhisk-darkvisionapp/issues/54).
 
 1. Set the name of the Dark Vision web application. Pick a unique name to avoid conflicts.
 
@@ -203,6 +203,8 @@ Dark Vision comes with a default toolchain you can use to deploy the solution wi
 1. Select the Delivery Pipeline named **darkvision**.
 
 1. Wait for the Deploy job to complete.
+
+   > :warning: The toolchain may fail if you chose to create a new Cloud Object Storage service and you already have one using the Lite plan in your account. If so, edit the DEPLOY stage configuration and set the variable COS_PLAN to `Premium`.
 
 1. Access the Dark Vision app when it's ready and start uploading videos and images!
 
