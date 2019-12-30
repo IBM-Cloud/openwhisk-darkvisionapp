@@ -372,9 +372,8 @@ function call(ow, resource, verb, callOptions, callback) {
     params[`${resource}Name`] = callOptions;
   }
 
-  console.log(JSON.stringify(params));
-
   DEBUG(`[${resource} ${verb} ${params[`${resource}Name`]}]`);
+  DEBUG(JSON.stringify(params));
 
   ow[`${resource}s`][verb](params).then(() => {
     WARN(`${resource} ${verb} ${params[`${resource}Name`]} [OK]`);
