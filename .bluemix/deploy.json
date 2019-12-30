@@ -89,7 +89,8 @@
     "darkvision-space",
     "darkvision-app-name",
     "darkvision-cloudant-db",
-    "darkvision-resource-group"
+    "darkvision-resource-group",
+    "darkvision-cos-bucket"
   ],
   "form": [
     {
@@ -176,7 +177,7 @@
     {
       "type": "text",
       "readonly": false,
-      "title": "(Optional) Cloud Object Storage Bucket Name. COS allows to use attachments larger than 1MB. The bucket name must start and end in alphanumeric characters (from 3 to 63 ) limited to: lowercase, numbers and non-consecutive dots, and hyphens. Leave it empty if you don't want to use Cloud Object Storage - but you will be limited to 1MB images and videos",
+      "title": "Cloud Object Storage Bucket Name. The bucket name must start and end in alphanumeric characters (from 3 to 63 ) limited to: lowercase, numbers and non-consecutive dots, and hyphens.",
       "key": "darkvision-cos-bucket"
     },
     {
