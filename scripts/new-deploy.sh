@@ -4,9 +4,11 @@ set -e
 
 ibmcloud logout
 
-set -o allexport
-source pipeline.env
-# set +o allexport
+if [ -s pipeline.env ]; then
+  set -o allexport
+  source pipeline.env
+  set +o allexport
+fi
 
 # extract region from https://api.us-south.cf.cloud.ibm.com
 export REGION=$(echo $CF_TARGET_URL | awk -F '.' '{print $2}')
