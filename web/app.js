@@ -135,7 +135,11 @@ const imageCache = new (require('node-cache'))({
 imageCache.on('del', (key) => {
   console.log('Cleaning up cache entry', key);
   const imageFilename = `${imageCacheDirectory}/${key}`;
-  fs.unlink(imageFilename);
+  fs.unlink(imageFilename, (unlinkErr) => {
+    if (unlinkErr) {
+      console.log(`Failed to unlink file ${imageFilename}`);
+    }
+  });
 });
 
 function withJsonApiCaching(req, res, cacheKey, builder /** req, callback(err, result)*/) {
@@ -599,7 +603,11 @@ function uploadDocument(doc, attachmentName, req, res) {
       fs.createReadStream(`${req.file.destination}/${req.file.filename}`).pipe(
         mediaStorage.attach(doc, attachmentName, req.file.mimetype, (attachErr, attachedDoc) => {
           console.log('Upload completed');
-          fs.unlink(`${req.file.destination}/${req.file.filename}`);
+          fs.unlink(`${req.file.destination}/${req.file.filename}`, (unlinkErr) => {
+            if (unlinkErr) {
+              console.log(`Failed to unlink file ${req.file.destination}/${req.file.filename}`);
+            }
+          });
           if (attachErr) {
             console.log(attachErr);
             mediaStorage.delete(doc, () => {

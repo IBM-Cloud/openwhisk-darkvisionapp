@@ -16,6 +16,7 @@
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
+const itm = require('@ibm-functions/iam-token-manager');
 const openwhisk = require('openwhisk');
 const async = require('async');
 const request = require('request');
@@ -35,6 +36,11 @@ const argv = require('yargs')
   .option('auth', {
     alias: 'u',
     describe: 'Cloud Functions authorization key',
+    type: 'string'
+  })
+  .option('namespace', {
+    alias: 'n',
+    describe: 'Cloud Functions namespace ID',
     type: 'string'
   })
   .count('verbose')
@@ -74,6 +80,10 @@ if (argv.auth) {
   WARN('Cloud Functions authorization key is set on command line.');
 }
 
+if (argv.namespace) {
+  WARN('Cloud Functions namespace ID is set on the command line.');
+}
+
 // load configuration options
 if (fs.existsSync('local.env')) {
   WARN('Loading Dark Vision configuration from local.env');
@@ -82,26 +92,29 @@ if (fs.existsSync('local.env')) {
   WARN('No local.env found. Dark Vision configuration will be loaded from environment variables.');
 }
 
-// load wskprops if any
-const openwhiskOptions = {
-  apihost: argv.apihost || process.env.APIHOST,
-  api_key: argv.auth || process.env.AUTH
-};
-
-const openwhiskClient = openwhisk(openwhiskOptions);
-
-if (argv.install) {
-  install(openwhiskClient);
-} else if (argv.uninstall) {
-  uninstall(openwhiskClient);
-} else if (argv.disable) {
-  disable(openwhiskClient);
-} else if (argv.enable) {
-  enable(openwhiskClient);
-} else if (argv.update) {
-  update(openwhiskClient);
-} else if (argv.register_callback) {
+if (argv.register_callback) {
   registerCallback();
+} else {
+  const authHandler = new itm({
+    iamApikey: argv.auth || process.env.AUTH
+  });
+  const openwhiskOptions = {
+    apihost: argv.apihost || process.env.APIHOST,
+    auth_handler: authHandler,
+    namespace: argv.namespace || process.env.NAMESPACE_ID,
+  };
+  const openwhiskClient = openwhisk(openwhiskOptions);
+  if (argv.install) {
+    install(openwhiskClient);
+  } else if (argv.uninstall) {
+    uninstall(openwhiskClient);
+  } else if (argv.disable) {
+    disable(openwhiskClient);
+  } else if (argv.enable) {
+    enable(openwhiskClient);
+  } else if (argv.update) {
+    update(openwhiskClient);
+  }
 }
 
 function registerCallback() {
@@ -144,12 +157,6 @@ function install(ow) {
         nluUrl: process.env.NLU_URL,
         nluUsername: process.env.NLU_USERNAME,
         nluPassword: process.env.NLU_PASSWORD,
-        osAuthUrl: process.env.OS_AUTH_URL || '',
-        osProjectId: process.env.OS_PROJECT_ID || '',
-        osRegion: process.env.OS_REGION || '',
-        osUsername: process.env.OS_USERNAME || '',
-        osPassword: process.env.OS_PASSWORD || '',
-        osDomainId: process.env.OS_DOMAIN_ID || '',
         cosEndpoint: process.env.COS_ENDPOINT || '',
         cosApiKey: process.env.COS_API_KEY || '',
         cosBucket: process.env.COS_BUCKET || '',
@@ -162,11 +169,6 @@ function install(ow) {
         }
       }, callback);
     },
-    //   wsk package bind /whisk.system/cloudant \
-    //     vision-cloudant\
-    //     -p username $CLOUDANT_username\
-    //     -p password $CLOUDANT_password\
-    //     -p host $CLOUDANT_host
     (callback) => {
       const keyAndValues = {
         username: process.env.CLOUDANT_username,
@@ -184,8 +186,6 @@ function install(ow) {
         }
       }, callback);
     },
-    //   wsk trigger create vision-cloudant-trigger --feed vision-cloudant/changes\
-    //     -p dbname $CLOUDANT_db
     (callback) => {
       call(ow, 'trigger', 'create', {
         triggerName: 'vision-cloudant-trigger',
@@ -202,14 +202,10 @@ function install(ow) {
         feedName: 'vision-cloudant/changes',
         trigger: 'vision-cloudant-trigger',
         params: {
-          api_key: openwhiskOptions.api_key,
           dbname: process.env.CLOUDANT_db
         }
       }, callback);
     },
-    //   # timeout for extractor is increased as it needs to download the video,
-    //   # in most cases it won't need all this time
-    //   wsk action create -t 300000 --docker vision/extractor $DOCKER_EXTRACTOR_NAME
     (callback) => {
       call(ow, 'action', 'create', {
         actionName: 'vision/extractor',
@@ -229,7 +225,6 @@ function install(ow) {
     makeActionTask(ow, 'textanalysis', true),
     makeActionTask(ow, 'analysis', true),
     makeSpeechToTextTask(ow, true),
-    //   wsk rule create vision-rule vision-cloudant-trigger vision-cloudant-changelistener
     (callback) => {
       call(ow, 'rule', 'create', {
         ruleName: 'vision-rule',
@@ -330,7 +325,6 @@ function uninstall(ow) {
         feedName: 'vision-cloudant/changes',
         trigger: 'vision-cloudant-trigger',
         params: {
-          api_key: openwhiskOptions.api_key,
           dbname: process.env.CLOUDANT_db
         }
       }, callback);
