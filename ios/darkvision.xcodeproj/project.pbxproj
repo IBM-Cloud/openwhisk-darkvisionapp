@@ -14,7 +14,6 @@
 		B681E29B1C59095200E17B71 /* FaceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B681E29A1C59095200E17B71 /* FaceCell.swift */; };
 		B681E29D1C5909C400E17B71 /* VideoDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B681E29C1C5909C400E17B71 /* VideoDetailController.swift */; };
 		B68264381C6A247900E73010 /* RelatedVideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68264371C6A247900E73010 /* RelatedVideoCell.swift */; };
-		B682643A1C6A272B00E73010 /* Face.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68264391C6A272B00E73010 /* Face.swift */; };
 		B682643C1C6A41D300E73010 /* CropFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B682643B1C6A41D300E73010 /* CropFilter.swift */; };
 		B68D2B561C53B86900FA0CE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68D2B551C53B86900FA0CE0 /* AppDelegate.swift */; };
 		B68D2B5B1C53B86900FA0CE0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B68D2B591C53B86900FA0CE0 /* Main.storyboard */; };
@@ -29,13 +28,11 @@
 
 /* Begin PBXFileReference section */
 		B681E2911C5684B900E17B71 /* Videos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Videos.swift; path = ../darkvision/model/Videos.swift; sourceTree = "<group>"; };
-		B681E2951C5759C300E17B71 /* DateTools-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DateTools-Bridging-Header.h"; path = "../darkvision/util/DateTools-Bridging-Header.h"; sourceTree = "<group>"; };
 		B681E2961C578C5500E17B71 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Video.swift; path = ../darkvision/model/Video.swift; sourceTree = "<group>"; };
 		B681E2981C578CB900E17B71 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = API.swift; path = ../darkvision/model/API.swift; sourceTree = "<group>"; };
 		B681E29A1C59095200E17B71 /* FaceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FaceCell.swift; path = ../darkvision/renderers/FaceCell.swift; sourceTree = "<group>"; };
 		B681E29C1C5909C400E17B71 /* VideoDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoDetailController.swift; path = ../darkvision/controllers/VideoDetailController.swift; sourceTree = "<group>"; };
 		B68264371C6A247900E73010 /* RelatedVideoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RelatedVideoCell.swift; path = ../darkvision/renderers/RelatedVideoCell.swift; sourceTree = "<group>"; };
-		B68264391C6A272B00E73010 /* Face.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Face.swift; path = ../darkvision/model/Face.swift; sourceTree = "<group>"; };
 		B682643B1C6A41D300E73010 /* CropFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CropFilter.swift; path = ../darkvision/util/CropFilter.swift; sourceTree = "<group>"; };
 		B68D2B521C53B86900FA0CE0 /* Dark Vision.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Dark Vision.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B68D2B551C53B86900FA0CE0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ../darkvision/AppDelegate.swift; sourceTree = "<group>"; };
@@ -80,7 +77,6 @@
 				B681E2911C5684B900E17B71 /* Videos.swift */,
 				B681E2961C578C5500E17B71 /* Video.swift */,
 				B681E2981C578CB900E17B71 /* API.swift */,
-				B68264391C6A272B00E73010 /* Face.swift */,
 			);
 			name = model;
 			sourceTree = "<group>";
@@ -88,7 +84,6 @@
 		B681E2941C57598700E17B71 /* util */ = {
 			isa = PBXGroup;
 			children = (
-				B681E2951C5759C300E17B71 /* DateTools-Bridging-Header.h */,
 				B682643B1C6A41D300E73010 /* CropFilter.swift */,
 			);
 			name = util;
@@ -170,7 +165,6 @@
 				B68D2B4F1C53B86900FA0CE0 /* Frameworks */,
 				B68D2B501C53B86900FA0CE0 /* Resources */,
 				314D30221FBB6C48E09A691A /* [CP] Embed Pods Frameworks */,
-				A5FE726A5BCE64167C603198 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -202,6 +196,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -236,13 +231,32 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-darkvision/Pods-darkvision-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
+				"${BUILT_PRODUCTS_DIR}/Cosmos/Cosmos.framework",
+				"${BUILT_PRODUCTS_DIR}/DateToolsSwift/DateToolsSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/RDHCollectionViewGridLayout/RDHCollectionViewGridLayout.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftMoment/SwiftMoment.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework",
+				"${BUILT_PRODUCTS_DIR}/TagListView/TagListView.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cosmos.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DateToolsSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RDHCollectionViewGridLayout.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftMoment.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TTTAttributedLabel.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TagListView.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-darkvision/Pods-darkvision-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-darkvision/Pods-darkvision-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		56F7A1156C2CE9FFDB67D9B2 /* [CP] Check Pods Manifest.lock */ = {
@@ -251,28 +265,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-darkvision-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		A5FE726A5BCE64167C603198 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-darkvision/Pods-darkvision-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -287,7 +289,6 @@
 				B6F04AC81C54D10600AC2BA2 /* VideoController.swift in Sources */,
 				B681E2921C5684B900E17B71 /* Videos.swift in Sources */,
 				B68D2B561C53B86900FA0CE0 /* AppDelegate.swift in Sources */,
-				B682643A1C6A272B00E73010 /* Face.swift in Sources */,
 				B69CEB4D1C6C8FB90063E231 /* VideoSectionHeaderCell.swift in Sources */,
 				B68264381C6A247900E73010 /* RelatedVideoCell.swift in Sources */,
 				B68D2B6A1C53BA0300FA0CE0 /* FeedCollectionViewCell.swift in Sources */,
@@ -358,7 +359,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -397,7 +398,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -418,7 +419,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = net.mybluemix.DarkVisionApp;
 				PRODUCT_NAME = "Dark Vision";
 				PROVISIONING_PROFILE = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -435,7 +436,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = net.mybluemix.DarkVisionApp;
 				PRODUCT_NAME = "Dark Vision";
 				PROVISIONING_PROFILE = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};

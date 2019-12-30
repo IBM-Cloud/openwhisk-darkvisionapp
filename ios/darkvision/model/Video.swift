@@ -15,6 +15,7 @@
  */
 import SwiftyJSON
 import SwiftMoment
+import DateToolsSwift
 
 class Video {
 
@@ -30,7 +31,7 @@ class Video {
     self.api = api;
     self.impl = impl;
 
-    let titleCount = impl["title"].stringValue.characters.count
+    let titleCount = impl["title"].stringValue.count
     starRating = Double(titleCount % 4) + 1
     viewCount = (titleCount % 7) * 1000 + titleCount
   }
@@ -94,14 +95,6 @@ class Video {
 
   func keywords() -> [JSON] {
     return (summaryImpl != nil ? summaryImpl!["image_keywords"].array! : [])
-  }
-
-  func faceCount() -> Int {
-    return summaryImpl == nil ? 0 : summaryImpl!["face_detection"].count;
-  }
-
-  func faceAt(_ position: Int) -> Face {
-    return Face(impl: summaryImpl!["face_detection"][position])
   }
 
   func relatedVideoCount() -> Int {
