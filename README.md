@@ -242,11 +242,10 @@ The web app exposes an API to list all videos and retrieve the results.
 
   <img src="xdocs/dv-simulator-one-video.png" width="200">
 
-  Results are made of the faces detected in the picture
-  and of tags returned by Watson.
+  Results are made of tags returned by Watson.
   The tags with the highest confidence score are shown.
-  Tap a tag or a face to change the main image to the
-  frame where this tag or face was detected.
+  Tap a tag to change the main image to the
+  frame where this tag was detected.
 
 ## Code Structure
 

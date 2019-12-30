@@ -225,7 +225,11 @@ async.waterfall([
     console.log('Uploading audio...');
     fs.createReadStream(`${workingDirectory.name}/audio.ogg`).pipe(
       mediaStorage.attach(audioDocument, 'audio.ogg', 'audio/ogg', (attachErr, attachedDoc) => {
-        fs.unlink(`${workingDirectory.name}/audio.ogg`);
+        fs.unlink(`${workingDirectory.name}/audio.ogg`, (unlinkErr) => {
+          if (unlinkErr) {
+            console.log(unlinkErr);
+          }
+        });
         if (attachErr) {
           console.log('Audio upload failed', attachErr);
           callback(attachErr);

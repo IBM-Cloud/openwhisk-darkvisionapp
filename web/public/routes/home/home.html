@@ -78,11 +78,6 @@
           <div id="image-{{image._id}}" layout="row" layout-xs="column" class="image-box border-box">
             <div flex="initial" class="image-box-image">
               <div class="entry-thumbnail-container" style="position: relative;">
-                <div ng-if="face.face_location.left>0" ng-repeat="face in image.analysis.face_detection" class="face-overlay-box" style="position: absolute;
-                            top: {{controller.facePositionAsPercent(face.face_location, image).top}}%;
-                            left: {{controller.facePositionAsPercent(face.face_location, image).left}}%;
-                            width: {{controller.facePositionAsPercent(face.face_location, image).width}}%;
-                            height: {{controller.facePositionAsPercent(face.face_location, image).height}}%;"><span class="face-overlay-text">{{$index+1}}</span></div>
                 <img ng-src="/images/image/{{image._id}}.jpg" class="image-thumbnail" />
               </div>
             </div>
@@ -93,20 +88,6 @@
               <ul class="entry-taglist">
                 <li ng-repeat="keyword in image.analysis.image_keywords" class="entry-tag"><span
                   class="tag tag-keyword">{{keyword.class}} {{keyword.score | formatPercent}}%</span></li>
-              </ul>
-            </div>
-            <div flex class="entry-faces">
-              <h4>Face Detection</h4>
-              <span class="no-tag" ng-if="!image.analysis.face_detection">No data yet</span>
-              <span class="no-tag" ng-if="image.analysis.face_detection.length == 0">No face detected</span>
-              <ul class="entry-taglist">
-                <li ng-if="face.face_location.left>0" ng-repeat="face in image.analysis.face_detection" class="entry-tag"><span
-                  class="tag tag-face">
-                    <span class="face-overlay-text">{{$index+1}}</span>
-                    <span ng-if="face.identity">{{face.identity.name}} {{face.identity.score | formatPercent}}%</span>
-                    <span ng-if="face.identity">&nbsp;</span>
-                    <span>{{face.gender.gender}} {{face.age.min}}-{{face.age.max}} {{face.age.score | formatPercent}}%</span>
-                  </span></li>
               </ul>
             </div>
             <div>

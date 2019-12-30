@@ -273,11 +273,8 @@ app.get('/api/videos', (req, res) => {
  */
 app.get('/api/videos/:id', (req, res) => {
   withJsonApiCaching(req, res, `video-${req.params.id}`, (request, cachingCallback) => {
-    // threshold to decide what tags/labels/faces to keep
+    // threshold to decide what tags/labels to keep
     const options = {
-      minimumFaceOccurrence: 3,
-      minimumFaceScore: 0.85,
-      minimumFaceScoreOccurrence: 2,
       minimumLabelOccurrence: 5,
       minimumLabelScore: 0.70,
       minimumLabelScoreOccurrence: 1,
@@ -312,29 +309,14 @@ app.get('/api/videos/:id', (req, res) => {
           }
         });
       },
-      // summarize tags, faces
+      // summarize tags
       (video, images, callback) => {
-        // Map faces, keywords, tags to their occurrences.
-        // These maps will be used to decide which tags/faces to keep for the video summary
-        let peopleNameToOccurrences = {};
+        // Map keywords, tags to their occurrences.
+        // These maps will be used to decide which tags to keep for the video summary
         let keywordToOccurrences = {};
 
         console.log('Sorting analysis for video', video._id);
         images.forEach((image) => {
-          if (image.analysis && image.analysis.face_detection) {
-            image.analysis.face_detection.forEach((face) => {
-              if (face.identity && face.identity.name) {
-                if (!peopleNameToOccurrences[face.identity.name]) {
-                  peopleNameToOccurrences[face.identity.name] = [];
-                }
-                peopleNameToOccurrences[face.identity.name].push(face);
-                face.image_id = image._id;
-                face.image_url = `${req.protocol}://${req.hostname}/images/image/${image._id}.jpg`;
-                face.timecode = image.frame_timecode;
-              }
-            });
-          }
-
           if (image.analysis && image.analysis.image_keywords) {
             image.analysis.image_keywords.forEach((keyword) => {
               if (!keywordToOccurrences[keyword.class]) {
@@ -397,14 +379,6 @@ app.get('/api/videos/:id', (req, res) => {
           return result;
         }
 
-        console.log('Filtering faces for video', video._id);
-        peopleNameToOccurrences = filterOccurrences(peopleNameToOccurrences, {
-          score: face => face.identity.score,
-          minimumOccurrence: options.minimumFaceOccurrence,
-          minimumScore: options.minimumFaceScore,
-          minimumScoreOccurrence: options.minimumFaceScoreOccurrence
-        });
-
         // filtering keywords
         console.log('Filtering keywords for video', video._id);
         keywordToOccurrences = filterOccurrences(keywordToOccurrences, {
@@ -420,7 +394,6 @@ app.get('/api/videos/:id', (req, res) => {
         callback(null, {
           video,
           images,
-          face_detection: peopleNameToOccurrences,
           image_keywords: keywordToOccurrences,
         });
       },
