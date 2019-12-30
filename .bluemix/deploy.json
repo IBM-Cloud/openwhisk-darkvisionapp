@@ -26,7 +26,7 @@
       "type": "string",
       "validator": {
         "v-type": "cf-org",
-        "params": ["api-key"]
+        "params": ["darkvision-region"]
       }
     },
     "darkvision-space": {
@@ -34,7 +34,7 @@
       "type": "string",
       "validator": {
         "v-type": "cf-space",
-        "params": ["cf-org"]
+        "params": ["darkvision-organization"]
       }
     },
     "darkvision-app-name": {
