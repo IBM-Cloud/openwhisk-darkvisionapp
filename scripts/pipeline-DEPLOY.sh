@@ -62,10 +62,14 @@ if ! ibmcloud resource service-instance cloudant-for-darkvision; then
     cloudant-for-darkvision \
     cloudantnosqldb $CLOUDANT_SERVICE_PLAN $REGION \
     -p '{"legacyCredentials":true}'
-  ibmcloud resource service-alias-create \
+  until ibmcloud resource service-alias-create \
     cloudant-for-darkvision \
     --instance-name cloudant-for-darkvision \
     -s $CF_SPACE
+  do
+    echo "Will retry..."
+    sleep 10
+  done
 fi
 if ! ibmcloud resource service-key cloudant-for-darkvision; then
   ibmcloud resource service-key-create cloudant-for-darkvision Manager --instance-name cloudant-for-darkvision
