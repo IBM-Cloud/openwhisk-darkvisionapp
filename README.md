@@ -181,36 +181,21 @@ Dark Vision comes with a default toolchain you can use to deploy the solution wi
   > :warning: Dark Vision can currently only be deployed in the US South region.
 
 1. Select the **GitHub** box.
-
-1. Decide whether you want to fork/clone the Dark Vision repository.
-
-1. If you decide to Clone, set a name for your GitHub repository.
+   1. Decide whether you want to fork/clone the Dark Vision repository.
+   1. If you decide to Clone, set a name for your GitHub repository.
 
 1. Select the **Delivery Pipeline** box.
-
-1. Select the region, organization and space where you want to deploy the web application.
-
-   > :warning: Make sure the organization and the space have no *space* in their names. There is [an open issue around this](https://github.com/IBM-Cloud/openwhisk-darkvisionapp/issues/54).
-
-1. Set the name of the Dark Vision web application. Pick a unique name to avoid conflicts.
-
-1. Optionally set the admin username and password for the application. When set, the application will prompt for this username and password when uploading videos/images, when resetting a video or an image. If the username and password are not defined, any visitor can upload videos/images for processing.
-
-1. If you already have a Watson Visual Recognition service instance you want to reuse, retrieve its API key from the credentials and set the value in the form. If you leave the field empty, the pipeline will create a new service instance automatically.
-
+   1. Enter an IBM Cloud API key. 
+   1. Select the resource group, region, organization and space where you want to create services and deploy the web application.
+   1. Set the name of the Dark Vision web application. Pick a unique name to avoid conflicts.
+   1. Optionally set the admin username and password for the application. When set, the application will prompt for this username and password when uploading videos/images, when resetting a video or an image. If the username and password are not defined, any visitor can upload videos/images for processing.
+   1. If you already have a Watson Visual Recognition service instance you want to reuse, retrieve its API key from the credentials and set the value in the form. If you leave the field empty, the pipeline will create a new service instance automatically.
 1. Click **Create**.
-
 1. Select the Delivery Pipeline named **darkvision**.
-
+   1. In the **Environment Properties**, you can change the service plans for the services to be created. `COS_PLAN` can be changed to `Standard` if you are already using the `Lite` plan in your account.
+   1. When ready, press the **Run Stage** button in the **DEPLOY** stage to run the pipeline.
 1. Wait for the Deploy job to complete.
-
-   > :warning: The toolchain may fail if you chose to create a new Cloud Object Storage service and you already have one using the Lite plan in your account. If so, edit the DEPLOY stage configuration and set the variable COS_PLAN to `Premium`.
-
 1. Access the Dark Vision app when it's ready and start uploading videos and images!
-
-## Deploying Dark Vision manually in IBM Cloud
-
-The automatic approach should be the best option for most users as it does everything for you automatically. But if you want to go through all the steps manually or if you want to run the web application locally we've got your covered. Follow [these instructions](./DEPLOY_MANUALLY.md).
 
 ## iOS application to view the results (Optional)
 
@@ -342,7 +327,7 @@ It is tracked as [issue 51](https://github.com/IBM-Cloud/openwhisk-darkvisionapp
 
 Polling activations is good start to debug the Cloud Functions action execution. Run
 ```
-wsk activation poll
+ibmcloud fn activation poll
 ```
 and upload a video for analysis.
 
@@ -350,7 +335,7 @@ and upload a video for analysis.
 
 Use
 ```
-cf logs <appname>
+ibmcloud cf logs <appname>
 ```
 to look at the live logs for the web application
 
