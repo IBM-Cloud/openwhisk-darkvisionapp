@@ -53,13 +53,13 @@ form:
     schema:
       $ref: deploy.json
     parameters:
-      darkvision-app-name: "{{name}}"
+      darkvision-app-name: "{{toolchain.name}}"
       darkvision-admin-username: ""
       darkvision-admin-password: ""
       darkvision-watson-api-key: ""
       darkvision-cloudant-db: "openwhisk-darkvision"
       darkvision-cos-api-key: ""
       darkvision-cos-instance-id: ""
-      darkvision-cos-endpoint: "s3-api.us-geo.objectstorage.softlayer.net"
-      darkvision-cos-bucket: ""
+      darkvision-cos-endpoint: ""
+      darkvision-cos-bucket: "{{toolchain.name}}"
       darkvision-resource-group: ""

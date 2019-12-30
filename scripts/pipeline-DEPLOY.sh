@@ -136,12 +136,12 @@ figlet -f small 'Cloud Object Storage'
 if [ -z "$COS_BUCKET" ]; then
   export COS_BUCKET=$IDS_PROJECT_NAME-bucket
 fi
-if [ -z "$COS_SERVICE_PLAN" ]; then
-  COS_SERVICE_PLAN=Lite
+if [ -z "$COS_PLAN" ]; then
+  COS_PLAN=Lite
 fi
 if [ -z "$COS_API_KEY" ]; then
   if ! ibmcloud resource service-instance cos-for-darkvision; then
-    ibmcloud resource service-instance-create cos-for-darkvision cloud-object-storage $COS_SERVICE_PLAN global
+    ibmcloud resource service-instance-create cos-for-darkvision cloud-object-storage $COS_PLAN global
     ibmcloud resource service-alias-create \
     cos-for-darkvision \
     --instance-name cos-for-darkvision \
