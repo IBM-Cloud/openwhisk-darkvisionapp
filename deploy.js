@@ -264,7 +264,7 @@ function makeActionTask(ow, actionName, isCreate, options = {}) {
       actionName: `vision/${actionName}`,
       action: {
         exec: {
-          kind: 'nodejs:8',
+          kind: 'nodejs:10',
           code: actionCode,
           binary: true
         },
@@ -293,7 +293,7 @@ function makeChangeListenerTask(ow, isCreate) {
       actionName: 'vision-cloudant-changelistener',
       action: {
         exec: {
-          kind: 'nodejs:8',
+          kind: 'nodejs:10',
           code: actionCode,
           binary: true
         },
