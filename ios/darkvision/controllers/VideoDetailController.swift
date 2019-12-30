@@ -29,7 +29,7 @@ class VideoDetailController: UICollectionViewController {
       
       layout.minimumInteritemSpacing = 0
       layout.minimumLineSpacing = 0
-      layout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
   }
   
@@ -43,33 +43,18 @@ class VideoDetailController: UICollectionViewController {
   }
   
   
-  enum Sections { case faces, relatedVideos }
+  enum Sections { case relatedVideos }
   
   func section(_ section: Int) -> Sections {
-    if (video == nil || (video != nil && video!.faceCount() > 0)) {
-      switch (section) {
-      case 0:
-        return .faces
-      default:
-        return .relatedVideos
-      }
-    } else {
-      return .relatedVideos
-    }
+    return .relatedVideos
   }
   
   override func numberOfSections(in collectionView: UICollectionView) -> Int {
-    if (video == nil || (video != nil && video!.faceCount() > 0)) {
-      return 2;
-    } else {
-      return 1;
-    }
+    return 1;
   }
   
   override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     switch (self.section(section)) {
-    case .faces:
-      return video == nil ? 0 : video!.faceCount()
     case .relatedVideos:
       return video == nil ? 0 : video!.relatedVideoCount()
     }
@@ -82,8 +67,6 @@ class VideoDetailController: UICollectionViewController {
   override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
     let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SectionHeader", for: indexPath) as! VideoSectionHeaderCell
     switch (section((indexPath as NSIndexPath).section)) {
-    case .faces:
-      cell.sectionTitle.text = "People in the video"
     case .relatedVideos:
       cell.sectionTitle.text = "Related videos"
     }
@@ -93,16 +76,6 @@ class VideoDetailController: UICollectionViewController {
   override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     // Configure the cell
     switch (section((indexPath as NSIndexPath).section)) {
-    case .faces:
-      // face
-      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FaceCell",
-        for: indexPath) as! FaceCell
-      
-      let face = video!.faceAt((indexPath as NSIndexPath).row)
-      cell.faceName.text = face.name()
-      cell.faceAge.text = face.age()
-      cell.faceView.af_setImage(withURL: URL(string: face.sourceImageUrl())!, placeholderImage: UIImage(named: "NoThumbnail"), filter: CropFilter(x: face.positionX(), y: face.positionY(), width: face.width(), height: face.height()) , imageTransition: .crossDissolve(0.5))
-      return cell;
     case .relatedVideos:
       //    case 1:
       // related video
@@ -121,10 +94,6 @@ class VideoDetailController: UICollectionViewController {
   }
   
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    if (section((indexPath as NSIndexPath).section) == .faces) {
-      let face = video!.faceAt((indexPath as NSIndexPath).row)
-      videoController?.setCurrentImage(face.sourceImageUrl())
-    }
   }
   
 }

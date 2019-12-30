@@ -6,7 +6,13 @@ Settings that define the appearance of the star rating views.
 
 */
 public struct CosmosSettings {
-  init() {}
+
+  /// Returns default set of settings for CosmosView
+  public static var `default`: CosmosSettings {
+    return CosmosSettings()
+  }
+
+  public init() {}
   
   // MARK: - Star settings
   // -----------------------------
@@ -52,6 +58,22 @@ public struct CosmosSettings {
   /// The maximum number of stars to be shown.
   public var totalStars = CosmosDefaultSettings.totalStars
   
+  // MARK: - Star image settings
+  // -----------------------------
+  
+  /**
+  
+  Image used for the filled portion of the star. By default the star is drawn from the array of points unless an image is supplied.
+  
+  */
+  public var filledImage: UIImage? = nil
+  
+  /**
+   
+   Image used for the empty portion of the star. By default the star is drawn from the array of points unless an image is supplied.
+   
+   */
+  public var emptyImage: UIImage? = nil
   
   // MARK: - Text settings
   // -----------------------------
@@ -72,8 +94,14 @@ public struct CosmosSettings {
   /// The lowest rating that user can set by touching the stars.
   public var minTouchRating: Double = CosmosDefaultSettings.minTouchRating
   
+  /// Set to `false` if you don't want to pass touches to superview (can be useful in a table view).
+  public var passTouchesToSuperview = CosmosDefaultSettings.passTouchesToSuperview
+  
   /// When `true` the star fill level is updated when user touches the cosmos view. When `false` the Cosmos view only shows the rating and does not act as the input control.
   public var updateOnTouch = CosmosDefaultSettings.updateOnTouch
+
+  /// Set to `true` if you want to ignore pan gestures (can be useful when presented modally with a `presentationStyle` of `pageSheet` to avoid competing with the dismiss gesture)
+  public var disablePanGestures = CosmosDefaultSettings.disablePanGestures
 }
 
 

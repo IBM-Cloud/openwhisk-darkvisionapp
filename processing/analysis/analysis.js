@@ -129,7 +129,11 @@ function processImage(args, fileName, processCallback) {
     } else {
       analyzeImage(args, prepareFileName, (err, analysis) => {
         const fs = require('fs');
-        fs.unlink(prepareFileName);
+        fs.unlink(prepareFileName, (unlinkErr) => {
+          if (unlinkErr) {
+            console.log(unlinkErr);
+          }
+        });
         processCallback(err, analysis);
       });
     }
@@ -204,36 +208,6 @@ function analyzeImage(args, fileName, analyzeCallback) {
         }
         callback(null);
       });
-    },
-    (callback) => {
-      // Call Face Detection passing the image in the request
-      // http://www.ibm.com/watson/developercloud/visual-recognition/api/v3/?curl#detect_faces
-      fs.createReadStream(fileName).pipe(
-        request({
-          method: 'POST',
-          url: 'https://gateway.watsonplatform.net/visual-recognition/api/v3/detect_faces' + // eslint-disable-line
-            '?api_key=' + args.watsonApiKey +
-            '&version=2018-03-19',
-          auth: {
-            user: 'apikey',
-            pass: args.watsonApiKey,
-          },
-          headers: {
-            'Content-Length': fs.statSync(fileName).size
-          },
-          json: true
-        }, (err, response, body) => {
-          if (err) {
-            console.log('Face Detection', err);
-          } else if (body.images && body.images.length > 0) {
-            // sort the faces from left to right
-            analysis.face_detection = body.images[0].faces ?
-              body.images[0].faces.sort((face1, face2) =>
-                face1.face_location.left - face2.face_location.left) :
-              [];
-          }
-          callback(null);
-        }));
     },
     (callback) => {
       // Call Classify passing the image in the request

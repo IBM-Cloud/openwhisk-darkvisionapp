@@ -1,6 +1,6 @@
 # SwiftMoment
 
-[![Build Status](https://travis-ci.org/akosma/SwiftMoment.svg?branch=master)](https://travis-ci.org/akosma/SwiftMoment)
+[![Join the chat at https://gitter.im/SwiftMoment/Lobby](https://badges.gitter.im/SwiftMoment/Lobby.svg)](https://gitter.im/SwiftMoment/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/akosma/SwiftMoment.svg?branch=master)](https://travis-ci.org/akosma/SwiftMoment)
 [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SwiftMoment.svg)](https://img.shields.io/cocoapods/v/SwiftMoment)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Platform](https://img.shields.io/cocoapods/p/SwiftMoment.svg?style=flat)](http://cocoadocs.org/docsets/SwiftMoment)
@@ -27,6 +27,21 @@ your Podfile:
 ```ruby
 pod 'SwiftMoment'
 ```
+
+SwiftMoment can also be used via the [Swift Package Manager](https://swift.org/package-manager/). 
+Just add it to the dependencies in your Package.swift file:
+
+```Swift
+let package = Package(
+    name: "MyPackage",
+    dependencies: [
+        ...
+        .package(url: "https://github.com/akosma/SwiftMoment.git", from: "0.7.1"),
+    ],
+    ...
+)
+```
+
 
 ## Mac OS X Notes
 
@@ -100,6 +115,13 @@ be subtracted from one another (which yields a `Duration`) and
 
 Swift Moment includes a suite of tests showing how to use the different
 functions of the framework.
+
+To run the Linux tests in a macOS environment, please use the included Dockerfile:
+
+```
+docker build --tag swiftmoment .
+docker run --rm swiftmoment
+```
 
 ## Playground
 

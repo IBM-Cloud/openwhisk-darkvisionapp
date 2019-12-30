@@ -9,7 +9,7 @@
 import Foundation
 
 // needed to dynamically select the bundle below
-class MomentBundle: NSObject { }
+class MomentBundle: NSObject {}
 
 extension Moment {
 
@@ -28,82 +28,82 @@ extension Moment {
             return NSDateTimeAgoLocalizedStrings("Just now")
 
         }
-        else if deltaSeconds < minuteInSeconds {
+        else if deltaSeconds < Moment.minuteInSeconds {
             // Seconds Ago
-            return stringFromFormat("%%1.0f %@seconds ago", withValue: deltaSeconds)
+            return stringFromFormat("%%d %@seconds ago", withValue: Int(deltaSeconds))
 
         }
-        else if deltaSeconds < (minuteInSeconds * 2) {
+        else if deltaSeconds < (Moment.minuteInSeconds * 2) {
             // A Minute Ago
             return NSDateTimeAgoLocalizedStrings("A minute ago")
 
         }
-        else if deltaSeconds < hourInSeconds {
+        else if deltaSeconds < Moment.hourInSeconds {
             // Minutes Ago
-            return stringFromFormat("%%1.0f %@minutes ago", withValue: deltaSeconds / minuteInSeconds)
+            return stringFromFormat("%%d %@minutes ago", withValue: Int(deltaSeconds / Moment.minuteInSeconds))
 
         }
-        else if deltaSeconds < (hourInSeconds * 2) {
+        else if deltaSeconds < (Moment.hourInSeconds * 2) {
             // An Hour Ago
             return NSDateTimeAgoLocalizedStrings("An hour ago")
 
         }
-        else if deltaSeconds < dayInSeconds {
+        else if deltaSeconds < Moment.dayInSeconds {
             // Hours Ago
-            value = floor(deltaSeconds / hourInSeconds)
-            return stringFromFormat("%%1.0f %@hours ago", withValue: value)
+            value = floor(deltaSeconds / Moment.hourInSeconds)
+            return stringFromFormat("%%d %@hours ago", withValue: Int(value))
 
         }
-        else if deltaSeconds < (dayInSeconds * 2) {
+        else if deltaSeconds < (Moment.dayInSeconds * 2) {
             // Yesterday
             return NSDateTimeAgoLocalizedStrings("Yesterday")
 
         }
-        else if deltaSeconds < weekInSeconds {
+        else if deltaSeconds < Moment.weekInSeconds {
             // Days Ago
-            value = floor(deltaSeconds / dayInSeconds)
-            return stringFromFormat("%%1.0f %@days ago", withValue: value)
+            value = floor(deltaSeconds / Moment.dayInSeconds)
+            return stringFromFormat("%%d %@days ago", withValue: Int(value))
 
         }
-        else if deltaSeconds < (weekInSeconds * 2) {
+        else if deltaSeconds < (Moment.weekInSeconds * 2) {
             // Last Week
             return NSDateTimeAgoLocalizedStrings("Last week")
 
         }
-        else if deltaSeconds < monthInSeconds {
+        else if deltaSeconds < Moment.monthInSeconds {
             // Weeks Ago
-            value = floor(deltaSeconds / weekInSeconds)
-            return stringFromFormat("%%1.0f %@weeks ago", withValue: value)
+            value = floor(deltaSeconds / Moment.weekInSeconds)
+            return stringFromFormat("%%d %@weeks ago", withValue: Int(value))
 
         }
-        else if deltaSeconds < (dayInSeconds * 61) {
+        else if deltaSeconds < (Moment.dayInSeconds * 61) {
             // Last month
             return NSDateTimeAgoLocalizedStrings("Last month")
 
         }
-        else if deltaSeconds < yearInSeconds {
+        else if deltaSeconds < Moment.yearInSeconds {
             // Month Ago
-            value = floor(deltaSeconds / monthInSeconds)
-            return stringFromFormat("%%1.0f %@months ago", withValue: value)
+            value = floor(deltaSeconds / Moment.monthInSeconds)
+            return stringFromFormat("%%d %@months ago", withValue: Int(value))
 
         }
-        else if deltaSeconds < (yearInSeconds * 2) {
+        else if deltaSeconds < (Moment.yearInSeconds * 2) {
             // Last Year
             return NSDateTimeAgoLocalizedStrings("Last year")
         }
 
         // Years Ago
-        value = floor(deltaSeconds / yearInSeconds)
-        return stringFromFormat("%%1.0f %@years ago", withValue: value)
+        value = floor(deltaSeconds / Moment.yearInSeconds)
+        return stringFromFormat("%%d %@years ago", withValue: Int(value))
     }
 
-    fileprivate func stringFromFormat(_ format: String, withValue value: Double) -> String {
+    private func stringFromFormat(_ format: String, withValue value: Int) -> String {
         let localeFormat = String(format: format,
-                                  getLocaleFormatUnderscoresWithValue(value))
+                                  getLocaleFormatUnderscoresWithValue(Double(value)))
         return String(format: NSDateTimeAgoLocalizedStrings(localeFormat), value)
     }
 
-    fileprivate func NSDateTimeAgoLocalizedStrings(_ key: String) -> String {
+    private func NSDateTimeAgoLocalizedStrings(_ key: String) -> String {
         // get framework bundle
         guard let bundleIdentifier = Bundle(for: MomentBundle.self).bundleIdentifier  else {
             return ""
@@ -118,7 +118,7 @@ extension Moment {
         }
 
         let bundleName = "MomentFromNow.bundle"
-        let path = URL(fileURLWithPath:resourcePath).appendingPathComponent(bundleName)
+        let path = URL(fileURLWithPath: resourcePath).appendingPathComponent(bundleName)
         guard let bundle = Bundle(url: path) else {
             return ""
         }
@@ -130,7 +130,7 @@ extension Moment {
         return ""
     }
 
-    fileprivate func getLanguageBundle(_ bundle: Bundle) -> Bundle? {
+    private func getLanguageBundle(_ bundle: Bundle) -> Bundle? {
         let localeIdentifer = self.locale.identifier
         if let languagePath = bundle.path(forResource: localeIdentifer, ofType: "lproj") {
             return Bundle(path: languagePath)
@@ -145,28 +145,29 @@ extension Moment {
         return nil
     }
 
-    fileprivate func getLocaleFormatUnderscoresWithValue(_ value: Double) -> String {
-        guard let localeCode = Locale.preferredLanguages.first else {
+    private func getLocaleFormatUnderscoresWithValue(_ value: Double) -> String {
+        guard let languageCode = self.locale.languageCode else {
             return ""
         }
 
-        if localeCode == "ru" {
-            let XY = Int(floor(value)) % 100
-            let Y = Int(floor(value)) % 10
+        if languageCode == "ru" {
+            let xy = Int(floor(value)) % 100
+            let y = Int(floor(value)) % 10
 
-            if Y == 0 || Y > 4 || (XY > 10 && XY < 15) {
+            if y == 0 || y > 4 || (xy > 10 && xy < 15) {
                 return ""
             }
 
-            if Y > 1 && Y < 5 && (XY < 10 || XY > 20) {
+            if y > 1 && y < 5 && (xy < 10 || xy > 20) {
                 return "_"
             }
 
-            if Y == 1 && XY != 11 {
+            if y == 1 && xy != 11 {
                 return "__"
             }
         }
 
         return ""
     }
+
 }

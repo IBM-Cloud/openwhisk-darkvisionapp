@@ -1,47 +1,49 @@
 PODS:
-  - Alamofire (4.2.0)
-  - AlamofireImage (3.2.0):
-    - Alamofire (~> 4.1)
-  - Cosmos (7.0.0)
-  - DateTools (2.0.0-beta.3)
+  - Alamofire (4.9.1)
+  - AlamofireImage (3.6.0):
+    - Alamofire (~> 4.9)
+  - Cosmos (20.0.1)
+  - DateToolsSwift (4.0.0)
   - RDHCollectionViewGridLayout (1.2.5)
   - SwiftMoment (0.7)
-  - SwiftyJSON (3.1.3)
-  - TagListView (1.1.0)
+  - SwiftyJSON (5.0.0)
+  - TagListView (1.4.0)
   - TTTAttributedLabel (2.0.0)
 
 DEPENDENCIES:
-  - Alamofire (= 4.2)
-  - AlamofireImage (= 3.2)
-  - Cosmos (= 7.0)
-  - DateTools (from `https://github.com/MatthewYork/DateTools.git`, branch `swift`)
+  - Alamofire (= 4.9.1)
+  - AlamofireImage (= 3.6.0)
+  - Cosmos (= 20.0.1)
+  - DateToolsSwift (= 4.0.0)
   - RDHCollectionViewGridLayout (= 1.2.5)
   - SwiftMoment (= 0.7)
-  - SwiftyJSON (= 3.1.3)
-  - TagListView (= 1.1.0)
+  - SwiftyJSON (= 5.0.0)
+  - TagListView (= 1.4.0)
   - TTTAttributedLabel (= 2.0.0)
 
-EXTERNAL SOURCES:
-  DateTools:
-    :branch: swift
-    :git: https://github.com/MatthewYork/DateTools.git
-
-CHECKOUT OPTIONS:
-  DateTools:
-    :commit: 7190d93025d82c985e1108a8dc9522129d1b68de
-    :git: https://github.com/MatthewYork/DateTools.git
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - AlamofireImage
+    - Cosmos
+    - DateToolsSwift
+    - RDHCollectionViewGridLayout
+    - SwiftMoment
+    - SwiftyJSON
+    - TagListView
+    - TTTAttributedLabel
 
 SPEC CHECKSUMS:
-  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
-  AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
-  Cosmos: 2c8299147138758f6ebbb247cf1aeed77998bdf9
-  DateTools: fe8ad1e2e77ebb9cf1db6becf077772dd83fdb63
+  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  AlamofireImage: be9963c6582d68b39e89191f64c82a7d7bf40fdd
+  Cosmos: b47fddf2102bb48580cd3025d9ce0a5c658a65da
+  DateToolsSwift: 875d97ff9e3a5d54abdd67a269b3f51c757b71ab
   RDHCollectionViewGridLayout: 4b4229212ed8c136aa70101d92ecd43742ca62b6
   SwiftMoment: dc6dd27012e267819104cbb03f74ff9192dd0b42
-  SwiftyJSON: 38a8ea2006779c0fc4c310cb2ee8195327740faf
-  TagListView: d0267a71393f3c73db5c9ea2f979ac1125fcab56
+  SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
+  TagListView: 987b0bdbb16cd9d9e7c0e2ec32aff37ecba8b173
   TTTAttributedLabel: 8cffe8e127e4e82ff3af1e5386d4cd0ad000b656
 
-PODFILE CHECKSUM: 703fb4812f2843fe9f634af3ecf5b9ded8437dea
+PODFILE CHECKSUM: 001b6147e5e78a7e8ecf5d03e27d0bfc2ec5cd87
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.8.4

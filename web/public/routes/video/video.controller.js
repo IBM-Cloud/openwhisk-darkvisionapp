@@ -30,15 +30,6 @@
     };
     controller.data.videoId = $stateParams.videoId;
 
-    controller.facePositionAsPercent = function(faceLocation, image){
-      return {
-        top: (100 * faceLocation.top / image.analysis.size.height).toFixed(2),
-        left: (100 * faceLocation.left / image.analysis.size.width).toFixed(2),
-        width: (100 * faceLocation.width / image.analysis.size.width).toFixed(2),
-        height: (100 * faceLocation.height / image.analysis.size.height).toFixed(2),
-      };
-    }
-
     controller.selectVideo = function() {
       console.log('Selecting video');
       controller.data.selected = controller.data.video;
@@ -59,10 +50,6 @@
       var imageWithTag = controller.data.images.find(function(image) {
         if (image.analysis) {
           switch (tagType) {
-            case 'face_detection':
-              return image.analysis.face_detection.find(function(face) {
-                return face.identity && face.identity.name === tagName;
-              });
             case 'image_keywords':
               return image.analysis.image_keywords.find(function(keyword) {
                 return keyword.class === tagName;

@@ -8,25 +8,27 @@ stages:
   triggers:
   - type: commit
   properties:
-  - name: CF_APP_HOSTNAME
-    value: ""
-  - name: CF_APP_INSTANCES
-    value: "1"
+  - name: VISUAL_RECOGNITION_PLAN
+    value: "lite"
+  - name: COS_PLAN
+    value: "Lite"
   - name: ADMIN_USERNAME
     value: ${ADMIN_USERNAME}
   - name: ADMIN_PASSWORD
     value: ${ADMIN_PASSWORD}
     type: secure
+  - name: CF_APP_HOSTNAME
+    value: ""
+  - name: CF_APP_INSTANCES
+    value: "1"
   - name: CLOUDANT_db
     value: ${CLOUDANT_db}
   - name: DOCKER_EXTRACTOR_NAME
     value: "l2fprod/darkvision-extractor-master"
   - name: WATSON_API_KEY
     value: ${WATSON_API_KEY}
-  - name: VISUAL_RECOGNITION_PLAN
-    value: "lite"
   - name: STT_CALLBACK_SECRET
-    value: ASecret{{name}}4Dv
+    value: ASecret{{toolchain.name}}4Dv
   - name: USE_API_CACHE
     value: ""
   - name: COS_API_KEY
@@ -38,11 +40,9 @@ stages:
     value: ${COS_ENDPOINT}
   - name: COS_BUCKET
     value: ${COS_BUCKET}
-  - name: COS_PLAN
-    value: "Lite"
-  - name: IBMCLOUD_API_KEY
-    value: ${IBMCLOUD_API_KEY}
-    type: secure
+  - name: RESOURCE_GROUP
+    value: ${RESOURCE_GROUP}
+    type: text
   jobs:
   - name: Deploy
     type: deployer
@@ -51,7 +51,7 @@ stages:
       organization: ${ORG_NAME}
       space: ${SPACE_NAME}
       application: ${CF_APP_NAME}
-      api_key: ${IBMCLOUD_API_KEY}
+      api_key: ${API_KEY}
     script: |-
       #!/bin/bash
-      ./.bluemix/pipeline-DEPLOY.sh
+      ./scripts/pipeline-DEPLOY.sh

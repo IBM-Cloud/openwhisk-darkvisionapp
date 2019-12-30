@@ -1,2 +1,4 @@
 node_modules
 local.env
+pipeline.env
+*.log

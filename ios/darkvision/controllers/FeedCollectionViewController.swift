@@ -15,7 +15,6 @@
  */
 import UIKit
 import RDHCollectionViewGridLayout
-import DateTools
 import AlamofireImage
 import Alamofire
 
@@ -32,7 +31,8 @@ class FeedCollectionViewController: UICollectionViewController {
     super.viewDidLoad()
 
     UIDevice.current.beginGeneratingDeviceOrientationNotifications();
-    NotificationCenter.default.addObserver(self, selector: #selector(FeedCollectionViewController.orientationChanged), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(self.orientationChanged),
+                                           name: UIDevice.orientationDidChangeNotification, object: nil)
     
     refreshCtrl.addTarget(self, action: #selector(FeedCollectionViewController.startRefresh), for: .valueChanged);
     collectionView?.addSubview(refreshCtrl);
@@ -40,7 +40,7 @@ class FeedCollectionViewController: UICollectionViewController {
     startRefresh();
   }
   
-  func startRefresh() {
+  @objc func startRefresh() {
     print("Refreshing...");
     videos.load { (UIBackgroundFetchResult) -> Void in
       self.refreshCtrl.endRefreshing()
@@ -50,7 +50,7 @@ class FeedCollectionViewController: UICollectionViewController {
     }
   }
   
-  func orientationChanged() {
+  @objc func orientationChanged() {
     updateLayout();
   }
   
@@ -61,7 +61,7 @@ class FeedCollectionViewController: UICollectionViewController {
   func updateLayout() {
     
     let IPHONE = UIDevice.current.userInterfaceIdiom == .phone;
-    let PORTRAIT = UIApplication.shared.statusBarOrientation == .portrait;
+    let PORTRAIT = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isPortrait ?? false;
     
     let rdhLayout = self.collectionViewLayout as? RDHCollectionViewGridLayout
     rdhLayout?.lineSpacing = 5;

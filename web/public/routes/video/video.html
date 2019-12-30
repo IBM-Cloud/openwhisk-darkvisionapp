@@ -108,11 +108,6 @@
         <div class="overview border-box">
           <div class="width-wrapper" layout="row" layout-align="center center">
             <div class="entry-thumbnail-container">
-              <div ng-if="!controller.isVideo() && face.face_location.left>0" ng-repeat="face in controller.data.selectedSummary.face_detection" class="face-overlay-box" style="position: absolute;
-                          top: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).top}}%;
-                          left: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).left}}%;
-                          width: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).width}}%;
-                          height: {{controller.facePositionAsPercent(face.face_location, controller.data.selected).height}}%;"><span class="face-overlay-text">{{$index+1}}</span></div>
               <img ng-if="controller.isVideo()" class="video-thumbnail" ng-src="/images/thumbnail/{{controller.data.selected._id}}.jpg" />
               <img ng-if="!controller.isVideo()" class="video-thumbnail" ng-src="/images/image/{{controller.data.selected._id}}.jpg" />
               <div ng-if="controller.isVideo()"class="video-box-tags" ng-repeat="stream in controller.data.video.metadata.streams">
@@ -195,22 +190,6 @@
         </div>
         <div class="insights" flex>
           <div class="width-wrapper">
-            <div>
-              <h4>Face Detection</h4>
-              <span class="no-tag" ng-if="controller.data.selectedSummary.face_detection.length == 0">No known face detected</span>
-              <ul class="entry-taglist">
-                <li ng-repeat="face in controller.data.selectedSummary.face_detection" class="entry-tag"><span
-                      ng-click="controller.selectImageWithTag('face_detection', face.identity.name)"
-                      class="tag tag-face"
-                      ng-class="{ 'tag-clickable': controller.isVideo() }">
-                    <span class="face-overlay-text">{{$index+1}}</span>
-                    <span ng-if="face.identity">{{face.identity.name}} {{face.identity.score | formatPercent}}%</span>
-                    <span ng-if="face.identity">&nbsp;</span>
-                    <span>{{face.gender.gender}} {{face.age.min}}-{{face.age.max}} {{face.age.score | formatPercent}}%</span>
-                  </span></li>
-              </ul>
-            </div>
-
             <div>
               <h4>Image Keywords</h4>
               <ul class="entry-taglist">

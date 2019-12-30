@@ -5,21 +5,37 @@
   "longDescription": "The Delivery Pipeline automates the continuous deployment of Cloud Functions Dark Vision including its web user interface and the Cloud Functions artifacts.",
   "type": "object",
   "properties": {
-    "ibmcloud-api-key": {
-      "description": "Used to interact with IBM Cloud. Obtain one from IAM user interface",
-      "type": "string"
-    },    
+    "api-key": {
+      "description": "IBM Cloud API keys reference permissions that grant access to cloud resources. You can obtain your API key with 'ibmcloud iam api-key-create' or via the console at https://cloud.ibm.com/iam/apikeys by clicking **Create an IBM Cloud API key**.",
+      "type": "string",
+      "pattern": "\\S",
+      "validator": {
+        "v-type": "api-key"
+      }
+    },
     "darkvision-region": {
       "description": "The IBM Cloud region",
-      "type": "string"
+      "type": "string",
+      "validator": {
+        "v-type": "k8s-region",
+        "params": ["api-key"]
+      }
     },
     "darkvision-organization": {
       "description": "The Cloud Foundry org",
-      "type": "string"
+      "type": "string",
+      "validator": {
+        "v-type": "cf-org",
+        "params": ["darkvision-region"]
+      }
     },
     "darkvision-space": {
       "description": "The Cloud Foundry space",
-      "type": "string"
+      "type": "string",
+      "validator": {
+        "v-type": "cf-space",
+        "params": ["darkvision-organization"]
+      }
     },
     "darkvision-app-name": {
       "description": "The name of the web application.",
@@ -56,26 +72,41 @@
     "darkvision-cos-bucket": {
       "description": "The bucket name must be unique across all users of IBM Cloud",
       "type": "string"
+    },
+    "darkvision-resource-group": {
+      "description": "The resource group where to create services, functions",
+      "type": "string",
+      "validator": {
+        "v-type": "resource-group",
+        "params": ["api-key"]
+      }
     }
   },
   "required": [
-    "ibmcloud-api-key",
+    "api-key",
     "darkvision-region",
     "darkvision-organization",
     "darkvision-space",
     "darkvision-app-name",
-    "darkvision-cloudant-db"
+    "darkvision-cloudant-db",
+    "darkvision-resource-group",
+    "darkvision-cos-bucket"
   ],
   "form": [
     {
       "type": "validator",
-      "url": "/devops/setup/bm-helper/helper.html"
+      "url": "/devops/validator/validator-v1.html"
     },
     {
+      "key": "api-key",
       "type": "password",
       "readonly": false,
-      "title": "IBM Cloud Platform API Key",
-      "key": "ibmcloud-api-key"
+      "title": "IBM Cloud API Key"
+    },
+    {
+      "key": "darkvision-resource-group",
+      "type": "string",
+      "title": "Resource group name"
     },
     {
       "type": "table",
@@ -146,7 +177,7 @@
     {
       "type": "text",
       "readonly": false,
-      "title": "(Optional) Cloud Object Storage Bucket Name. COS allows to use attachments larger than 1MB. The bucket name must start and end in alphanumeric characters (from 3 to 63 ) limited to: lowercase, numbers and non-consecutive dots, and hyphens. Leave it empty if you don't want to use Cloud Object Storage - but you will be limited to 1MB images and videos",
+      "title": "Cloud Object Storage Bucket Name. The bucket name must start and end in alphanumeric characters (from 3 to 63 ) limited to: lowercase, numbers and non-consecutive dots, and hyphens.",
       "key": "darkvision-cos-bucket"
     },
     {
