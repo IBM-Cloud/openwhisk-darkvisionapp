@@ -1,59 +1,65 @@
----
-name: "Cloud Functions Dark Vision"
-description: "Deploy your own Cloud Functions Dark Vision environment."
-required:
- - deploy
- - darkvision-repo
+version: '2'
+template:
+  name: "Cloud Functions Dark Vision"
+  description: "Deploy your own Cloud Functions Dark Vision environment."
+  required:
+    - repo
+    - build
 
-# Github repos
-darkvision-repo:
-  service_id: githubpublic
-  parameters:
-    repo_name: "openwhisk-darkvisionapp"
-    repo_url: https://github.com/IBM-Cloud/openwhisk-darkvisionapp
-    type: fork
-    has_issues: true
+toolchain:
+  name: 'darkvision-{{timestamp}}'
 
-# Pipelines
-darkvision-build:
-  service_id: pipeline
-  parameters:
-    name: "darkvision"
-    ui-pipeline: true
-    configuration:
-     content: $file(pipeline.yml)
-     env:
-      REPO: "darkvision-repo"
-      CF_APP_NAME: "{{deploy.parameters.darkvision-app-name}}"
-      SPACE_NAME: "{{deploy.parameters.darkvision-space}}"
-      ORG_NAME: "{{deploy.parameters.darkvision-organization}}"
-      REGION_ID: "{{deploy.parameters.darkvision-region}}"
-      ADMIN_USERNAME: "{{deploy.parameters.darkvision-admin-username}}"
-      ADMIN_PASSWORD: "{{deploy.parameters.darkvision-admin-password}}"
-      WATSON_API_KEY: "{{deploy.parameters.darkvision-watson-api-key}}"
-      CLOUDANT_db: "{{deploy.parameters.darkvision-cloudant-db}}"
-      COS_API_KEY: "{{deploy.parameters.darkvision-cos-api-key}}"
-      COS_INSTANCE_ID: "{{deploy.parameters.darkvision-cos-instance-id}}"
-      COS_ENDPOINT: "{{deploy.parameters.darkvision-cos-endpoint}}"
-      COS_BUCKET: "{{deploy.parameters.darkvision-cos-bucket}}"
-      IBMCLOUD_API_KEY: "{{deploy.parameters.ibmcloud-api-key}}"
-     execute: true
-    services: ["darkvision-repo"]
-  hidden: [form, description]
+services:
+  # Github repos
+  repo:
+    service_id: githubpublic
+    parameters:
+      source_repo_url: "https://github.com/IBM-Cloud/openwhisk-darkvisionapp"
+      repo_name: "{{toolchain.name}}"
+      type: clone
+      has_issues: false
+      enable_traceability: false
+  # Pipelines
+  build:
+    service_id: pipeline
+    parameters:
+      services:
+        - repo
+      name: "darkvision"
+      ui-pipeline: true
+      configuration:
+        content:
+          $text: pipeline.yml
+        env:
+          REPO: repo
+          API_KEY: "{{form.pipeline.parameters.api-key}}"
+          CF_APP_NAME: "{{form.pipeline.parameters.darkvision-app-name}}"
+          SPACE_NAME: "{{form.pipeline.parameters.darkvision-space}}"
+          ORG_NAME: "{{form.pipeline.parameters.darkvision-organization}}"
+          REGION_ID: "{{form.pipeline.parameters.darkvision-region}}"
+          ADMIN_USERNAME: "{{form.pipeline.parameters.darkvision-admin-username}}"
+          ADMIN_PASSWORD: "{{form.pipeline.parameters.darkvision-admin-password}}"
+          WATSON_API_KEY: "{{form.pipeline.parameters.darkvision-watson-api-key}}"
+          CLOUDANT_db: "{{form.pipeline.parameters.darkvision-cloudant-db}}"
+          COS_API_KEY: "{{form.pipeline.parameters.darkvision-cos-api-key}}"
+          COS_INSTANCE_ID: "{{form.pipeline.parameters.darkvision-cos-instance-id}}"
+          COS_ENDPOINT: "{{form.pipeline.parameters.darkvision-cos-endpoint}}"
+          COS_BUCKET: "{{form.pipeline.parameters.darkvision-cos-bucket}}"
+          RESOURCE_GROUP: "{{form.pipeline.parameters.darkvision-resource-group}}"
 
 #Deployment
-deploy:
-  schema:
-    $ref: deploy.json
-  service-category: pipeline
-  parameters:
-    darkvision-app-name: "{{name}}"
-    darkvision-admin-username: ""
-    darkvision-admin-password: ""
-    darkvision-watson-api-key: ""
-    darkvision-cloudant-db: "openwhisk-darkvision"
-    darkvision-cos-api-key: ""
-    darkvision-cos-instance-id: ""
-    darkvision-cos-endpoint: "s3-api.us-geo.objectstorage.softlayer.net"
-    darkvision-cos-bucket: ""
-    ibmcloud-api-key: ""
+form:
+  pipeline:
+    schema:
+      $ref: deploy.json
+    parameters:
+      darkvision-app-name: "{{name}}"
+      darkvision-admin-username: ""
+      darkvision-admin-password: ""
+      darkvision-watson-api-key: ""
+      darkvision-cloudant-db: "openwhisk-darkvision"
+      darkvision-cos-api-key: ""
+      darkvision-cos-instance-id: ""
+      darkvision-cos-endpoint: "s3-api.us-geo.objectstorage.softlayer.net"
+      darkvision-cos-bucket: ""
+      darkvision-resource-group: ""
