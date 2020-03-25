@@ -8,9 +8,9 @@
   "author": "IBM",
   "license": "Apache-2.0",
   "dependencies": {
+    "@cloudant/cloudant": "4.2.4",
     "async": "2.1.4",
     "cfenv": "1.0.3",
-    "cloudant": "1.6.2",
     "compression": "1.6.2",
     "express": "4.14.0",
     "http-auth": "3.1.1",

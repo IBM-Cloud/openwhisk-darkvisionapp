@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-const Cloudant = require('cloudant');
+const Cloudant = require('@cloudant/cloudant');
 const async = require('async');
 
 function CloudandStorage(options) {
@@ -24,9 +24,9 @@ function CloudandStorage(options) {
   // The 'retry' plugin catches error 429 from Cloudant and automatically retries
   const cloudant = Cloudant({
     url: options.cloudantUrl,
-    plugin: 'retry',
-    retryAttempts: 10,
-    retryTimeout: 500
+    plugins: {
+      retry: { retryErrors: false, retryStatusCodes: [ 429 ] }
+    }
   }).db;
   const cloudantNoRetry = Cloudant({
     url: options.cloudantUrl
